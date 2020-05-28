@@ -65,18 +65,21 @@ class App extends Component {
         {
           <>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
-            {!this.state.isLoading ? <Animated animationIn="slideInLeft" animationInDuration={450} animationOut="zoomOut" isVisible={this.state.filter} style={{ zIndex: 4, position: 'absolute' }}>
-              <div style={{ zIndex: 2, backgroundColor: 'white', width: '30.5vw' }}>
-                <MapFilterComponent
-                  loadDataJson={this.loadDataJson.bind(this)}
-                  loadPersonNames={this.loadPersonNames.bind(this)}
-                  loadDateValues={this.loadDateValues.bind(this)}
-                  DataVuzix={this.state.DataVuzix}
-                  video={this.state.video}
-                />
-              </div>
-            </Animated> : <div></div>}
-            <MapComponent markersMap={this.state.DataVuzix} loadDataJson={this.loadDataJson.bind(this)} />
+            <div className="row">
+              {!this.state.isLoading ? <Animated animationIn="slideInLeft" animationInDuration={450} animationOut="zoomOut" isVisible={this.state.filter} style={{ zIndex: 4, position: 'absolute' }}>
+                <div style={{ zIndex: 2, backgroundColor: 'white', width: '30.5vw' }}>
+                  <MapFilterComponent
+                    loadDataJson={this.loadDataJson.bind(this)}
+                    loadPersonNames={this.loadPersonNames.bind(this)}
+                    loadDateValues={this.loadDateValues.bind(this)}
+                    DataVuzix={this.state.DataVuzix}
+                    video={this.state.video}
+                    className='col-md-3'
+                  />
+                </div>
+              </Animated> : <div></div>}
+              <MapComponent className="col-md-10" markersMap={this.state.DataVuzix} loadDataJson={this.loadDataJson.bind(this)} />
+            </div>
           </>
         }
       </>

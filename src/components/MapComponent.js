@@ -32,10 +32,11 @@ function MapComponent(props) {
                 data.map(mapVuzix =>
 
                     <Marker
+                        onMouseOver={() => { setSelected(mapVuzix) }}
+                        onMouseOut={() => setSelected(null)}
                         key={mapVuzix.id}
                         position={{ lat: mapVuzix.lat, lng: mapVuzix.long }}
                         onClick={() => {
-                            console.log("Clicked")
                             setSelected(mapVuzix)
                             console.log(mapVuzix)
                         }}

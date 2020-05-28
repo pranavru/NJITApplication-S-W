@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Form, FormGroup, Label, Input, Card, InputGroup, InputGroupAddon, Button, InputGroupText } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUsers, faCalendar, faCode } from '@fortawesome/free-solid-svg-icons'
+import { faUsers, faCalendar, faCode, faClock } from '@fortawesome/free-solid-svg-icons'
 import { Animated } from 'react-animated-css';
 import '../App.css';
 import DateRangeFilter from './DateRangeFilter';
@@ -31,7 +31,7 @@ class MapFilterComponent extends Component {
         this.personNamesMethod = this.personNamesMethod.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         
-        console.log(this.state.dateValue)
+        // console.log(new Date(`${this.state.dateValue[0].getFullYear()}/${this.state.dateValue[0].getMonth()}/${this.state.dateValue[0].getDate()}`))
     }
 
     handleChange(event) {
@@ -52,9 +52,11 @@ class MapFilterComponent extends Component {
     }
 
     handleChangeDate(event) {
+        // const date1 = new Date(`${this.state.dateValue[0].getFullYear()}/${this.state.dateValue[0].getMonth()}/${this.state.dateValue[0].getDate()} ${this.state.dateValue[0].getHours()}:${this.state.dateValue[0].getMinutes()}:${this.state.dateValue[0].getSeconds()} ${this.state.dateValue[0].getTimezoneOffset()}`)
         this.setState({
             dateValue: [new Date(event[0]), new Date(event[1])]
         })
+        // console.log(date1)
     }
     
     handleChangeTime(event) {
@@ -98,7 +100,7 @@ class MapFilterComponent extends Component {
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input disabled placeholder='Speech' style={{ backgroundColor: 'white' }} />
-                                    <Button><FontAwesomeIcon icon={faCode} size={"lg"} /></Button>
+                                    <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0}}><FontAwesomeIcon icon={faCode} size={"lg"} /></Button>
                                 </InputGroup>
                             </FormGroup>
 
@@ -112,7 +114,7 @@ class MapFilterComponent extends Component {
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input disabled placeholder='People' style={{ backgroundColor: 'white' }} />
-                                    <Button style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}><FontAwesomeIcon icon={faUsers} size={"lg"} /></Button>
+                                    <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}><FontAwesomeIcon icon={faUsers} size={"lg"} /></Button>
                                 </InputGroup>
 
                                 <Animated
@@ -151,20 +153,20 @@ class MapFilterComponent extends Component {
 
                                     <InputGroup style={{ marginTop: '3%'}}>
                                         <InputGroupAddon addonType="append">
-                                            <Button style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faCalendar} /></Button>
+                                            <Button disabled style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faCalendar} /></Button>
                                         </InputGroupAddon>
                                         <Card style={{ padding: 4, width: '22.5vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
                                             <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} />
                                         </Card>
                                     </InputGroup>
-                                    <InputGroup style={{ marginTop: '3%'}}>
+                                    {/* <InputGroup style={{ marginTop: '3%'}}>
                                         <InputGroupAddon addonType="append">
-                                            <Button style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faCalendar} /></Button>
+                                            <Button disabled style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faClock} /></Button>
                                         </InputGroupAddon>
                                         <Card style={{ padding: 4, width: '22.5vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
                                             <TimeRangeFilter handleChangeTime={this.handleChangeTime.bind(this)} timeValue={this.state.timeValue} />
                                         </Card>
-                                    </InputGroup>
+                                    </InputGroup> */}
                                 </Animated>
                             </FormGroup>
 

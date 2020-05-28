@@ -7,8 +7,8 @@ function TimeRangeFilter(props) {
     return (
         <Card>
             <TimeRangePicker
-                onChange={props.handleChangeTime}
-                value={props.timeValue}
+                onChange={props.handleChangeDate}
+                value={props.dateValue}
                 name="timeValue"
                 // autoFocus
                 // isOpen
