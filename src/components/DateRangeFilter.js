@@ -8,10 +8,10 @@ function DateRangeFilter(props) {
         <Card>
             <DateRangePicker
                 onChange={props.handleChangeDate}
-                value={[new Date, new Date]}
+                value={props.dateValue}
                 name="dateValue"
-                autoFocus
-                isOpen
+                // autoFocus
+                // isOpen
                 minDate={props.dateValue[0]}
                 maxDate={props.dateValue[1]}
                 rangeDivider=" to "

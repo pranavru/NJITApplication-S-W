@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^7.2.1",
     "@wojtekmaj/react-daterange-picker": "^3.0.0",
     "@wojtekmaj/react-datetimerange-picker": "^2.4.0",
+    "@wojtekmaj/react-timerange-picker": "^3.0.0",
     "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "google-maps-react": "^2.0.6",

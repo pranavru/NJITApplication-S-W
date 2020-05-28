@@ -21,20 +21,22 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.loadDataJson('/vuzixMap')
+    this.loadDataJson('/vuzixMap', {})
   }
 
-  loadDataJson(URL) {
+  loadDataJson(URL, objValue) {
     if (URL === '/vuzixMap')
       axios.get(this.state.baseURL + '/vuzixMap').then(
         res => {
           this.setState({ DataVuzix: res.data, isLoading: false })
         })
-    else if (URL === '/vuzixMap/video')
-      axios.get(this.state.baseURL + '/vuzixMap/video').then(
+    else if (URL === '/vuzixMap/video') {
+      console.log(objValue)
+      axios.get(this.state.baseURL + '/vuzixMap/video', objValue).then(
         res => {
           this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
         })
+    }
 
   }
 
@@ -63,7 +65,7 @@ class App extends Component {
         {
           <>
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
-            {!this.state.isLoading ?  <Animated animationIn="slideInLeft" animationInDuration={450} animationOut="zoomOut" isVisible={this.state.filter} style={{ zIndex: 4, position: 'absolute' }}>
+            {!this.state.isLoading ? <Animated animationIn="slideInLeft" animationInDuration={450} animationOut="zoomOut" isVisible={this.state.filter} style={{ zIndex: 4, position: 'absolute' }}>
               <div style={{ zIndex: 2, backgroundColor: 'white', width: '30.5vw' }}>
                 <MapFilterComponent
                   loadDataJson={this.loadDataJson.bind(this)}
@@ -73,7 +75,7 @@ class App extends Component {
                   video={this.state.video}
                 />
               </div>
-            </Animated> :<div></div>}
+            </Animated> : <div></div>}
             <MapComponent markersMap={this.state.DataVuzix} loadDataJson={this.loadDataJson.bind(this)} />
           </>
         }

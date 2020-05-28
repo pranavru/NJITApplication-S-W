@@ -6,6 +6,7 @@ import { Animated } from 'react-animated-css';
 import '../App.css';
 import DateRangeFilter from './DateRangeFilter';
 import DisplayVideoComponent from './DisplayVideoComponent';
+import TimeRangeFilter from './TimeRangeFilter'
 
 
 class MapFilterComponent extends Component {
@@ -18,18 +19,19 @@ class MapFilterComponent extends Component {
             personName: [],
             isDate: false,
             dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
+            timeValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
             disPlayVideo: false,
-            videoSrc: ""
+            videoSrc: "",
         }
-        
+
         this.a = [];
         this.dateObj = {}
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeCheck = this.handleChangeCheck.bind(this);
         this.personNamesMethod = this.personNamesMethod.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.dateObj = this.props.DataVuzix.startDate !== "" ?  { startDate: this.props.DataVuzix.startDate, endDate: this.props.DataVuzix.endDate } : {}
-
+        
+        console.log(this.state.dateValue)
     }
 
     handleChange(event) {
@@ -46,14 +48,17 @@ class MapFilterComponent extends Component {
         for (let item of this.personNames) {
             this.a.push({ checked: false, name: item });
         }
-
-        console.log(this.a)
+        this.setState({ personName: this.a });
     }
 
     handleChangeDate(event) {
         this.setState({
             dateValue: [new Date(event[0]), new Date(event[1])]
         })
+    }
+    
+    handleChangeTime(event) {
+        console.log(event)
     }
 
     handleChangeCheck(event) {
@@ -68,12 +73,12 @@ class MapFilterComponent extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.loadDataJson('/vuzixMap/video')
-
+        // console.log(this.state.personName)
+        // this.setState({ personName: temp_arr_person })
+        this.props.loadDataJson('/vuzixMap/video', this.state)
         this.setState({
             disPlayVideo: true, videoSrc: this.props.video
         })
-        console.log(this.state)
     }
 
 
@@ -141,14 +146,23 @@ class MapFilterComponent extends Component {
                                 <Animated
                                     animationIn='fadeInUp' animationOut='fadeOut'
                                     animationInDuration={400} animationOutDuration={600}
-                                    className={this.state.isDate ? "displayBlock" : "displayNone"} style={{ marginLeft: '5%', marginTop: "3%" }} >
+                                    // className={this.state.isDate ? "displayBlock" : "displayNone"} 
+                                    style={{ marginLeft: '5%', marginTop: "3%" }} >
 
-                                    <InputGroup>
+                                    <InputGroup style={{ marginTop: '3%'}}>
                                         <InputGroupAddon addonType="append">
                                             <Button style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faCalendar} /></Button>
                                         </InputGroupAddon>
                                         <Card style={{ padding: 4, width: '22.5vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
-                                            <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} dateVal={this.dateObj} />
+                                            <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} />
+                                        </Card>
+                                    </InputGroup>
+                                    <InputGroup style={{ marginTop: '3%'}}>
+                                        <InputGroupAddon addonType="append">
+                                            <Button style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faCalendar} /></Button>
+                                        </InputGroupAddon>
+                                        <Card style={{ padding: 4, width: '22.5vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
+                                            <TimeRangeFilter handleChangeTime={this.handleChangeTime.bind(this)} timeValue={this.state.timeValue} />
                                         </Card>
                                     </InputGroup>
                                 </Animated>
