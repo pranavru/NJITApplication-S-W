@@ -14,27 +14,30 @@ class MapFilterComponent extends Component {
 
         this.state = {
             isSpeech: false,
-            isPerson: true,
-            personName: '',
-            speech: '',
+            isPerson: false,
+            personName: [],
             isDate: false,
-            dateValue: [new Date(), new Date()],
+            dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
             disPlayVideo: false,
             videoSrc: ""
         }
-
+        
         this.a = [];
         this.dateObj = {}
         this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChangeCheck = this.handleChangeCheck.bind(this);
         this.personNamesMethod = this.personNamesMethod.bind(this);
-
-        console.log(this.props.video)
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.dateObj = this.props.DataVuzix.startDate !== "" ?  { startDate: this.props.DataVuzix.startDate, endDate: this.props.DataVuzix.endDate } : {}
 
     }
 
-    componentDidMount() {
+    handleChange(event) {
+        const { name, value } = event.target;
+        // console.log({ name, value });
+        this.setState({ [name]: value === "true" ? true : value === "false" ? false : value, disPlayVideo: false });
+
+        this.dateObj = name === 'isDate' ? this.props.loadDateValues() : {}
     }
 
     personNamesMethod(p) {
@@ -45,18 +48,6 @@ class MapFilterComponent extends Component {
         }
 
         console.log(this.a)
-    }
-
-    handleChange(event) {
-        const { name, value } = event.target;
-        console.log({ name, value });
-        this.setState({
-            [name]: value === "true" ? true : value === "false" ? false : value,
-            disPlayVideo: false
-        });
-        this.dateObj = name === 'isDate' ? this.props.loadDateValues() : {}
-
-        console.log(this.dateObj)
     }
 
     handleChangeDate(event) {
@@ -87,7 +78,6 @@ class MapFilterComponent extends Component {
 
 
     render() {
-        console.log(this.state)
         return (
             <div className="col-md-12" style={{ height: '100vh', paddingTop: '5%' }}>
                 <Card style={{ padding: 4 }}>
@@ -99,7 +89,7 @@ class MapFilterComponent extends Component {
                                 <InputGroup style={{ width: '22vw', marginLeft: "5%" }}>
                                     <InputGroupAddon addonType="prepend" style={{ width: '3.1vw', backgroundColor: 'white', left: '3%' }}>
                                         <InputGroupText>
-                                            <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-Label="Speech" onClick={this.handleChangeCheck} />
+                                            <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} />
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input disabled placeholder='Speech' style={{ backgroundColor: 'white' }} />
@@ -113,7 +103,7 @@ class MapFilterComponent extends Component {
                                 <InputGroup>
                                     <InputGroupAddon addonType="prepend" style={{ width: '3.1vw', left: '3%' }}>
                                         <InputGroupText>
-                                            <Input addon type="checkbox" name="isPerson" value={this.state.isPerson} aria-Label="Person" onClick={this.handleChangeCheck} />
+                                            <Input addon type="checkbox" name="isPerson" value={this.state.isPerson} aria-label="Person" onClick={this.handleChangeCheck} />
                                         </InputGroupText>
                                     </InputGroupAddon>
                                     <Input disabled placeholder='People' style={{ backgroundColor: 'white' }} />
@@ -130,7 +120,7 @@ class MapFilterComponent extends Component {
                                             <InputGroup style={{ marginTop: '3%' }}>
                                                 <InputGroupAddon addonType="prepend" style={{ width: '3.1vw', backgroundColor: 'white', left: '3%' }}>
                                                     <InputGroupText>
-                                                        <Input addon type="checkbox" name="isPerson" value={v.checked} aria-Label="Person" onClick={v.checked = !v.checked} />
+                                                        <Input addon type="checkbox" name="isPerson" value={v.checked} aria-label="Person" onClick={v.checked = !v.checked} />
                                                     </InputGroupText>
                                                 </InputGroupAddon>
                                                 <Input disabled placeholder={v.name} style={{ backgroundColor: 'white' }} />
@@ -157,8 +147,8 @@ class MapFilterComponent extends Component {
                                         <InputGroupAddon addonType="append">
                                             <Button style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faCalendar} /></Button>
                                         </InputGroupAddon>
-                                        <Card style={{ padding: 4, width: '22vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
-                                            <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} />
+                                        <Card style={{ padding: 4, width: '22.5vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
+                                            <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} dateVal={this.dateObj} />
                                         </Card>
                                     </InputGroup>
                                 </Animated>
@@ -169,7 +159,7 @@ class MapFilterComponent extends Component {
                     </div>
                 </Card>
                 {this.props.DataVuzix !== undefined ?
-                    <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} dateVal={this.dateObj} />
+                    <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />
                     : <div></div>
                 }
             </div>

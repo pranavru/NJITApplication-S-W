@@ -8,35 +8,19 @@ import {
 import MapInfoWindow from './MapInfoWindow';
 
 const libraries = ["places"];
-const mapContainerStyle = {
-    height: "100vh",
-    width: "100vw",
-};
-const options = {
-    disableDefaultUI: true,
-    zoomControl: true,
-};
-const center = {
-    lat: 40.74918,
-    lng: -74.156204,
-};
+const mapContainerStyle = { height: "100vh", width: "100vw" };
+const options = { disableDefaultUI: true, zoomControl: true };
+const center = { lat: 40.74918, lng: -74.156204, };
 
 function MapComponent(props) {
-    console.log("Marker Data", props.markersMap)
 
-    const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: "AIzaSyABBr3dtnI6vkHnyzMjztupIDjhxNXCmng",
-        libraries,
-    });
-    const [] = React.useState(props.markersMap.vuzixMap);
+    const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: "AIzaSyABBr3dtnI6vkHnyzMjztupIDjhxNXCmng", libraries });
     const [selected, setSelected] = React.useState(null);
-    const [, setChangeMark] = React.useState(false);
 
     const mapRef = React.useRef();
     const onMapLoad = React.useCallback((map) => {
         mapRef.current = map;
     }, []);
-
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
@@ -55,14 +39,14 @@ function MapComponent(props) {
                             setSelected(mapVuzix)
                             console.log(mapVuzix)
                         }}
-                        icon={{
-                            url:
-                                mapVuzix.speech.length > 0 ? '/forum-black-24dp green.svg' :
-                                    mapVuzix.person_names.length > 0 ? '/supervised_user_circle-black-24dp.svg' :
-                                        !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? null :
-                                            (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? '/supervised_user_circle.svg' : null,
-                            scaledSize: new window.google.maps.Size(40, 40)
-                        }}
+                    // icon={{
+                    //     url:
+                    //         mapVuzix.speech.length > 0 ? '/forum-black-24dp green.svg' :
+                    //             mapVuzix.person_names.length > 0 ? '/supervised_user_circle-black-24dp.svg' :
+                    //                 !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? null :
+                    //                     (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? '/supervised_user_circle.svg' : null,
+                    //     scaledSize: new window.google.maps.Size(40, 40)
+                    // }}
                     />
                 )
             );
