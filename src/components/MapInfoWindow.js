@@ -5,7 +5,7 @@ function displayWindowHeader(props) {
     return (
         <>
             <CardHeader>
-                <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>Vizux ID: {props.point.id} </CardTitle>
+                <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>ID: {props.point.id} </CardTitle>
                 <CardSubtitle style={{ fontWeight: 'bold', fontSize: 12 }}>Country Location: {props.point.country}</CardSubtitle>
             </CardHeader>
             <CardImg top src={'/images (1).jpeg'} alt={props.point.id} />
@@ -36,7 +36,7 @@ function displayFooter(props) {
 function MapInfoWindow(props) {
 
     return (
-        <div className="col-md-12" style={{ width: 400 }}>
+        <div className="col-md-12" style={{ width: 300 }}>
             <Card >
                 {displayWindowHeader(props)}
                 {displayBody(props)}

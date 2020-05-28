@@ -8,7 +8,7 @@ import {
 import MapInfoWindow from './MapInfoWindow';
 
 const libraries = ["places"];
-const mapContainerStyle = { height: "100vh", width: "100vw" };
+const mapContainerStyle = { height: "100vh", width: "70vw", left: "30vw" };
 const options = { disableDefaultUI: true, zoomControl: true };
 const center = { lat: 40.74918, lng: -74.156204, };
 

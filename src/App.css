@@ -45,3 +45,12 @@
   display: none;
 }
 
+.displayBlock_detailedDiv {
+  display: inline-block;
+  z-index: 6; 
+  width: '22vw';
+}
+
+.displayNone_detailedDiv {
+  display: none;
+}

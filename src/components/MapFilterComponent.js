@@ -19,7 +19,6 @@ class MapFilterComponent extends Component {
             personName: [],
             isDate: false,
             dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
-            timeValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
             disPlayVideo: false,
             videoSrc: "",
         }
@@ -56,7 +55,6 @@ class MapFilterComponent extends Component {
         this.setState({
             dateValue: [new Date(event[0]), new Date(event[1])]
         })
-        // console.log(date1)
     }
     
     handleChangeTime(event) {
@@ -86,8 +84,8 @@ class MapFilterComponent extends Component {
 
     render() {
         return (
-            <div className="col-md-12" style={{ height: '100vh', paddingTop: '5%' }}>
-                <Card style={{ padding: 4 }}>
+            <div className="col-md-12" style={{ height: '98vh' }}>
+                <Card style={{ padding: 4, marginTop: '4%' }}>
                     <div >
                         <Label>Filters: </Label>
                         <Form onSubmit={this.handleSubmit}>
@@ -140,10 +138,10 @@ class MapFilterComponent extends Component {
                             {/* * Date Value Form * */}
                             <FormGroup>
                                 <Label style={{ width: '14vw', fontWeight: 'bold' }}>Search by Date?</Label>
-                                <select style={{ width: '10vw', backgroundColor: 'white' }} value={this.state.isDate} onChange={this.handleChange} name="isDate">
+                                {/* <select style={{ width: '10vw', backgroundColor: 'white' }} value={this.state.isDate} onChange={this.handleChange} name="isDate">
                                     <option value={true}>Yes</option>
                                     <option value={false}>No</option>
-                                </select>
+                                </select> */}
 
                                 <Animated
                                     animationIn='fadeInUp' animationOut='fadeOut'
