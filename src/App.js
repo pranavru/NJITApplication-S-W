@@ -1,0 +1,93 @@
+import React, { Component } from 'react';
+import MapComponent from './components/MapComponent';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Animated } from 'react-animated-css';
+import MapFilterComponent from './components/MapFilterComponent'
+import axios from 'axios';
+
+class App extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      filter: true,
+      DataVuzix: {},
+      baseURL: "https://localhost:3443",
+      video: "",
+      persons: [],
+      isLoading: true
+    }
+
+  }
+
+  componentDidMount() {
+    this.loadDataJson('/vuzixMap');
+    if (this.state.DataVuzix !== {})
+      this.setState({ isLoading: false })
+  }
+
+  loadDataJson(URL) {
+    if (URL === '/vuzixMap')
+      axios.get(this.state.baseURL + '/vuzixMap').then(
+        res => {
+          // console.log(res.data)
+          this.setState({ DataVuzix: res.data })
+        })
+    else if (URL === '/vuzixMap/video')
+      axios.get(this.state.baseURL + '/vuzixMap/video').then(
+        res => {
+          this.setState({ DataVuzix: res.data, video: res.data.video })
+
+        })
+
+  }
+
+  loadPersonNames(DataVuzix) {
+    let personNames = new Map([]);
+    DataVuzix.vuzixMap.map(m => {
+      if (m.person_names.length !== 0) {
+        m.person_names.map(p => {
+          if (!personNames.has(p.person_name)) {
+            personNames.set(p.person_name, p.person_name)
+          }
+        })
+      }
+    });
+    return personNames;
+  }
+
+  loadDateValues() {
+    return { startDate: this.state.DataVuzix.startDate, endDate: this.state.DataVuzix.endDate }
+  }
+
+  render() {
+    return (
+      <>
+        {this.state.isLoading === false ?
+          <>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
+            <Animated animationIn="slideInLeft" animationInDuration={450} animationOut="zoomOut" isVisible={this.state.filter} style={{ zIndex: 4, position: 'absolute' }}>
+              <div style={{ zIndex: 2, backgroundColor: 'white', width: '30vw' }}>
+                <MapFilterComponent
+                  loadPersonNames={this.loadPersonNames.bind(this)}
+                  DataVuzix={this.state.DataVuzix}
+                  loadDataJson={this.loadDataJson.bind(this)}
+                  video={this.state.video}
+                  persons={this.state.persons}
+                  loadPersonNames={this.loadPersonNames.bind(this)}
+                  loadDateValues={this.loadDateValues.bind(this)}
+                />
+              </div>
+            </Animated>
+            <MapComponent markersMap={this.state.DataVuzix} loadDataJson={this.loadDataJson.bind(this)} />
+          </>
+          :
+          <div></div>
+        }
+      </>
+    )
+  }
+}
+
+export default App;
