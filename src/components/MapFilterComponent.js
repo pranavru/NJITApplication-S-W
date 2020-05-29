@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, FormGroup, Label, Input, Card, InputGroup, InputGroupAddon, Button, InputGroupText } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Card, InputGroup, InputGroupAddon, Button, InputGroupText, CardText } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUsers, faCalendar, faCode, faClock } from '@fortawesome/free-solid-svg-icons'
 import { Animated } from 'react-animated-css';
@@ -15,7 +15,7 @@ class MapFilterComponent extends Component {
 
         this.state = {
             isSpeech: false,
-            isPerson: false,
+            isPerson: true,
             personName: [],
             isDate: false,
             dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
@@ -29,8 +29,13 @@ class MapFilterComponent extends Component {
         this.handleChangeCheck = this.handleChangeCheck.bind(this);
         this.personNamesMethod = this.personNamesMethod.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        
+
+
         // console.log(new Date(`${this.state.dateValue[0].getFullYear()}/${this.state.dateValue[0].getMonth()}/${this.state.dateValue[0].getDate()}`))
+    }
+
+    componentDidMount() {
+        this.personNamesMethod(this.props.DataVuzix);
     }
 
     handleChange(event) {
@@ -56,7 +61,7 @@ class MapFilterComponent extends Component {
             dateValue: [new Date(event[0]), new Date(event[1])]
         })
     }
-    
+
     handleChangeTime(event) {
         console.log(event)
     }
@@ -67,14 +72,10 @@ class MapFilterComponent extends Component {
         this.setState({
             [name]: checked
         })
-
-        this.personNamesMethod(this.props.DataVuzix);
     }
 
     handleSubmit(event) {
         event.preventDefault();
-        // console.log(this.state.personName)
-        // this.setState({ personName: temp_arr_person })
         this.props.loadDataJson('/vuzixMap/video', this.state)
         this.setState({
             disPlayVideo: true, videoSrc: this.props.video
@@ -86,74 +87,44 @@ class MapFilterComponent extends Component {
         return (
             <div className="col-md-12" style={{ height: '98vh' }}>
                 <Card style={{ padding: 4, marginTop: '4%' }}>
-                    <div >
-                        <Label>Filters: </Label>
+                    <Button disabled style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}><Label style={{ width: '30vw', fontWeight: 'bold', textAlign: 'left', top: '2%' }}>Filter</Label></Button>
+                    <div style={{ marginLeft: '3%', marginTop: "3%" }}>
                         <Form onSubmit={this.handleSubmit}>
                             {/* * Speech Form * */}
                             <FormGroup>
                                 <InputGroup style={{ width: '22vw', marginLeft: "5%" }}>
-                                    <InputGroupAddon addonType="prepend" style={{ width: '3.1vw', backgroundColor: 'white', left: '3%' }}>
-                                        <InputGroupText>
-                                            <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} />
-                                        </InputGroupText>
-                                    </InputGroupAddon>
-                                    <Input disabled placeholder='Speech' style={{ backgroundColor: 'white' }} />
-                                    <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0}}><FontAwesomeIcon icon={faCode} size={"lg"} /></Button>
+                                    <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} style={{ marginTop: '3.7%' }} />
+                                    <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: 'white', color: '#000000', border: 0, fontWeight: "bold" }}>Speech</Button>
                                 </InputGroup>
                             </FormGroup>
 
                             {/* * Persons Form * */}
-                            <FormGroup style={{ width: '22vw', marginLeft: "5%" }}>
-                                <Label style={{ width: '14vw', fontWeight: 'bold' }}>People Names</Label>
-                                <InputGroup>
-                                    <InputGroupAddon addonType="prepend" style={{ width: '3.1vw', left: '3%' }}>
-                                        <InputGroupText>
-                                            <Input addon type="checkbox" name="isPerson" value={this.state.isPerson} aria-label="Person" onClick={this.handleChangeCheck} />
-                                        </InputGroupText>
-                                    </InputGroupAddon>
-                                    <Input disabled placeholder='People' style={{ backgroundColor: 'white' }} />
-                                    <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}><FontAwesomeIcon icon={faUsers} size={"lg"} /></Button>
+                            <Label style={{ width: '14vw', fontWeight: 'bold' }}>People</Label>
+                            <FormGroup >
+                                <InputGroup style={{ width: '22vw', marginLeft: '5%' }}>
+                                    {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
+                                    {this.a.map(v =>
+                                        <InputGroup>
+                                            <Input addon type="checkbox" name="isPerson" value={v.checked} aria-label="Person" onClick={v.checked = !v.checked} style={{ marginTop: '3.7%' }} />
+                                            <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: 'white', color: '#000000', border: 0, fontWeight: "bold" }}>{v.name}</Button>
+                                        </InputGroup>
+                                    )}
                                 </InputGroup>
-
-                                <Animated
-                                    animationIn='fadeInUp' animationOut='fadeOut'
-                                    animationInDuration={400} animationOutDuration={600}
-                                    className={this.state.isPerson ? "displayBlock" : "displayNone"} style={{ marginLeft: '5%', marginTop: '3%' }} >
-                                    <InputGroup>
-                                        {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
-                                        {this.a.map(v =>
-                                            <InputGroup style={{ marginTop: '3%' }}>
-                                                <InputGroupAddon addonType="prepend" style={{ width: '3.1vw', backgroundColor: 'white', left: '3%' }}>
-                                                    <InputGroupText>
-                                                        <Input addon type="checkbox" name="isPerson" value={v.checked} aria-label="Person" onClick={v.checked = !v.checked} />
-                                                    </InputGroupText>
-                                                </InputGroupAddon>
-                                                <Input disabled placeholder={v.name} style={{ backgroundColor: 'white' }} />
-                                            </InputGroup>
-                                        )}
-                                    </InputGroup>
-                                </Animated>
                             </FormGroup>
-
                             {/* * Date Value Form * */}
                             <FormGroup>
-                                <Label style={{ width: '14vw', fontWeight: 'bold' }}>Search by Date?</Label>
-                                {/* <select style={{ width: '10vw', backgroundColor: 'white' }} value={this.state.isDate} onChange={this.handleChange} name="isDate">
-                                    <option value={true}>Yes</option>
-                                    <option value={false}>No</option>
-                                </select> */}
-
+                                <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
                                 <Animated
                                     animationIn='fadeInUp' animationOut='fadeOut'
                                     animationInDuration={400} animationOutDuration={600}
                                     // className={this.state.isDate ? "displayBlock" : "displayNone"} 
                                     style={{ marginLeft: '5%', marginTop: "3%" }} >
 
-                                    <InputGroup style={{ marginTop: '3%'}}>
+                                    <InputGroup style={{ marginTop: '3%' }}>
                                         <InputGroupAddon addonType="append">
                                             <Button disabled style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faCalendar} /></Button>
                                         </InputGroupAddon>
-                                        <Card style={{ padding: 4, width: '22.5vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
+                                        <Card style={{ padding: 4, width: '20vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
                                             <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} />
                                         </Card>
                                     </InputGroup>

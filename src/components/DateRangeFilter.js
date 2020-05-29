@@ -18,6 +18,7 @@ function DateRangeFilter(props) {
                 required
                 format="y/MM/dd"
                 clearIcon={null}
+                style={{ width: '15vw'}}
             />
 
         </Card>
