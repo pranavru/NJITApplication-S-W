@@ -7,13 +7,16 @@ import {
 } from "@react-google-maps/api";
 import MapInfoWindow from './MapInfoWindow';
 
-const libraries = ["places"];
-const mapContainerStyle = { height: "100vh", width: "70vw", left: "30vw" };
-const options = { disableDefaultUI: true, zoomControl: true };
-const center = { lat: 40.74918, lng: -74.156204, };
 
 function MapComponent(props) {
 
+    //Initialization
+    const libraries = ["places"];
+    const mapContainerStyle = { height: "100vh", width: "70vw", left: "30vw" };
+    const options = { disableDefaultUI: true, zoomControl: true };
+    const center = { lat: 40.74918, lng: -74.156204, };
+
+    //Data Loading
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: "AIzaSyABBr3dtnI6vkHnyzMjztupIDjhxNXCmng", libraries });
     const [selected, setSelected] = React.useState(null);
 
@@ -25,6 +28,7 @@ function MapComponent(props) {
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
 
+    //Markers
     const MarkerData = (data) => {
         if (data !== undefined) {
 
@@ -55,8 +59,6 @@ function MapComponent(props) {
         else
             return (<div></div>);
     }
-
-
 
     return (
         <div>

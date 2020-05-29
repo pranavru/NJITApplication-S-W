@@ -88,7 +88,7 @@ class MapFilterComponent extends Component {
             <div className="col-md-12" style={{ height: '98vh' }}>
                 <Card style={{ padding: 4, marginTop: '4%' }}>
                     <Button disabled style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}><Label style={{ width: '30vw', fontWeight: 'bold', textAlign: 'left', top: '2%' }}>Filter</Label></Button>
-                    <div style={{ marginLeft: '3%', marginTop: "3%" }}>
+                    <div style={{ marginTop: "3%" }}>
                         <Form onSubmit={this.handleSubmit}>
                             {/* * Speech Form * */}
                             <FormGroup>
@@ -99,7 +99,7 @@ class MapFilterComponent extends Component {
                             </FormGroup>
 
                             {/* * Persons Form * */}
-                            <Label style={{ width: '14vw', fontWeight: 'bold' }}>People</Label>
+                            <Label style={{ width: '14vw', fontWeight: 'bold', marginLeft: '2%' }}>People</Label>
                             <FormGroup >
                                 <InputGroup style={{ width: '22vw', marginLeft: '5%' }}>
                                     {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
@@ -111,41 +111,21 @@ class MapFilterComponent extends Component {
                                     )}
                                 </InputGroup>
                             </FormGroup>
-                            {/* * Date Value Form * */}
-                            <FormGroup>
-                                <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
-                                <Animated
-                                    animationIn='fadeInUp' animationOut='fadeOut'
-                                    animationInDuration={400} animationOutDuration={600}
-                                    // className={this.state.isDate ? "displayBlock" : "displayNone"} 
-                                    style={{ marginLeft: '5%', marginTop: "3%" }} >
 
-                                    <InputGroup style={{ marginTop: '3%' }}>
-                                        <InputGroupAddon addonType="append">
-                                            <Button disabled style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faCalendar} /></Button>
-                                        </InputGroupAddon>
-                                        <Card style={{ padding: 4, width: '20vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
-                                            <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} />
-                                        </Card>
-                                    </InputGroup>
-                                    {/* <InputGroup style={{ marginTop: '3%'}}>
-                                        <InputGroupAddon addonType="append">
-                                            <Button disabled style={{ borderTopLeftRadius: 4, borderBottomLeftRadius: 4 }}><FontAwesomeIcon icon={faClock} /></Button>
-                                        </InputGroupAddon>
-                                        <Card style={{ padding: 4, width: '22.5vw', borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}>
-                                            <TimeRangeFilter handleChangeTime={this.handleChangeTime.bind(this)} timeValue={this.state.timeValue} />
-                                        </Card>
-                                    </InputGroup> */}
-                                </Animated>
+                            {/* * Date Value Form * */}
+                            <FormGroup style={{ marginLeft: '2%' }}>
+                                <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
+                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} />
                             </FormGroup>
 
                             <Input type="submit" value="Submit" />
                         </Form>
                     </div>
                 </Card>
-                {this.props.DataVuzix !== undefined ?
-                    <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />
-                    : <div></div>
+                {
+                    this.props.DataVuzix !== undefined ?
+                        <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />
+                        : <div></div>
                 }
             </div>
         );

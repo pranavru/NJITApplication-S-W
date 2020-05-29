@@ -1,12 +1,12 @@
 import React from 'react';
-import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+import DateTimeRangePicker from '@wojtekmaj/react-datetimerange-picker';
 import { Card } from 'reactstrap';
 
 function DateRangeFilter(props) {
     // const [value, props.handleChange] = useState([new Date(), props.dateVal.endDate]);
     return (
-        <Card>
-            <DateRangePicker
+        <Card style={{ padding: 4, width: '26.2vw' }}>
+            <DateTimeRangePicker
                 onChange={props.handleChangeDate}
                 value={props.dateValue}
                 name="dateValue"
@@ -14,11 +14,10 @@ function DateRangeFilter(props) {
                 // isOpen
                 minDate={props.dateValue[0]}
                 maxDate={props.dateValue[1]}
-                rangeDivider=" to "
+                // rangeDivider=" to "
                 required
-                format="y/MM/dd"
+                format="y/MM/dd HH:mm"
                 clearIcon={null}
-                style={{ width: '15vw'}}
             />
 
         </Card>
