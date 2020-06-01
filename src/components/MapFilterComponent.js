@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
-import { Form, FormGroup, Label, Input, Card, InputGroup, InputGroupAddon, Button, InputGroupText, CardText } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUsers, faCalendar, faCode, faClock } from '@fortawesome/free-solid-svg-icons'
-import { Animated } from 'react-animated-css';
+import { Form, FormGroup, Label, Input, Card, InputGroup, Button } from 'reactstrap';
 import '../App.css';
 import DateRangeFilter from './DateRangeFilter';
 import DisplayVideoComponent from './DisplayVideoComponent';
-import TimeRangeFilter from './TimeRangeFilter'
 
 
 class MapFilterComponent extends Component {
@@ -18,7 +14,7 @@ class MapFilterComponent extends Component {
             isPerson: true,
             personName: [],
             isDate: false,
-            dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
+            dateValue: [new Date(), new Date()],
             disPlayVideo: false,
             videoSrc: "",
         }
@@ -56,7 +52,6 @@ class MapFilterComponent extends Component {
     }
 
     handleChangeDate(event) {
-        // const date1 = new Date(`${this.state.dateValue[0].getFullYear()}/${this.state.dateValue[0].getMonth()}/${this.state.dateValue[0].getDate()} ${this.state.dateValue[0].getHours()}:${this.state.dateValue[0].getMinutes()}:${this.state.dateValue[0].getSeconds()} ${this.state.dateValue[0].getTimezoneOffset()}`)
         this.setState({
             dateValue: [new Date(event[0]), new Date(event[1])]
         })
@@ -115,7 +110,7 @@ class MapFilterComponent extends Component {
                             {/* * Date Value Form * */}
                             <FormGroup style={{ marginLeft: '2%' }}>
                                 <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
-                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} />
+                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} />
                             </FormGroup>
 
                             <Input type="submit" value="Submit" />

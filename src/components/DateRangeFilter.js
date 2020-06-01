@@ -12,8 +12,8 @@ function DateRangeFilter(props) {
                 name="dateValue"
                 // autoFocus
                 // isOpen
-                minDate={props.dateValue[0]}
-                maxDate={props.dateValue[1]}
+                minDate={new Date(props.DataVuzix.startDate)}
+                maxDate={new Date(props.DataVuzix.endDate)}
                 // rangeDivider=" to "
                 required
                 format="y/MM/dd HH:mm"

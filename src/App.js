@@ -96,7 +96,7 @@ class App extends Component {
                 </Animated>
               </>
               : <div></div>}
-            <MapComponent markersMap={this.state.DataVuzix} loadDataJson={this.loadDataJson.bind(this)} />
+            <MapComponent markersMap={this.state.DataVuzix} loadDataJson={this.loadDataJson.bind(this)} details={this.state.detailDiv}/>
           </>
         }
       </>

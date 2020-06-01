@@ -23,7 +23,7 @@ function displayBody(props) {
 function displayFooter(props) {
     return props.point.person_names.length !== 0 ?
         <CardBody >
-            <p style={{ fontWeight: 'bold', fontSize: 14 }} > Person Names</p>
+            {/* <p style={{ fontWeight: 'bold', fontSize: 14 }} > Person Names</p> */}
             <div className="row">
                 {props.point.person_names.map(person =>
                     <div className="col-md-4 col-sm-6" style={{ fontWeight: 'normal', fontSize: 12, paddingTop: 5, textAlign: 'center', border: 0 }} ><p>{'\u2022'} {person.person_name}</p> </div>
