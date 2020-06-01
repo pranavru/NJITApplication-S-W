@@ -18,13 +18,21 @@ class App extends Component {
       baseURL: "https://localhost:3443",
       video: "",
       isLoading: true,
-      detailDiv: true
+      detailDiv: true,
+      address: ""
     }
 
   }
 
   componentDidMount() {
     this.loadDataJson('/vuzixMap', {})
+  }
+
+  ReverseGeoCodeAPI = (lat, long) => {
+    fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
+      .then(res => res.json())
+      .then(data => this.setState({ address: data.results[0].formatted_address }))
+      .catch(err => console.log(err))
   }
 
   loadDataJson(URL, objValue) {
@@ -85,18 +93,18 @@ class App extends Component {
                       DataVuzix={this.state.DataVuzix}
                       video={this.state.video}
                     />
-                    <Button style={{ zIndex: 4, position: 'absolute', top: 15, left: '30vw' }} onClick={this.loadDetailedDiv.bind(this)}>&gt;&gt;</Button>
+                    {!this.state.detailDiv ? <Button style={{ zIndex: 4, position: 'absolute', top: 15, left: '30vw' }} onClick={this.loadDetailedDiv.bind(this)}>&gt;&gt;</Button> : <></>}
                   </div>
                 </Animated>
                 <Animated animationIn="fadeIn" animationOut="fadeOut" animationInDuration={600} animationOutDuration={600} isVisible={this.state.detailDiv} style={{ zIndex: 4, position: 'absolute', left: '30vw', backgroundColor: 'white', borderLeft: "1px solid black" }}>
                   <Button style={{ position: 'absolute', left: '22vw', top: 15 }} onClick={this.loadDetailedDiv.bind(this)} >&lt;&lt;</Button>
-                  <div style={{ overflow: 'scroll', height: '100vh'}} className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}>
-                    <MarkerPLaceDetailComponent data={this.state.DataVuzix} style={{ marginBottom: 8 }} />
+                  <div style={{ overflow: 'scroll', height: '100vh' }} className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}>
+                    <MarkerPLaceDetailComponent data={this.state.DataVuzix} style={{ marginBottom: 8 }} address={this.state.address} ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)} />
                   </div>
                 </Animated>
               </>
-              : <div></div>}
-            <MapComponent markersMap={this.state.DataVuzix} loadDataJson={this.loadDataJson.bind(this)} details={this.state.detailDiv}/>
+              : <div class="loader"></div>}
+            <MapComponent markersMap={this.state.DataVuzix} loadDataJson={this.loadDataJson.bind(this)} details={this.state.detailDiv} address={this.state.address} ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)} />
           </>
         }
       </>

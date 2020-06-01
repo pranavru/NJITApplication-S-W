@@ -12,7 +12,7 @@ function MapComponent(props) {
 
     //Initialization
     const libraries = ["places"];
-    const mapContainerStyle = { height: "100vh", width: props.details ? "47.5vw": "70vw", left: props.details ? "52.5vw" : "30vw" };
+    const mapContainerStyle = { height: "100vh", width: props.details ? "47.5vw" : "70vw", left: props.details ? "52.5vw" : "30vw" };
     const options = { disableDefaultUI: true, zoomControl: true };
     const center = { lat: 40.74918, lng: -74.156204, };
 
@@ -28,6 +28,13 @@ function MapComponent(props) {
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
 
+    // const ReverseGeoCodeAPI = (lat, long) => {
+    //     fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
+    //         .then(res => res.json())
+    //         .then(data => console.log(data.results[0].formatted_address))
+    //         .catch(err => console.log(err))
+    // }
+
     //Markers
     const MarkerData = (data) => {
         if (data !== undefined) {
@@ -36,7 +43,10 @@ function MapComponent(props) {
                 data.map(mapVuzix =>
 
                     <Marker
-                        onMouseOver={() => { setSelected(mapVuzix) }}
+                        onMouseOver={() => {
+                            setSelected(mapVuzix)
+                            props.ReverseGeoCodeAPI(mapVuzix.lat, mapVuzix.long)
+                        }}
                         onMouseOut={() => setSelected(null)}
                         key={mapVuzix.id}
                         position={{ lat: mapVuzix.lat, lng: mapVuzix.long }}
@@ -46,10 +56,10 @@ function MapComponent(props) {
                         }}
                         icon={{
                             url:
-                                mapVuzix.speech.length > 0 && mapVuzix.person_names.length <= 0  ? '/markerSpeech.svg' :
-                                mapVuzix.speech.length <= 0 && mapVuzix.person_names.length > 0 ? '/markerPerson.svg' :
+                                mapVuzix.speech.length > 0 && mapVuzix.person_names.length <= 0 ? "/markerSpeech.svg" :
+                                    mapVuzix.speech.length <= 0 && mapVuzix.person_names.length > 0 ? "/markerPerson.svg" :
                                         !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? null :
-                                            (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? '/markerSP.svg' : null,
+                                            (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : null,
                             scaledSize: new window.google.maps.Size(20, 40)
                         }}
                     />
@@ -79,7 +89,10 @@ function MapComponent(props) {
                             setSelected(null);
                         }}
                     >
-                        <MapInfoWindow point={selected} />
+                        {props.address !== "" ?
+                            <MapInfoWindow point={selected} geoLocation={props.ReverseGeoCodeAPI} address= {props.address} /> :
+                            <div></div>
+                        }
                     </InfoWindow>
                 ) : null}
             </GoogleMap>

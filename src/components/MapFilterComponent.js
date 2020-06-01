@@ -100,7 +100,7 @@ class MapFilterComponent extends Component {
                                     {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
                                     {this.a.map(v =>
                                         <InputGroup>
-                                            <Input addon type="checkbox" name="isPerson" value={v.checked} aria-label="Person" onClick={v.checked = !v.checked} style={{ marginTop: '3.7%' }} />
+                                            <Input key={v.id} addon type="checkbox" name="isPerson" value={v.checked} aria-label="Person" onClick={v.checked = !v.checked} style={{ marginTop: '3.7%' }} />
                                             <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: 'white', color: '#000000', border: 0, fontWeight: "bold" }}>{v.name}</Button>
                                         </InputGroup>
                                     )}
