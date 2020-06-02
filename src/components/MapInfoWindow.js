@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardImg, CardBody, CardTitle, CardSubtitle, CardHeader, CardFooter, CardText } from 'reactstrap';
+import { Card, CardImg, CardBody, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
 
 function displayWindowHeader(props) {
     return (

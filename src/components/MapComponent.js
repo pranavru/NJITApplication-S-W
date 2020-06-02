@@ -6,7 +6,9 @@ import {
     InfoWindow,
 } from "@react-google-maps/api";
 import MapInfoWindow from './MapInfoWindow';
-
+import { Animated } from 'react-animated-css';
+// import styled, { keyframes } from 'styled-components'
+// import { bounce } from 'react-animations'
 
 function MapComponent(props) {
 
@@ -15,7 +17,7 @@ function MapComponent(props) {
     const mapContainerStyle = { height: "100vh", width: props.details ? "47.5vw" : "70vw", left: props.details ? "52.5vw" : "30vw" };
     const options = { disableDefaultUI: true, zoomControl: true };
     const center = { lat: 40.74918, lng: -74.156204, };
-
+    // const Bounce = styled.div`animation: 2s ${keyframes`${bounce}`} infinite`;
     //Data Loading
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: "AIzaSyABBr3dtnI6vkHnyzMjztupIDjhxNXCmng", libraries });
     const [selected, setSelected] = React.useState(null);
@@ -27,13 +29,6 @@ function MapComponent(props) {
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
-
-    // const ReverseGeoCodeAPI = (lat, long) => {
-    //     fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
-    //         .then(res => res.json())
-    //         .then(data => console.log(data.results[0].formatted_address))
-    //         .catch(err => console.log(err))
-    // }
 
     //Markers
     const MarkerData = (data) => {
@@ -49,18 +44,16 @@ function MapComponent(props) {
                         }}
                         onMouseOut={() => setSelected(null)}
                         key={mapVuzix.id}
+                        animation={mapVuzix.visible ? window.google.maps.Animation.BOUNCE : null}
+
                         position={{ lat: mapVuzix.lat, lng: mapVuzix.long }}
-                        onClick={() => {
-                            setSelected(mapVuzix)
-                            console.log(mapVuzix)
-                        }}
                         icon={{
                             url:
                                 mapVuzix.speech.length > 0 && mapVuzix.person_names.length <= 0 ? "/markerSpeech.svg" :
                                     mapVuzix.speech.length <= 0 && mapVuzix.person_names.length > 0 ? "/markerPerson.svg" :
-                                        !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? null :
-                                            (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : null,
-                            scaledSize: new window.google.maps.Size(20, 40)
+                                        !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerN.svg" :
+                                            (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : "/markerN.svg",
+                            scaledSize: new window.google.maps.Size(25, 45)
                         }}
                     />
                 )
@@ -78,7 +71,6 @@ function MapComponent(props) {
                 zoom={19}
                 center={center}
                 options={options}
-                // onClick={onMapClick}
                 onLoad={onMapLoad}
             >
                 {MarkerData(props.markersMap.vuzixMap)}
@@ -90,11 +82,22 @@ function MapComponent(props) {
                         }}
                     >
                         {props.address !== "" ?
-                            <MapInfoWindow point={selected} geoLocation={props.ReverseGeoCodeAPI} address= {props.address} /> :
-                            <div></div>
+                            <MapInfoWindow point={selected} geoLocation={props.ReverseGeoCodeAPI} address={props.address} /> :
+                            <></>
                         }
                     </InfoWindow>
                 ) : null}
+                {props.animateMarkerData !== null ?
+                    <Marker
+                        key={props.animateMarkerData.id}
+                        position={{ lat: props.animateMarkerData.lat, lng: props.animateMarkerData.long }}
+                        animation={window.google.maps.Animation.BOUNCE}
+                        icon={{
+                            url: "/markerVisible.svg",
+                            scaledSize: new window.google.maps.Size(30, 50)
+                        }}
+                    />
+                    : <></>}
             </GoogleMap>
         </div>
     );
