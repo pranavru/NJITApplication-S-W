@@ -14,7 +14,7 @@ const DisplayVideoComponent = (props) => {
                 className={props.disPlayVideo ? "displayBlock" : "displayNone"}
             >
                 <Card style={{ padding: 4 }}>
-                    <ReactPlayer width="27vw" height="30vh" playing={props.disPlayVideo} url={props.videoSrc} onError={(err) => console.log(err)} />
+                    <ReactPlayer width="27vw" height="30vh" playing={props.disPlayVideo} url={props.baseURL + props.videoSrc} onError={(err) => console.log(err)} />
                 </Card>
             </Animated>
         </div>

@@ -18,6 +18,7 @@ function DateRangeFilter(props) {
                 required
                 format="y/MM/dd HH:mm"
                 clearIcon={null}
+                isClockOpen={false}
             />
 
         </Card>

@@ -6,7 +6,7 @@ import DisplayVideoComponent from './DisplayVideoComponent';
 
 
 class MapFilterComponent extends Component {
-    
+
     constructor(props) {
         super(props);
 
@@ -49,26 +49,30 @@ class MapFilterComponent extends Component {
         this.setState({ personName: persons, disPlayVideo: false })
     }
 
-    handleChangeDate(event) { this.setState({ dateValue: [new Date(event[0]), new Date(event[1])], disPlayVideo: false }) }
+    handleChangeDate(event) { 
+        console.log(event)
+        this.setState({ dateValue: [new Date(event[0]), new Date(event[1])], disPlayVideo: false }) }
 
     submitObjectValues() {
         let persons = []
         this.state.personName.map(p => { if (p.checked === true) persons.push(p.name) })
 
         let json_body = {
-            isSpeech: this.state.isSpeech,
-            persons: persons,
-            startDate: this.state.dateValue[0],
-            endDate: this.state.dateValue[1],
+            speech: this.state.isSpeech,
+            person: persons,
+            start_date: this.state.dateValue[0].toISOString(),
+            end_date: this.state.dateValue[1].toISOString(),
+            lat: "0.0",
+            long: "0.0",
+            vid: "123456789"
         }
-        console.log(json_body)
         return json_body;
     }
 
     handleSubmit(event) {
         event.preventDefault();
-        
-        this.props.loadDataJson('/vuzixMap/video', this.submitObjectValues())
+
+        this.props.loadDataJson('/query/', this.submitObjectValues())
         this.setState({ disPlayVideo: true, videoSrc: this.props.video })
         // this.personNamesMethod(this.props.DataVuzix);
     }

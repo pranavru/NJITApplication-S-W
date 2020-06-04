@@ -5,10 +5,9 @@ function displayWindowHeader(props) {
     return (
         <>
             <CardHeader>
-                {/* <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>ID: {props.point.id} </CardTitle> */}
                 <CardTitle style={{ fontWeight: 'bold', fontSize: 14 }}>{props.address}</CardTitle>
             </CardHeader>
-            <CardImg top src={'/images (1).jpeg'} alt={props.point.id} />
+            <CardImg top src={props.baseURL + props.point.imageFile} alt={props.point.id} style={{ height: "20vh"}} />
         </>)
 
 }
@@ -16,7 +15,6 @@ function displayBody(props) {
     return props.point.speech !== "" ?
         <CardFooter>
             <CardSubtitle style={{ fontWeight: 'bold', fontSize: 14 }}><i><q>{props.point.speech}</q></i></CardSubtitle>
-            {/* <CardText>&nbsp;&nbsp;&nbsp;&nbsp;{props.point.speech}</CardText> */}
         </CardFooter> : <div></div>
 };
 

@@ -16,44 +16,49 @@ class App extends Component {
     this.state = {
       filter: true,
       DataVuzix: {},
-      baseURL: "https://localhost:3443",
+      baseURL: "http://18.191.247.248",
       video: "",
       isLoading: true,
-      detailDiv: true,
+      detailDiv: false,
       address: "",
-      addresses: [],
+      detailAddress: "Hello Pranav",
       animateMarkerData: {},
-      id: null
+      id: null,
+      center: { lat: 40.74918, lng: -74.156204 }
     }
-
   }
 
   //Load the initial Data
   componentDidMount() {
-    this.loadDataJson('/vuzixMap')
+    this.loadDataJson('/info')
   }
 
   //Reverse geo code - get address using lat, long
-  ReverseGeoCodeAPI = (lat, long) => {
+  ReverseGeoCodeAPI = (lat, long, precision) => {
     fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
       .then(res => res.json())
-      .then(data => this.setState({ address: data.results[0].formatted_address }))
+      .then(data => {
+        // console.log(data.results)
+        this.setState({ address: data.results[precision].formatted_address })
+      })
       .catch(err => console.log(err))
   }
 
   //Load the data from Backend - Promises
   loadDataJson(URL, objValue) {
-    if (URL === '/vuzixMap')
-      axios.get(this.state.baseURL + '/vuzixMap').then(
+    if (URL === '/info')
+      axios.get(this.state.baseURL + '/info').then(
         res => {
           this.setState({ DataVuzix: res.data, isLoading: false })
           this.loadMarkerAddresses(this.state.DataVuzix)
         })
-    else if (URL === '/vuzixMap/video') {
+    else if (URL === '/query/') {
       console.log(objValue)
-      axios.get(this.state.baseURL + '/vuzixMap/video', objValue).then(
+      console.log(this.state.baseURL + '/query/')
+      axios.post(this.state.baseURL + '/query/', objValue).then(
         res => {
-          this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
+          console.log(res.data)
+          this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
           this.loadMarkerAddresses(this.state.DataVuzix)
         })
     }
@@ -61,11 +66,9 @@ class App extends Component {
   }
 
   AnimateMarker(markerData) {
-    // console.log(markerData)
     let data = this.state.DataVuzix;
-    console.log(data)
     if (markerData !== null) {
-      data.vuzixMap.map((d) => {
+      data.vuzixMap.map(d => {
         if (d.id === markerData.id) {
           d.visible = true
         }
@@ -85,12 +88,33 @@ class App extends Component {
 
   //Load addresses for Markers - Card Detail Div
   loadMarkerAddresses(data) {
-    let details = [];
+    this.address = new Map();
     data.vuzixMap.map(d => {
-      details.push({ data: d, address: "data.results[0].formatted_address" })
+      let key = `${d.lat.toFixed(3)}:${d.long.toFixed(3)}`;
+      if (!this.address.has(key)) {
+        this.address.set(key, "")
+        this.fetchAndLoadAddresses(d.lat, d.long)
+      }
     })
-    this.setState({ addresses: details })
-    console.log(details.length)
+
+    // this.setState({ addresses: details })
+  }
+
+  fetchAndLoadAddresses(lat, lng) {
+    let key = `${lat.toFixed(3)}:${lng.toFixed(3)}`;
+    Promise.all(
+      fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
+        .then(res => res.json()).then(data => {
+          this.address.set(key, data.results[4].formatted_address)
+          this.setDetailsViewTable();
+        }).catch(err => console.log(err))
+    ).then().catch(err => err)
+  }
+
+  setDetailsViewTable() {
+    let pranavaddr = Array.from(this.address, ([key, value]) => ({ key, value }))
+    let addr = { address: pranavaddr }
+    localStorage.setItem('addresses', JSON.stringify(addr))
   }
 
   //Load the Person Names in Filter
@@ -155,31 +179,42 @@ class App extends Component {
                   isVisible={this.state.detailDiv}
                   style={{ zIndex: 4, position: 'absolute', left: '30vw', backgroundColor: 'white', borderLeft: "1px solid black" }}
                 >
-                  {this.state.addresses.length > 0 ?
-                    <>
-                      {/** Button to toggle Card Detail Div */}
-                      <Button
-                        style={{ position: 'absolute', left: '22vw', top: 15 }}
-                        onClick={this.loadDetailedDiv.bind(this)}
-                      >&lt;&lt;</Button>
-                      <div
-                        style={{ overflow: 'scroll', height: '100vh' }}
-                        className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}
-                      >
-                        <MarkerPLaceDetailComponent
-                          style={{ marginBottom: 8 }}
 
-                          data={this.state.addresses}
-                          AnimateMarker={this.AnimateMarker.bind(this)}
-                          ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
-                        />
-                      </div>
-                    </>
-                    : <div
-                      className="loader"
-                    ></div>
-                  }
+                  <>
+                    {/** Button to toggle Card Detail Div */}
+                    <Button
+                      style={{ position: 'absolute', left: '22vw', top: 15 }}
+                      onClick={this.loadDetailedDiv.bind(this)}
+                    >&lt;&lt;</Button>
+                    <div
+                      style={{ overflow: 'scroll', height: '100vh' }}
+                      className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}
+                    >
+                      {
+                        this.address !== undefined ?
+                          <MarkerPLaceDetailComponent
+                            style={{ marginBottom: 8 }}
+                            baseURL={this.state.baseURL}
+                            data={this.state.DataVuzix}
+                            mapAddress={this.address}
+                            AnimateMarker={this.AnimateMarker.bind(this)}
+                            ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
+                          /> : <div className='loader'></div>}
+                    </div>
+                  </>
+
                 </Animated>
+                {/** Loading Map Div */}
+                <MapComponent
+                  markersMap={this.state.DataVuzix}
+                  details={this.state.detailDiv}
+                  address={this.state.address}
+                  baseURL={this.state.baseURL}
+                  center={this.state.center}
+                  animateMarkerData={this.state.animateMarkerData}
+                  loadDataJson={this.loadDataJson.bind(this)}
+                  ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
+                />
               </>
               :
               <div
@@ -187,16 +222,6 @@ class App extends Component {
                 className="loader"
               ></div>
             }
-
-            {/** Loading Map Div */}
-            <MapComponent
-              markersMap={this.state.DataVuzix}
-              details={this.state.detailDiv}
-              address={this.state.address}
-              animateMarkerData={this.state.animateMarkerData}
-              loadDataJson={this.loadDataJson.bind(this)}
-              ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
-            />
           </>
         }
       </>
