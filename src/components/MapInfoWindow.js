@@ -33,7 +33,6 @@ function displayFooter(props) {
 
 function MapInfoWindow(props) {
 
-    // console.log(props.geoLocation(props.point.lat, props.point.long))
     return (
         <div className="col-md-12" style={{ width: 325 }}>
             <Card >

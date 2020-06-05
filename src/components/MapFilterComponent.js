@@ -13,45 +13,39 @@ class MapFilterComponent extends Component {
         this.state = {
             isSpeech: false,
             personName: [],
-            dateValue: [new Date(), new Date()],
+            dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.startDate)],
             disPlayVideo: false,
-            videoSrc: "",
             isLoading: true,
+            // addressValue: ''
         }
 
-        this.a = [];
-        this.dateObj = {}
-        this.personNamesMethod = this.personNamesMethod.bind(this);
         this.handleChangeCheck = this.handleChangeCheck.bind(this);
         this.changePersonAsSelected = this.changePersonAsSelected.bind(this)
         this.submitObjectValues = this.submitObjectValues.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this);
-    }
-
-    componentDidMount() { this.personNamesMethod(this.props.DataVuzix); }
-
-    personNamesMethod(p) {
-        this.personNames = this.props.loadPersonNames(p).values()[Symbol.iterator]();
-        this.a = [];
-        for (let item of this.personNames) { this.a.push({ checked: false, name: item }); }
-        this.setState({ personName: this.a, isLoading: false });
+        this.locations = JSON.parse(localStorage.getItem('addresses'))
     }
 
     handleChangeCheck(event) {
-        const { name, checked } = event.target;
-        this.setState({ [name]: checked, disPlayVideo: false })
+        if (event.target.name === 'addressValue') {
+            const { name, value } = event.target;
+            this.setState({ [name]: value })
+        } else {
+            const { name, checked } = event.target;
+            this.setState({ [name]: checked, disPlayVideo: false })
+        }
     }
 
 
     changePersonAsSelected(event) {
-        let persons = this.state.personName
+        let persons = this.props.people
         persons.forEach(person => { if (person.name === event.target.name) person.checked = event.target.checked })
         this.setState({ personName: persons, disPlayVideo: false })
     }
 
-    handleChangeDate(event) { 
-        console.log(event)
-        this.setState({ dateValue: [new Date(event[0]), new Date(event[1])], disPlayVideo: false }) }
+    handleChangeDate(event) {
+        this.setState({ dateValue: [new Date(event[0]), new Date(event[1])], disPlayVideo: false })
+    }
 
     submitObjectValues() {
         let persons = []
@@ -60,21 +54,19 @@ class MapFilterComponent extends Component {
         let json_body = {
             speech: this.state.isSpeech,
             person: persons,
-            start_date: this.state.dateValue[0].toISOString(),
-            end_date: this.state.dateValue[1].toISOString(),
-            lat: "0.0",
-            long: "0.0",
+            // location: this.state.addressValue,
+            startDate: this.state.dateValue[0].toISOString(),
+            endDate: this.state.dateValue[1].toISOString(),
             vid: "123456789"
         }
+
         return json_body;
     }
 
     handleSubmit(event) {
         event.preventDefault();
-
         this.props.loadDataJson('/query/', this.submitObjectValues())
-        this.setState({ disPlayVideo: true, videoSrc: this.props.video })
-        // this.personNamesMethod(this.props.DataVuzix);
+        this.setState({ disPlayVideo: true })
     }
 
     render() {
@@ -94,28 +86,36 @@ class MapFilterComponent extends Component {
                             </FormGroup>
 
                             {/* * Persons Form * */}
-                            {!this.state.isLoading ?
-                                <>
-                                    <Label style={{ width: '14vw', fontWeight: 'bold', marginLeft: '2%' }}>People</Label>
-                                    <FormGroup >
-                                        <InputGroup style={{ width: '22vw', marginLeft: '5%' }}>
-                                            {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
-                                            {this.state.personName.map(v =>
-                                                <InputGroup key={v.name}>
-                                                    <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} style={{ marginTop: '3.7%' }} />
-                                                    <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: 'white', color: '#000000', border: 0, fontWeight: "bold" }}>{v.name}</Button>
-                                                </InputGroup>
-                                            )}
+
+                            <Label style={{ width: '14vw', fontWeight: 'bold', marginLeft: '2%' }}>People</Label>
+                            <FormGroup >
+                                <InputGroup style={{ width: '22vw', marginLeft: '5%' }}>
+                                    {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
+                                    {this.props.people.map(v =>
+                                        <InputGroup key={v.name}>
+                                            <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} style={{ marginTop: '3.7%' }} />
+                                            <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: 'white', color: '#000000', border: 0, fontWeight: "bold" }}>{v.name}</Button>
                                         </InputGroup>
-                                    </FormGroup>
-                                </> : <></>
-                            }
+                                    )}
+                                </InputGroup>
+                            </FormGroup>
 
                             {/* * Date Value Form * */}
-                            <FormGroup style={{ marginLeft: '2%' }}>
+                            <FormGroup style={{ marginLeft: '1%' }}>
                                 <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
                                 <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} />
                             </FormGroup>
+
+                            {/* <FormGroup style={{ marginLeft: '1%' }}>
+                                <Label style={{ width: '14vw', fontWeight: 'bold' }}>Location</Label>
+                                <select value={this.state.addressValue} name="addressValue" onChange={this.handleChangeCheck} style={{ width: "26.2vw", height: "3vw", marginLeft: '1%' }}>
+                                    {this.locations.address.map(m => {
+                                        if(m.value !== "") {
+                                            return <option key={m.key} value={m.value}>{m.value}</option>
+                                        }
+                                    })}
+                                </select>
+                            </FormGroup> */}
 
                             <Input type="submit" value="Submit" />
                         </Form>

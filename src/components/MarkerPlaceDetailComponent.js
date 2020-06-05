@@ -3,8 +3,6 @@ import { Card, CardText, CardSubtitle, CardImg } from 'reactstrap';
 
 
 function MarkerPLaceDetailComponent(props) {
-
-    console.log(props.mapAddress)
     return (
         <>
             {props.data.vuzixMap.map((p) =>

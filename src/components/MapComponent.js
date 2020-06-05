@@ -8,8 +8,6 @@ import {
 import MapInfoWindow from './MapInfoWindow';
 function MapComponent(props) {
 
-    //Initialization
-    const libraries = ["places"];
     const mapContainerStyle = { height: "100vh", width: props.details ? "47.5vw" : "70vw", left: props.details ? "52.5vw" : "30vw" };
     const options = { disableDefaultUI: true, zoomControl: true };
     const center = props.center;
@@ -20,9 +18,7 @@ function MapComponent(props) {
     const [selected, setSelected] = React.useState(null);
 
     const mapRef = React.useRef();
-    const onMapLoad = React.useCallback((map) => {
-        mapRef.current = map;
-    }, []);
+    const onMapLoad = React.useCallback((map) => { mapRef.current = map; }, []);
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
@@ -36,7 +32,7 @@ function MapComponent(props) {
 
                     <Marker
                         onMouseOver={() => {
-                            setSelected(mapVuzix)
+                            setSelected(mapVuzix);
                             props.ReverseGeoCodeAPI(mapVuzix.lat, mapVuzix.long, 0)
                         }}
                         onMouseOut={() => setSelected(null)}
@@ -50,7 +46,7 @@ function MapComponent(props) {
                                     mapVuzix.speech.length <= 0 && mapVuzix.person_names.length > 0 ? "/markerPerson.svg" :
                                         !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerN.svg" :
                                             (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : "/markerN.svg",
-                            scaledSize: new window.google.maps.Size(25, 45)
+                            scaledSize: new window.google.maps.Size(20, 45)
                         }}
                     />
                 )
@@ -79,8 +75,8 @@ function MapComponent(props) {
                         }}
                     >
                         {props.address !== "" ?
-                            <MapInfoWindow point={selected} geoLocation={props.ReverseGeoCodeAPI} address={props.address} baseURL={props.baseURL} /> :
-                            <></>
+                            <MapInfoWindow point={selected} address={props.address} baseURL={props.baseURL} /> :
+                            <div className="loader"></div>
                         }
                     </InfoWindow>
                 ) : null}

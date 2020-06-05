@@ -14,17 +14,16 @@ class App extends Component {
     super(props);
 
     this.state = {
-      filter: true,
-      DataVuzix: {},
+      center: { lat: 40.74918, lng: -74.156204 },
       baseURL: "http://18.191.247.248",
-      video: "",
+      DataVuzix: {},
       isLoading: true,
+      filter: true,
       detailDiv: false,
       address: "",
-      detailAddress: "Hello Pranav",
-      animateMarkerData: {},
       id: null,
-      center: { lat: 40.74918, lng: -74.156204 }
+      video: "",
+      personName: []
     }
   }
 
@@ -47,22 +46,22 @@ class App extends Component {
   //Load the data from Backend - Promises
   loadDataJson(URL, objValue) {
     if (URL === '/info')
-      axios.get(this.state.baseURL + '/info').then(
-        res => {
+      axios.get(this.state.baseURL + '/info')
+        .then(res => {
           this.setState({ DataVuzix: res.data, isLoading: false })
           this.loadMarkerAddresses(this.state.DataVuzix)
+          this.loadPersonNames(this.state.DataVuzix)
         })
     else if (URL === '/query/') {
-      console.log(objValue)
-      console.log(this.state.baseURL + '/query/')
-      axios.post(this.state.baseURL + '/query/', objValue).then(
-        res => {
-          console.log(res.data)
-          this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
-          this.loadMarkerAddresses(this.state.DataVuzix)
-        })
+      console.log(this.state.baseURL + '/query/', objValue)
+      // axios.post(this.state.baseURL + '/query/', objValue)
+      //   .then(res => {
+      //     console.log(res.data)
+      //     this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
+      //     this.loadMarkerAddresses(this.state.DataVuzix)
+      //     this.loadPersonNames(this.state.DataVuzix)
+      //   })
     }
-
   }
 
   AnimateMarker(markerData) {
@@ -129,7 +128,12 @@ class App extends Component {
         })
       }
     });
-    return personNames;
+    let people = [];
+
+    for (let item of personNames.values()[Symbol.iterator]()) {
+      people.push({ checked: false, name: item });
+    }
+    this.setState({ personName: people })
   }
 
   // To render the Markers - Card Detail Div
@@ -144,20 +148,15 @@ class App extends Component {
             {!this.state.isLoading ?
               <>
                 {/** Filter Component */}
-                <Animated
-                  animationIn="slideInLeft"
-                  animationInDuration={450}
-                  animationOut="slideOutLeft"
-                  isVisible={this.state.filter}
-                  style={{ zIndex: 4, position: 'absolute' }}
-                >
+                <Animated animationIn="slideInLeft" animationInDuration={450} isVisible={this.state.filter} style={{ zIndex: 4, position: 'absolute' }}>
                   <div style={{ zIndex: 2, backgroundColor: 'white', width: '30vw' }}>
                     <MapFilterComponent
                       DataVuzix={this.state.DataVuzix}
                       video={this.state.video}
-
                       loadDataJson={this.loadDataJson.bind(this)}
                       loadPersonNames={this.loadPersonNames.bind(this)}
+                      people={this.state.personName}
+                      mapAddress={this.address}
                     />
                     {/** Button to toggle Card Detail Div */}
                     {!this.state.detailDiv ?
@@ -171,38 +170,26 @@ class App extends Component {
                 </Animated>
 
                 {/** Card Detail Div */}
-                <Animated
-                  animationIn="fadeIn"
-                  animationOut="fadeOut"
-                  animationInDuration={600}
-                  animationOutDuration={600}
-                  isVisible={this.state.detailDiv}
-                  style={{ zIndex: 4, position: 'absolute', left: '30vw', backgroundColor: 'white', borderLeft: "1px solid black" }}
+                <Animated animationIn="fadeIn" animationOut="fadeOut" animationInDuration={600} animationOutDuration={600} isVisible={this.state.detailDiv}
+                  style={{ zIndex: 4, position: 'absolute', left: '30vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
                 >
-
-                  <>
-                    {/** Button to toggle Card Detail Div */}
-                    <Button
-                      style={{ position: 'absolute', left: '22vw', top: 15 }}
-                      onClick={this.loadDetailedDiv.bind(this)}
-                    >&lt;&lt;</Button>
-                    <div
-                      style={{ overflow: 'scroll', height: '100vh' }}
-                      className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}
-                    >
-                      {
-                        this.address !== undefined ?
-                          <MarkerPLaceDetailComponent
-                            style={{ marginBottom: 8 }}
-                            baseURL={this.state.baseURL}
-                            data={this.state.DataVuzix}
-                            mapAddress={this.address}
-                            AnimateMarker={this.AnimateMarker.bind(this)}
-                            ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
-                          /> : <div className='loader'></div>}
-                    </div>
-                  </>
-
+                  {/** Button to toggle Card Detail Div */}
+                  <Button style={{ position: 'absolute', left: '22vw', top: 15 }} onClick={this.loadDetailedDiv.bind(this)}>&lt;&lt;</Button>
+                  <div className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}
+                    style={{ overflow: 'scroll', height: '99vh' }} >
+                    {
+                      this.address !== undefined ?
+                        <MarkerPLaceDetailComponent
+                          baseURL={this.state.baseURL}
+                          data={this.state.DataVuzix}
+                          mapAddress={this.address}
+                          AnimateMarker={this.AnimateMarker.bind(this)}
+                          ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
+                        />
+                        :
+                        <div className='loader'></div>
+                    }
+                  </div>
                 </Animated>
                 {/** Loading Map Div */}
                 <MapComponent
@@ -217,10 +204,7 @@ class App extends Component {
                 />
               </>
               :
-              <div
-                style={{ alignSelf: "center", justifyContent: "center" }}
-                className="loader"
-              ></div>
+              <div className="loader" ></div>
             }
           </>
         }
@@ -228,6 +212,5 @@ class App extends Component {
     )
   }
 }
-
 
 export default App;
