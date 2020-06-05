@@ -55,8 +55,10 @@ class MapFilterComponent extends Component {
             speech: this.state.isSpeech,
             person: persons,
             // location: this.state.addressValue,
-            startDate: this.state.dateValue[0].toISOString(),
-            endDate: this.state.dateValue[1].toISOString(),
+            lat:"0.0",
+            long:"0.0",
+            start_date: this.state.dateValue[0].toISOString(),
+            end_date: this.state.dateValue[1].toISOString(),
             vid: "123456789"
         }
 
@@ -65,7 +67,7 @@ class MapFilterComponent extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        // this.props.loadDataJson('/query/', this.submitObjectValues())
+        this.props.loadDataJson('/query/', this.submitObjectValues())
         this.setState({ disPlayVideo: true })
     }
 

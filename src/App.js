@@ -48,6 +48,7 @@ class App extends Component {
     if (URL === '/info')
       axios.get(this.state.baseURL + '/info')
         .then(res => {
+          console.log(res.data)
           this.setState({ DataVuzix: res.data, isLoading: false })
           this.loadMarkerAddresses(this.state.DataVuzix)
           this.loadPersonNames(this.state.DataVuzix)
