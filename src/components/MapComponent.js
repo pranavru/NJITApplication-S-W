@@ -36,6 +36,7 @@ function MapComponent(props) {
                             props.ReverseGeoCodeAPI(mapVuzix.lat, mapVuzix.long, 0)
                         }}
                         onMouseOut={() => setSelected(null)}
+                        style={{ width: 25, height: 45 }}
                         key={mapVuzix.id}
                         animation={mapVuzix.visible ? window.google.maps.Animation.BOUNCE : null}
 
@@ -45,8 +46,7 @@ function MapComponent(props) {
                                 mapVuzix.speech.length > 0 && mapVuzix.person_names.length <= 0 ? "/markerSpeech.svg" :
                                     mapVuzix.speech.length <= 0 && mapVuzix.person_names.length > 0 ? "/markerPerson.svg" :
                                         !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerN.svg" :
-                                            (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : "/markerN.svg",
-                            scaledSize: new window.google.maps.Size(20, 45)
+                                            (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : "/markerN.svg"
                         }}
                     />
                 )
