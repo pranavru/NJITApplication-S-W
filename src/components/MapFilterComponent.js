@@ -65,7 +65,7 @@ class MapFilterComponent extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.loadDataJson('/query/', this.submitObjectValues())
+        // this.props.loadDataJson('/query/', this.submitObjectValues())
         this.setState({ disPlayVideo: true })
     }
 

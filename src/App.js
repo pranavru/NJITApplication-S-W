@@ -54,13 +54,13 @@ class App extends Component {
         })
     else if (URL === '/query/') {
       console.log(this.state.baseURL + '/query/', objValue)
-      // axios.post(this.state.baseURL + '/query/', objValue)
-      //   .then(res => {
-      //     console.log(res.data)
-      //     this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
-      //     this.loadMarkerAddresses(this.state.DataVuzix)
-      //     this.loadPersonNames(this.state.DataVuzix)
-      //   })
+      axios.post(this.state.baseURL + '/query/', objValue)
+        .then(res => {
+          console.log(res.data)
+          this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
+          this.loadMarkerAddresses(this.state.DataVuzix)
+          this.loadPersonNames(this.state.DataVuzix)
+        })
     }
   }
 
