@@ -48,8 +48,11 @@ class App extends Component {
     if (URL === '/info')
       axios.get(this.state.baseURL + '/info')
         .then(res => {
-          console.log(res.data)
+          console.log(res.data.startDate)
           this.setState({ DataVuzix: res.data, isLoading: false })
+          this.startDate = new Date(res.data.startDate);
+          this.endDate = new Date(res.data.endDate);
+          console.log(this.startDate, this.endDate)
           this.loadMarkerAddresses(this.state.DataVuzix)
           this.loadPersonNames(this.state.DataVuzix)
         })
@@ -63,7 +66,7 @@ class App extends Component {
           } else {
             this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
             this.loadMarkerAddresses(this.state.DataVuzix)
-            this.loadPersonNames(this.state.DataVuzix)
+            // this.loadPersonNames(this.state.DataVuzix)
           }
         }).catch(err => {
           alert(err)
@@ -164,6 +167,8 @@ class App extends Component {
                       loadPersonNames={this.loadPersonNames.bind(this)}
                       people={this.state.personName}
                       mapAddress={this.address}
+                      startDate={this.startDate}
+                      endDate={this.endDate}
                     />
                     {/** Button to toggle Card Detail Div */}
                     {!this.state.detailDiv ?

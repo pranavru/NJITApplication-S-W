@@ -10,8 +10,8 @@ function DateRangeFilter(props) {
                 onChange={props.handleChangeDate}
                 value={props.dateValue}
                 name="dateValue"
-                minDate={new Date(props.DataVuzix.startDate)}
-                maxDate={new Date(props.DataVuzix.endDate)}
+                minDate={props.startDate}
+                maxDate={props.endDate}
                 required
                 format="y/MM/dd HH:mm"
                 clearIcon={null}

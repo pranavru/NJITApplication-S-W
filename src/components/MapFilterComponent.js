@@ -55,8 +55,8 @@ class MapFilterComponent extends Component {
             speech: this.state.isSpeech,
             person: persons,
             // location: this.state.addressValue,
-            lat:"0.0",
-            long:"0.0",
+            lat: "0.0",
+            long: "0.0",
             start_date: this.state.dateValue[0].toISOString(),
             end_date: this.state.dateValue[1].toISOString(),
             vid: "123456789"
@@ -105,7 +105,7 @@ class MapFilterComponent extends Component {
                             {/* * Date Value Form * */}
                             <FormGroup style={{ marginLeft: '1%' }}>
                                 <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
-                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} />
+                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} startDate={this.props.startDate} endDate={this.props.endDate} />
                             </FormGroup>
 
                             {/* <FormGroup style={{ marginLeft: '1%' }}>
