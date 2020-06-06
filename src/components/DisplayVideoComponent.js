@@ -13,6 +13,8 @@ const DisplayVideoComponent = (props) => {
             >
                 <Card style={{ padding: 4 }}>
                     <ReactPlayer width="27vw" height="30vh" playing={props.disPlayVideo} url={props.videoSrc} onError={(err) => console.log(err)} />
+                    {/* <embed src="videoNew.avi" width="400" height="300" CONTROLLER="true" LOOP="false" AUTOPLAY="false" name="IBM Video"></embed> */}
+                    {/* <object data='/videoNew.mp4' width="340" height="220"> <param name="src" value='/videoNew.mp4' /> </object> */}
                 </Card>
             </Animated>
         </div>

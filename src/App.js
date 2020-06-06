@@ -58,9 +58,15 @@ class App extends Component {
       axios.post(this.state.baseURL + '/query/', objValue)
         .then(res => {
           console.log(res.data)
-          this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
-          this.loadMarkerAddresses(this.state.DataVuzix)
-          this.loadPersonNames(this.state.DataVuzix)
+          if (res.data.vuzixMap === []) {
+            alert("No data with search query")
+          } else {
+            this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
+            this.loadMarkerAddresses(this.state.DataVuzix)
+            this.loadPersonNames(this.state.DataVuzix)
+          }
+        }).catch(err => {
+          alert(err)
         })
     }
   }
