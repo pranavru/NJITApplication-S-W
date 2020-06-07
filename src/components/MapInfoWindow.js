@@ -5,7 +5,7 @@ function displayWindowHeader(props) {
     return (
         <>
             <CardHeader>
-                <CardTitle style={{ fontWeight: 'bold', fontSize: 14 }}>{props.address}</CardTitle>
+                <CardTitle style={{ fontWeight: 'bold', fontSize: 10 }}>{props.address}</CardTitle>
             </CardHeader>
             <CardImg top src={props.baseURL + props.point.imageFile} alt={props.point.id} style={{ height: "20vh"}} />
         </>)
@@ -24,7 +24,7 @@ function displayFooter(props) {
             {/* <p style={{ fontWeight: 'bold', fontSize: 14 }} > Person Names</p> */}
             <div className="row">
                 {props.point.person_names.map(person =>
-                    <div className="col-md-4 col-sm-6" style={{ fontWeight: 'normal', fontSize: 12, border: 0 }} ><p>{'\u2022'} {person.person_name}</p> </div>
+                    <div className="col-sm-6" style={{ fontWeight: 'normal', fontSize: 10, border: 0 }} ><p>{'\u2022'} {person.person_name}</p> </div>
                 )}
             </div>
         </CardBody> : <div></div>
@@ -34,7 +34,7 @@ function displayFooter(props) {
 function MapInfoWindow(props) {
 
     return (
-        <div className="col-md-12" style={{ width: 325 }}>
+        <div className="col-md-12" style={{ width: "20vw" }}>
             <Card >
                 {displayWindowHeader(props)}
                 {displayBody(props)}
