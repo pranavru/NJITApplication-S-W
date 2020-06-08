@@ -48,11 +48,9 @@ class App extends Component {
     if (URL === '/info')
       axios.get(this.state.baseURL + '/info')
         .then(res => {
-          console.log(res.data.startDate)
           this.setState({ DataVuzix: res.data, isLoading: false })
           this.startDate = new Date(res.data.startDate);
           this.endDate = new Date(res.data.endDate);
-          console.log(this.startDate, this.endDate)
           this.loadMarkerAddresses(this.state.DataVuzix)
           this.loadPersonNames(this.state.DataVuzix)
         })
@@ -64,7 +62,7 @@ class App extends Component {
           if (res.data.vuzixMap === []) {
             alert("No data with search query")
           } else {
-            this.setState({ DataVuzix: res.data, video: this.state.baseURL + res.data.video, isLoading: false })
+            this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
             this.loadMarkerAddresses(this.state.DataVuzix)
             // this.loadPersonNames(this.state.DataVuzix)
           }
@@ -182,7 +180,7 @@ class App extends Component {
                 </Animated>
 
                 {/** Card Detail Div */}
-                <Animated animationIn="fadeIn" animationOut="fadeOut" animationInDuration={600} animationOutDuration={600} isVisible={this.state.detailDiv}
+                <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={this.state.detailDiv}
                   style={{ zIndex: 4, position: 'absolute', left: '30vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
                 >
                   {/** Button to toggle Card Detail Div */}

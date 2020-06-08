@@ -1,46 +1,47 @@
 import React from 'react';
-import { Card, CardImg, CardBody, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
+import { Card, CardText, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
 
 function displayWindowHeader(props) {
     return (
         <>
             <CardHeader>
-                <CardTitle style={{ fontWeight: 'bold', fontSize: 10 }}>{props.address}</CardTitle>
+                <CardTitle className="text-center" style={{ fontWeight: 'bold', fontSize: 18 }}>{props.address}</CardTitle>
             </CardHeader>
-            <CardImg top src={props.baseURL + props.point.imageFile} alt={props.point.id} style={{ height: "20vh"}} />
+            {console.log(props.baseURL + props.point.imageFile)}
+            <div id="containerImg">
+                <img src={props.baseURL + props.point.imageFile} alt={props.point.id} id="theImage" />
+            </div>
         </>)
 
 }
 function displayBody(props) {
     return props.point.speech !== "" ?
-        <CardFooter>
+        <CardFooter style={{ paddingBottom: 15, paddingTop: 25}}>
             <CardSubtitle style={{ fontWeight: 'bold', fontSize: 14 }}><i><q>{props.point.speech}</q></i></CardSubtitle>
         </CardFooter> : <div></div>
 };
 
 function displayFooter(props) {
     return props.point.person_names.length !== 0 ?
-        <CardBody>
+        <CardText>
             {/* <p style={{ fontWeight: 'bold', fontSize: 14 }} > Person Names</p> */}
             <div className="row">
                 {props.point.person_names.map(person =>
-                    <div className="col-sm-6" style={{ fontWeight: 'normal', fontSize: 10, border: 0 }} ><p>{'\u2022'} {person.person_name}</p> </div>
+                    <div className="col-md-4" style={{ fontWeight: 'normal', fontSize: 12, border: 0, marginLeft: "2%" }} ><p>{'\u2022'} {person.person_name}</p> </div>
                 )}
             </div>
-        </CardBody> : <div></div>
+        </CardText> : <div></div>
 
 }
 
 function MapInfoWindow(props) {
-
     return (
-        <div className="col-md-12" style={{ width: "20vw" }}>
-            <Card >
-                {displayWindowHeader(props)}
-                {displayBody(props)}
-                {displayFooter(props)}
-            </Card>
-        </div>
+        <Card>
+            {displayWindowHeader(props)}
+            {displayBody(props)}
+            <hr />
+            {displayFooter(props)}
+        </Card>
     )
 }
 

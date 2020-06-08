@@ -38,7 +38,7 @@
 }
 
 .displayBlock {
-  display: inline-block;
+  display: block;
 }
 
 .displayNone {
@@ -47,8 +47,8 @@
 
 .displayBlock_detailedDiv {
   display: inline-block;
-  z-index: 6; 
-  width: '22vw';
+  z-index: 6;
+  width: "22vw";
 }
 
 .displayNone_detailedDiv {
@@ -69,11 +69,33 @@
 
 /* Safari */
 @-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* body {
+  padding: 25px;
+  background-color: #efefef;
+} */
+#theImage {
+  width: 100%;
+  height: auto;
+}
+
+#containerImg {
+  width: 60%;
+  margin: 0 auto;
 }
