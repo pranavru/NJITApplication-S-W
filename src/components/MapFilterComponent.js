@@ -125,7 +125,7 @@ class MapFilterComponent extends Component {
                 </Card>
                 {
                     this.props.DataVuzix !== undefined ?
-                        <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />
+                        <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} baseURL={this.props.baseURL} />
                         : <div></div>
                 }
             </div>

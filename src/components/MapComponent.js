@@ -26,10 +26,8 @@ function MapComponent(props) {
     //Markers
     const MarkerData = (data) => {
         if (data !== undefined) {
-
             return (
                 data.map(mapVuzix =>
-
                     <Marker
                         onMouseOver={() => {
                             setSelected(mapVuzix);

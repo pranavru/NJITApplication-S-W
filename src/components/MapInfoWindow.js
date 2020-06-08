@@ -16,21 +16,24 @@ function displayWindowHeader(props) {
 }
 function displayBody(props) {
     return props.point.speech !== "" ?
-        <CardFooter style={{ paddingBottom: 15, paddingTop: 25}}>
+        <CardFooter style={{ paddingBottom: 15, paddingTop: 25 }}>
             <CardSubtitle style={{ fontWeight: 'bold', fontSize: 14 }}><i><q>{props.point.speech}</q></i></CardSubtitle>
         </CardFooter> : <div></div>
 };
 
 function displayFooter(props) {
     return props.point.person_names.length !== 0 ?
-        <CardText>
-            {/* <p style={{ fontWeight: 'bold', fontSize: 14 }} > Person Names</p> */}
-            <div className="row">
-                {props.point.person_names.map(person =>
-                    <div className="col-md-4" style={{ fontWeight: 'normal', fontSize: 12, border: 0, marginLeft: "2%" }} ><p>{'\u2022'} {person.person_name}</p> </div>
-                )}
-            </div>
-        </CardText> : <div></div>
+        <>
+            <hr />
+            <CardText>
+                {/* <p style={{ fontWeight: 'bold', fontSize: 14 }} > Person Names</p> */}
+                <div className="row">
+                    {props.point.person_names.map(person =>
+                        <div className="col-md-4" style={{ fontWeight: 'normal', fontSize: 12, border: 0, marginLeft: "2%" }} ><p>{'\u2022'} {person.person_name}</p> </div>
+                    )}
+                </div>
+            </CardText>
+        </> : <div></div>
 
 }
 
@@ -39,7 +42,7 @@ function MapInfoWindow(props) {
         <Card>
             {displayWindowHeader(props)}
             {displayBody(props)}
-            <hr />
+
             {displayFooter(props)}
         </Card>
     )

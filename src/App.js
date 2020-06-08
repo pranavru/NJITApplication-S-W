@@ -58,8 +58,8 @@ class App extends Component {
       console.log(this.state.baseURL + '/query/', objValue)
       axios.post(this.state.baseURL + '/query/', objValue)
         .then(res => {
-          console.log(res.data)
-          if (res.data.vuzixMap === []) {
+          console.log(res.data.vuzixMap)
+          if (!(res.data.vuzixMap.length > 0)) {
             alert("No data with search query")
           } else {
             this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
@@ -167,6 +167,7 @@ class App extends Component {
                       mapAddress={this.address}
                       startDate={this.startDate}
                       endDate={this.endDate}
+                      baseURL={this.state.baseURL}
                     />
                     {/** Button to toggle Card Detail Div */}
                     {!this.state.detailDiv ?
