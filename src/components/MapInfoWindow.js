@@ -42,7 +42,6 @@ function MapInfoWindow(props) {
         <Card>
             {displayWindowHeader(props)}
             {displayBody(props)}
-
             {displayFooter(props)}
         </Card>
     )

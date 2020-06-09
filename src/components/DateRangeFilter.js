@@ -5,7 +5,7 @@ import { Card } from 'reactstrap';
 function DateRangeFilter(props) {
     // const [value, props.handleChange] = useState([new Date(), props.dateVal.endDate]);
     return (
-        <Card style={{ padding: 4, width: '26.6vw' }}>
+        <Card style={{ padding: 4, width: '26.6vw', fontSize: 0.013 * window.innerWidth }}>
             <DateTimeRangePicker
                 onChange={props.handleChangeDate}
                 value={props.dateValue}

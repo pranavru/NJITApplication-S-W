@@ -71,6 +71,20 @@ class MapFilterComponent extends Component {
         this.setState({ disPlayVideo: true })
     }
 
+    addImages = (video) => {
+        let items_array = video !== undefined ? video : []
+        if (items_array.length > 0) {
+            items_array.map(m => {
+                if (!m.src.includes('http://18.191.247.248/media')) {
+                    let url = this.props.baseURL + m.src;
+                    console.log(url)
+                    m.src = url;
+                }
+            })
+        }
+        return items_array;
+    }
+
     render() {
 
         return (
@@ -125,7 +139,7 @@ class MapFilterComponent extends Component {
                 </Card>
                 {
                     this.props.DataVuzix !== undefined ?
-                        <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} baseURL={this.props.baseURL} />
+                        <DisplayVideoComponent videoSrc={this.addImages(this.props.video)} disPlayVideo={this.state.disPlayVideo} />
                         : <div></div>
                 }
             </div>

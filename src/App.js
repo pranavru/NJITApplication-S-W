@@ -55,16 +55,13 @@ class App extends Component {
           this.loadPersonNames(this.state.DataVuzix)
         })
     else if (URL === '/query/') {
-      console.log(this.state.baseURL + '/query/', objValue)
       axios.post(this.state.baseURL + '/query/', objValue)
         .then(res => {
-          console.log(res.data.vuzixMap)
           if (!(res.data.vuzixMap.length > 0)) {
             alert("No data with search query")
           } else {
             this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
             this.loadMarkerAddresses(this.state.DataVuzix)
-            // this.loadPersonNames(this.state.DataVuzix)
           }
         }).catch(err => {
           alert(err)
@@ -103,8 +100,6 @@ class App extends Component {
         this.fetchAndLoadAddresses(d.lat, d.long)
       }
     })
-
-    // this.setState({ addresses: details })
   }
 
   fetchAndLoadAddresses(lat, lng) {
