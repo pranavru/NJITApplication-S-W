@@ -69,6 +69,10 @@ class App extends Component {
     }
   }
 
+  changeVideoProps() {
+    this.setState({ video: [] })
+  }
+
   AnimateMarker(markerData) {
     let data = this.state.DataVuzix;
     if (markerData !== null) {
@@ -158,6 +162,7 @@ class App extends Component {
                       video={this.state.video}
                       loadDataJson={this.loadDataJson.bind(this)}
                       loadPersonNames={this.loadPersonNames.bind(this)}
+                      changeVideoProps={this.changeVideoProps.bind(this)}
                       people={this.state.personName}
                       mapAddress={this.address}
                       startDate={this.startDate}

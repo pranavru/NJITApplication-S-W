@@ -35,8 +35,7 @@ class MapFilterComponent extends Component {
             this.setState({ [name]: checked, disPlayVideo: false })
         }
     }
-
-
+    
     changePersonAsSelected(event) {
         let persons = this.props.people
         persons.forEach(person => { if (person.name === event.target.name) person.checked = event.target.checked })
@@ -67,6 +66,7 @@ class MapFilterComponent extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
+        this.props.changeVideoProps();
         this.props.loadDataJson('/query/', this.submitObjectValues())
         this.setState({ disPlayVideo: true })
     }
@@ -77,7 +77,6 @@ class MapFilterComponent extends Component {
             items_array.map(m => {
                 if (!m.src.includes('http://18.191.247.248/media')) {
                     let url = this.props.baseURL + m.src;
-                    console.log(url)
                     m.src = url;
                 }
             })
@@ -138,7 +137,7 @@ class MapFilterComponent extends Component {
                     </div>
                 </Card>
                 {
-                    this.props.DataVuzix !== undefined ?
+                    this.props.video !== undefined || this.props.video !== [] ?
                         <DisplayVideoComponent videoSrc={this.addImages(this.props.video)} disPlayVideo={this.state.disPlayVideo} />
                         : <div></div>
                 }
