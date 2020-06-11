@@ -26,6 +26,10 @@ class MapFilterComponent extends Component {
         this.locations = JSON.parse(localStorage.getItem('addresses'))
     }
 
+    shouldComponentUpdate(nextProps) {
+        return  this.props !== nextProps;
+    }
+
     handleChangeCheck(event) {
         if (event.target.name === 'addressValue') {
             const { name, value } = event.target;
@@ -35,7 +39,7 @@ class MapFilterComponent extends Component {
             this.setState({ [name]: checked, disPlayVideo: false })
         }
     }
-    
+
     changePersonAsSelected(event) {
         let persons = this.props.people
         persons.forEach(person => { if (person.name === event.target.name) person.checked = event.target.checked })
@@ -136,11 +140,7 @@ class MapFilterComponent extends Component {
                         </Form>
                     </div>
                 </Card>
-                {
-                    this.props.video !== undefined || this.props.video !== [] ?
-                        <DisplayVideoComponent videoSrc={this.addImages(this.props.video)} disPlayVideo={this.state.disPlayVideo} />
-                        : <div></div>
-                }
+                {this.state.disPlayVideo && <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />}
             </div>
         );
     }

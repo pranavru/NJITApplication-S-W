@@ -60,6 +60,7 @@ class App extends Component {
           if (!(res.data.vuzixMap.length > 0)) {
             alert("No data with search query")
           } else {
+            console.log(res.data);
             this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
             this.loadMarkerAddresses(this.state.DataVuzix)
           }
@@ -69,9 +70,7 @@ class App extends Component {
     }
   }
 
-  changeVideoProps() {
-    this.setState({ video: [] })
-  }
+  changeVideoProps() { this.setState({ video: "" }) }
 
   AnimateMarker(markerData) {
     let data = this.state.DataVuzix;
