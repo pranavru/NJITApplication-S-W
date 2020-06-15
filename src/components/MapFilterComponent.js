@@ -27,7 +27,7 @@ class MapFilterComponent extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        return  this.props !== nextProps;
+        return this.props !== nextProps;
     }
 
     handleChangeCheck(event) {
@@ -52,7 +52,7 @@ class MapFilterComponent extends Component {
 
     submitObjectValues() {
         let persons = []
-        this.state.personName.map(p => { if (p.checked === true) persons.push(p.name) })
+        this.state.personName.map(p => p.checked === true ? persons.push(p.name) : null)
 
         let json_body = {
             speech: this.state.isSpeech,

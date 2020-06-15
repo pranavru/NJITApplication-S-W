@@ -22,7 +22,8 @@ const DisplayVideoComponent = (props) => {
                             url={"http://18.191.247.248" + url} controls={playVideo} width="26.7vw"
                             height="30vh" style={{ marginLeft: 2 }} playing={playVideo} autoPlay muted
                             onReady={() => setToPlay(true)} onStart={() => console.log("Video is playing? ", playVideo)}
-                            onPause={() => console.log("Video is playing? ", playVideo)} />
+                            onPause={() => console.log("Video is playing? ", playVideo)}
+                        />
                     </Card>
                 </Animated> : <div className="loader"></div>}
         </div>

@@ -75,19 +75,11 @@ class App extends Component {
   AnimateMarker(markerData) {
     let data = this.state.DataVuzix;
     if (markerData !== null) {
-      data.vuzixMap.map(d => {
-        if (d.id === markerData.id) {
-          d.visible = true
-        }
-      })
+      data.vuzixMap.map(d => d.visible = d.id === markerData.id ? true : false)
       this.setState({ DataVuzix: data, id: markerData.id })
     }
     else {
-      data.vuzixMap.map((d) => {
-        if (d.id === this.state.id) {
-          d.visible = false
-        }
-      })
+      data.vuzixMap.map((d) => d.visible = d.id === this.state.id ? false : true)
       this.setState({ DataVuzix: data, id: null })
     }
 
