@@ -18,7 +18,7 @@ const MapComponent = (props) => {
     //Data Loading
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
     const [selected, setSelected] = React.useState(null);
-    const [currentZoom, setCurrentZoom] = React.useState(2);
+    const [currentZoom, setCurrentZoom] = React.useState(10);
     const mapRef = React.useRef();
     const onMapLoad = React.useCallback((map) => { mapRef.current = map; }, []);
 
@@ -56,7 +56,7 @@ const MapComponent = (props) => {
             return (<div></div>);
     }
 
-    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 14 };
+    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 12 };
     return (
         <div>
             <GoogleMap
@@ -68,7 +68,7 @@ const MapComponent = (props) => {
                 onZoomChanged={() => mapRef !== null ? mapRef.current !== undefined ? setCurrentZoom(mapRef.current.zoom) : null : null}
             >
                 <MarkerClusterer options={clusterOptions}>
-                    {clusterer => MarkerData(props.markersMap.vuzixMap, clusterer)}
+                    {clusterer => MarkerData(props.markersMap.vuzixMap)}
                 </MarkerClusterer>
                 {selected ? (
                     customInfoWindow(selected, setSelected, props)

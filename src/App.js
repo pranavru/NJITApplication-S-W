@@ -70,19 +70,25 @@ class App extends Component {
     }
   }
 
-  changeVideoProps() { this.setState({ video: "" }) }
+  changeVideoProps() { this.setState({ video: "", DataVuzix: { vuzixMap: [] }}) }
 
   AnimateMarker(markerData) {
     let data = this.state.DataVuzix;
     if (markerData !== null) {
-      data.vuzixMap.map(d => d.visible = d.id === markerData.id ? true : false)
+      data.vuzixMap.map(d => {
+        if (d.id === markerData.id) {
+          d.visible = true
+        }
+      })
       this.setState({ DataVuzix: data, id: markerData.id })
-    }
-    else {
-      data.vuzixMap.map((d) => d.visible = d.id === this.state.id ? false : true)
+    } else {
+      data.vuzixMap.map((d) => {
+        if (d.id === this.state.id) {
+          d.visible = false
+        }
+      })
       this.setState({ DataVuzix: data, id: null })
     }
-
   }
 
   //Load addresses for Markers - Card Detail Div
