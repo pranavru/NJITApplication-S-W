@@ -68,7 +68,7 @@ const MapComponent = (props) => {
                 onZoomChanged={() => mapRef !== null ? mapRef.current !== undefined ? setCurrentZoom(mapRef.current.zoom) : null : null}
             >
                 <MarkerClusterer options={clusterOptions}>
-                    {clusterer => MarkerData(props.markersMap.vuzixMap)}
+                    {clusterer => MarkerData(props.markersMap.vuzixMap, clusterer)}
                 </MarkerClusterer>
                 {selected ? (
                     customInfoWindow(selected, setSelected, props)
