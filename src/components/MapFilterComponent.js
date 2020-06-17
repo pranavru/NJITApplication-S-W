@@ -13,7 +13,7 @@ class MapFilterComponent extends Component {
         this.state = {
             isSpeech: false,
             personName: [],
-            dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.startDate)],
+            dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
             disPlayVideo: false,
             isLoading: true,
             // addressValue: ''

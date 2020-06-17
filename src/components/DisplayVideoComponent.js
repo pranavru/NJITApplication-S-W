@@ -10,10 +10,7 @@ const DisplayVideoComponent = (props) => {
     return (
         <div style={{ marginTop: '5%' }}>
             {url !== "" ?
-                <Animated
-                    animationIn='fadeInUp' animationOut='fadeOut'
-                    animationInDuration={400} animationOutDuration={600}
-                >
+                <Animated animationIn='fadeInUp' animationOut='fadeOut'>
                     <Card style={{ padding: 4 }}>
                         {/* <UncontrolledCarousel items={items} controls={false} interval={500} slide={false} /> */}
                         <ReactPlayer wait={3000}
