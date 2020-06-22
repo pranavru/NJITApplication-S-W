@@ -2,12 +2,15 @@ import React from 'react';
 import { Card, CardText, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
 
 function displayWindowHeader(props) {
+    const d = new Date(props.point.created);
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return (
         <>
             <CardHeader>
-                <CardTitle className="text-center" style={{ fontWeight: 'bold', fontSize: 18 }}>{props.address}</CardTitle>
+                <CardTitle className="text-center" style={{ fontWeight: 'bold', fontSize: 18 }}>{props.address} </CardTitle>
+                <p style={{ padding: 0, margin: 0, alignItems: 'flex-end', display: 'flex', justifyContent: 'flex-end' }}> Created At: {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}:{d.getSeconds() < 10 ? `0${d.getSeconds()}` : d.getSeconds()}</p>
             </CardHeader>
-            {console.log(props.baseURL + props.point.imageFile)}
+            {console.log(props.point)}
             <div id="containerImg">
                 <img src={props.baseURL + props.point.imageFile} alt={props.point.id} id="theImage" />
             </div>
