@@ -56,7 +56,7 @@ const MapComponent = (props) => {
             return (<div></div>);
     }
 
-    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 12 };
+    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 18 };
     return (
         <div>
             <GoogleMap

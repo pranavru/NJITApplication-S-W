@@ -46,7 +46,22 @@ class MapFilterComponent extends Component {
     }
 
     handleChangeDate(event) {
-        this.setState({ dateValue: [new Date(event[0]), new Date(event[1])], disPlayVideo: false })
+        let startDate = this.state.dateValue[0];
+        let endDate = this.state.dateValue[1];
+        startDate.setFullYear(event[0].getFullYear(), event[0].getMonth(), event[0].getDate());
+        endDate.setFullYear(event[1].getFullYear(), event[1].getMonth(), event[1].getDate());
+
+        this.setState({ dateValue: [startDate, endDate], disPlayVideo: false })
+    }
+
+    handleChangeTime(startTime, endTime) {
+        let startDate = this.state.dateValue[0];
+        let endDate = this.state.dateValue[1];
+        startDate.setHours(startTime);
+        startDate.setMinutes(Math.floor(startTime) < startTime ? 30 : 0);
+        endDate.setHours(endTime)
+        endDate.setMinutes(Math.floor(endTime) < endTime ? 30 : 0);
+        console.log(startDate, endDate);
     }
 
     submitObjectValues() {
@@ -121,7 +136,7 @@ class MapFilterComponent extends Component {
                             {/* * Date Value Form * */}
                             <FormGroup style={{ marginLeft: '1%' }}>
                                 <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
-                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} startDate={this.props.startDate} endDate={this.props.endDate} />
+                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} startDate={this.props.startDate} endDate={this.props.endDate} handleChangeTime={this.handleChangeTime.bind(this)} />
                             </FormGroup>
 
                             {/* <FormGroup style={{ marginLeft: '1%' }}>

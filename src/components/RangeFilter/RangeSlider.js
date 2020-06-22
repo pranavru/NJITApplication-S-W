@@ -26,7 +26,6 @@ class RangeSlider extends React.Component {
         this.endDateAT = new Date(this.props.DataVuzix.endDate);
         const range = [0.5, 23.5];
 
-        console.log(this.endDateAT);
         this.state = {
             domain: range,
             update: range,
@@ -34,8 +33,6 @@ class RangeSlider extends React.Component {
             inputValues: enteriesKeys,
             displayChart: false
         };
-
-
     }
 
     render() {
@@ -53,7 +50,10 @@ class RangeSlider extends React.Component {
                             />
                         </div>
                         <div
-                        onMouseLeave={() => { this.setState({ displayChart: false }) }}
+                            onMouseLeave={() => {
+                                this.setState({ displayChart: false })
+                                this.props.handleChangeTime(update[0], update[1]);
+                            }}
                         >
                             <Slider
                                 rootStyle={{
@@ -64,10 +64,6 @@ class RangeSlider extends React.Component {
                                 values={domain}
                                 onUpdate={update => {
                                     this.setState({ update, inputValues: update })
-                                    this.startDateAT.setHours(update[0]);
-                                    this.endDateAT.setHours(update[1])
-                                    this.startDateAT.setMinutes(Math.floor(update[0]) < update[0]? 30: 0);
-                                    this.endDateAT.setMinutes(Math.floor(update[1]) < update[1]? 30: 0);
                                 }}
                                 onChange={values => this.setState({ values })}
                                 step={0.5}
@@ -105,7 +101,7 @@ class RangeSlider extends React.Component {
                                         </div>
                                     )}
                                 </Tracks>
-                                <Ticks count={24}>
+                                <Ticks count={12}>
                                     {({ ticks }) => (
                                         <div className="slider-ticks">
                                             {ticks.map(tick => (

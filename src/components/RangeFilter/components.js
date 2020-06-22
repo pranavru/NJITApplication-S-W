@@ -6,8 +6,8 @@ import { withStyles } from "@material-ui/core/styles";
 // Based on Material Design spec:
 // Styles by https://github.com/RafeSacks
 // https://material.io/design/components/sliders.html#spec
-const trackHeight = 6;
-const thumbHeight = 14;
+const trackHeight = 2;
+const thumbHeight = 10;
 
 // *******************************************************
 // RAIL COMPONENT
