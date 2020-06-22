@@ -4,7 +4,6 @@ import '../App.css';
 import DateRangeFilter from './DateRangeFilter';
 import DisplayVideoComponent from './DisplayVideoComponent';
 
-
 class MapFilterComponent extends Component {
 
     constructor(props) {
