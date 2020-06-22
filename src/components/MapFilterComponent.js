@@ -62,6 +62,7 @@ class MapFilterComponent extends Component {
         endDate.setHours(endTime)
         endDate.setMinutes(Math.floor(endTime) < endTime ? 30 : 0);
         console.log(startDate, endDate);
+        this.setState({ dateValue: [startDate, endDate], disPlayVideo: false })
     }
 
     submitObjectValues() {
@@ -79,6 +80,8 @@ class MapFilterComponent extends Component {
             vid: "123456789"
         }
 
+        console.log(json_body);
+        
         return json_body;
     }
 
