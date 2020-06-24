@@ -10,18 +10,6 @@ class RangeSlider extends React.Component {
     constructor(props) {
         super(props);
 
-        let createdAt = new Map();
-        this.data = [];
-        this.props.DataVuzix.vuzixMap.map(m => {
-            this.data.push(new Date(m.created).getHours());
-            if (!createdAt.has(new Date(m.created).getHours())) {
-                createdAt.set(new Date(m.created).getHours(), 1)
-            } else {
-                createdAt.set(new Date(m.created).getHours(), new Date(m.created).getHours() + 1)
-            }
-        })
-
-        const enteriesKeys = Array.from(createdAt.keys());
         this.startDateAT = new Date(this.props.DataVuzix.startDate);
         this.endDateAT = new Date(this.props.DataVuzix.endDate);
         const range = [0.5, 23.5];
@@ -30,31 +18,31 @@ class RangeSlider extends React.Component {
             domain: range,
             update: range,
             values: range,
-            inputValues: enteriesKeys,
+            inputValues: null,
             displayChart: false
         };
     }
 
     render() {
         const { update, domain, displayChart } = this.state;
-
+        // console.log(this.props.data);
         return (
-            <Grid container style={{ margin: '3%', bottom: 28, width: '92%', position: "absolute" }}>
+            <Grid container style={{ margin: '3%', marginLeft: 0, bottom: 28, width: '92%', position: "absolute", zIndex: 0 }}>
                 <Grid item xs={12}>
                     <Card>
-                        <div style={{ display: displayChart ? "flex" : "none" }}>
-                            <BarChart
-                                data={this.data}
-                                highlight={update}
-                                domain={domain}
-                            />
-                        </div>
                         <div
                             onMouseLeave={() => {
                                 this.setState({ displayChart: false })
                                 this.props.handleChangeTime(update[0], update[1]);
-                            }}
-                        >
+                            }}>
+                            <div style={{ display: displayChart ? "flex" : "none" }}>
+                                <BarChart
+                                    data={this.props.data}
+                                    highlight={update}
+                                    domain={domain}
+                                />
+                            </div>
+
                             <Slider
                                 rootStyle={{
                                     position: "relative",

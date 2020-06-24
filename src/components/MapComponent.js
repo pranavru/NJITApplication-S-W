@@ -10,7 +10,7 @@ import MapInfoWindow from './MapInfoWindow';
 
 const MapComponent = (props) => {
 
-    const mapContainerStyle = { height: window.innerHeight, width: props.details ? "47.5vw" : "70vw", left: props.details ? "52.5vw" : "30vw" };
+    const mapContainerStyle = { height: window.innerHeight, width: props.details ? "55vw" : "77.5vw", left: props.details ? "45vw" : "22.5vw" };
     const mapOptions = { disableDefaultUI: true, zoomControl: true };
     const center = props.center;
     const GOOGLE_API_KEY = 'AIzaSyABBr3dtnI6vkHnyzMjztupIDjhxNXCmng';

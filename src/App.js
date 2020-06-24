@@ -153,7 +153,7 @@ class App extends Component {
               <>
                 {/** Filter Component */}
                 <Animated animationIn="slideInLeft" animationInDuration={450} isVisible={this.state.filter} style={{ zIndex: 4, position: 'absolute' }}>
-                  <div style={{ zIndex: 2, backgroundColor: 'white', width: '30vw' }}>
+                  <div style={{ zIndex: 2, backgroundColor: 'white', width: '22vw' }}>
                     <MapFilterComponent
                       DataVuzix={this.state.DataVuzix}
                       video={this.state.video}
@@ -169,7 +169,7 @@ class App extends Component {
                     {/** Button to toggle Card Detail Div */}
                     {!this.state.detailDiv ?
                       <Button
-                        style={{ zIndex: 4, position: 'absolute', top: 15, left: '30vw' }}
+                        style={{ zIndex: 4, position: 'absolute', top: 15, left: '22.1vw' }}
                         onClick={this.loadDetailedDiv.bind(this)}
                       >&gt;&gt;</Button>
                       : <></>
@@ -179,12 +179,12 @@ class App extends Component {
 
                 {/** Card Detail Div */}
                 <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={this.state.detailDiv}
-                  style={{ zIndex: 4, position: 'absolute', left: '30vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
+                  style={{ zIndex: 4, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
                 >
                   {/** Button to toggle Card Detail Div */}
-                  <Button style={{ position: 'absolute', left: '22vw', top: 15 }} onClick={this.loadDetailedDiv.bind(this)}>&lt;&lt;</Button>
+                  <Button style={{ position: 'absolute', left: '22.1vw', top: 15 }} onClick={this.loadDetailedDiv.bind(this)}>&lt;&lt;</Button>
                   <div className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}
-                    style={{ overflow: 'scroll', height: '99vh' }} >
+                    style={{ overflowY: 'scroll', height: "99.2vh" }} >
                     {
                       this.address !== undefined ?
                         <MarkerPLaceDetailComponent

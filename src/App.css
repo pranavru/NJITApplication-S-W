@@ -47,8 +47,8 @@
 
 .displayBlock_detailedDiv {
   display: inline-block;
-  z-index: 6;
-  width: "22vw";
+  z-index: 3;
+  width: "19vw";
 }
 
 .displayNone_detailedDiv {

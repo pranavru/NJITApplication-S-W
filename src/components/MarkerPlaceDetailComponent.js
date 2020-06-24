@@ -6,7 +6,7 @@ function MarkerPLaceDetailComponent(props) {
     return (
         <>
             {props.data.vuzixMap.map((p) =>
-                <Card style={{ width: '20vw', marginTop: '5%', padding: 5, }} key={p.id}
+                <Card style={{ width: '19vw', marginTop: '5%', padding: 5, bottom : 0 }} key={p.id}
                     onMouseOver={() => window.setTimeout(props.AnimateMarker(p), 1000)}
                     onMouseOut={() => props.AnimateMarker(null)}
                 >

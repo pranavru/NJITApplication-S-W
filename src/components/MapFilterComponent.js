@@ -15,7 +15,9 @@ class MapFilterComponent extends Component {
             dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
             disPlayVideo: false,
             isLoading: true,
-            // addressValue: ''
+            // addressValue: '',
+            createdAtValues: new Map(),
+            dataValues: []
         }
 
         this.handleChangeCheck = this.handleChangeCheck.bind(this);
@@ -25,9 +27,14 @@ class MapFilterComponent extends Component {
         this.locations = JSON.parse(localStorage.getItem('addresses'))
     }
 
-    shouldComponentUpdate(nextProps) {
-        return this.props !== nextProps;
+    componentDidMount() {
+        this.dateValuesData();  
     }
+
+    // shouldComponentUpdate(nextProps) {
+    //     return this.props !== nextProps;
+    // }
+
 
     handleChangeCheck(event) {
         if (event.target.name === 'addressValue') {
@@ -51,7 +58,8 @@ class MapFilterComponent extends Component {
         startDate.setFullYear(event[0].getFullYear(), event[0].getMonth(), event[0].getDate());
         endDate.setFullYear(event[1].getFullYear(), event[1].getMonth(), event[1].getDate());
 
-        this.setState({ dateValue: [startDate, endDate], disPlayVideo: false })
+        this.setState({ dateValue: [startDate, endDate], disPlayVideo: false });
+        this.dateValuesData();
     }
 
     handleChangeTime(startTime, endTime) {
@@ -80,8 +88,6 @@ class MapFilterComponent extends Component {
             vid: "123456789"
         }
 
-        console.log(json_body);
-        
         return json_body;
     }
 
@@ -105,17 +111,40 @@ class MapFilterComponent extends Component {
         return items_array;
     }
 
-    render() {
+    dateValuesData = () => {
+        let createdAt = new Map();
+        let data = [];
+        this.props.DataVuzix.vuzixMap.map(m => {
+            const dateValue = new Date(m.created);
+            if (this.state.dateValue[0].getTime() <= dateValue.getTime() && dateValue.getTime() <= this.state.dateValue[1].getTime()) {
+                const dateValueHours = dateValue.getHours()
+                data.push(dateValueHours);
+                if (!createdAt.has(dateValueHours)) {
+                    createdAt.set(dateValueHours, 1)
+                } else {
+                    createdAt.set(new Date(dateValueHours, dateValueHours + 1))
+                }
+            }
+        })
+        console.log("loading data in datevalues", data)
+        this.setState({ createdAtValues: createdAt, dataValues: data})
+        console.log("after loading data");
+        console.log(this.state);
+        
+    }
 
+    render() {
+        // console.log("render: MapFilterComponent", this.state.dataValues)
+        
         return (
-            <div className="col-md-12" style={{ height: '98vh' }}>
+            <div style={{ height: '98vh', marginLeft: "2%" }}>
                 <Card style={{ padding: 4, marginTop: '4%' }}>
-                    <Button disabled style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}><Label style={{ width: '30vw', fontWeight: 'bold', textAlign: 'left', top: '2%' }}>Filter</Label></Button>
+                    <Button disabled style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}><Label style={{ fontWeight: 'bold', textAlign: 'left', top: '2%' }}>Filter</Label></Button>
                     <div style={{ marginTop: "3%" }}>
                         <Form onSubmit={this.handleSubmit}>
                             {/* * Speech Form * */}
                             <FormGroup>
-                                <InputGroup style={{ width: '22vw', marginLeft: "5%" }}>
+                                <InputGroup style={{  marginLeft: "5%" }}>
                                     <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} style={{ marginTop: '3.7%' }} />
                                     <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: 'white', color: '#000000', border: 0, fontWeight: "bold" }}>Speech</Button>
                                 </InputGroup>
@@ -125,7 +154,7 @@ class MapFilterComponent extends Component {
 
                             <Label style={{ width: '14vw', fontWeight: 'bold', marginLeft: '2%' }}>People</Label>
                             <FormGroup >
-                                <InputGroup style={{ width: '22vw', marginLeft: '5%' }}>
+                                <InputGroup style={{ marginLeft: '5%' }}>
                                     {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
                                     {this.props.people.map(v =>
                                         <InputGroup key={v.name}>
@@ -139,7 +168,7 @@ class MapFilterComponent extends Component {
                             {/* * Date Value Form * */}
                             <FormGroup style={{ marginLeft: '1%' }}>
                                 <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
-                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} startDate={this.props.startDate} endDate={this.props.endDate} handleChangeTime={this.handleChangeTime.bind(this)} />
+                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} startDate={this.props.startDate} endDate={this.props.endDate} handleChangeTime={this.handleChangeTime.bind(this)} dateValuesData={this.dateValuesData.bind(this)} createdAt={this.state.createdAtValues} data={this.state.dataValues} />
                             </FormGroup>
 
                             {/* <FormGroup style={{ marginLeft: '1%' }}>
