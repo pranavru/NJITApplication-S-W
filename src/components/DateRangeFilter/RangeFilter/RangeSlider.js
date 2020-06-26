@@ -3,7 +3,7 @@ import { Grid } from "@material-ui/core";
 import BarChart from "./BarChart";
 import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import { MuiRail, MuiHandle, MuiTrack, MuiTick } from "./components";
-// import '../App.css';
+import './RangeSlider.css';
 import { Card } from 'reactstrap';
 
 class RangeSlider extends React.Component {
@@ -25,9 +25,8 @@ class RangeSlider extends React.Component {
 
     render() {
         const { update, domain, displayChart } = this.state;
-        // console.log(this.props.data);
         return (
-            <Grid container style={{ margin: '3%', marginLeft: 0, bottom: 28, width: '92%', position: "absolute", zIndex: 0 }}>
+            <Grid container className="rangeSliderGrid" style={{ width: "85%" }} >
                 <Grid item xs={12}>
                     <Card>
                         <div

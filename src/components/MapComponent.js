@@ -6,7 +6,7 @@ import {
     InfoWindow,
     MarkerClusterer
 } from "@react-google-maps/api";
-import MapInfoWindow from './MapInfoWindow';
+import MapInfoWindow from './MapInfoWindow/MapInfoWindow';
 
 const MapComponent = (props) => {
 
@@ -19,8 +19,17 @@ const MapComponent = (props) => {
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
     const [selected, setSelected] = React.useState(null);
     const [currentZoom, setCurrentZoom] = React.useState(10);
+    const [ map, setMap ] = React.useState(null);
     const mapRef = React.useRef();
-    const onMapLoad = React.useCallback((map) => { mapRef.current = map; }, []);
+    const onMapLoad = React.useCallback((map) => {
+        mapRef.current = map;
+    }, []);
+
+    const onLoad = React.useCallback(function callback(map) {
+        const bounds = new window.google.maps.LatLngBounds(props.center);
+        map.fitBounds(bounds);
+        setMap(map);
+    }, [])
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
@@ -28,6 +37,7 @@ const MapComponent = (props) => {
     const createKey = (location) => {
         return location.lat + location.long
     };
+
     //Markers
     const MarkerData = (data, clusterer) => {
         if (data !== undefined) {
@@ -56,7 +66,7 @@ const MapComponent = (props) => {
             return (<div></div>);
     }
 
-    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 21, gridSize: 40 };
+    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 21, gridSize: 40, ignoreHidden: true };
     return (
         <div>
             <GoogleMap
@@ -64,8 +74,9 @@ const MapComponent = (props) => {
                 zoom={currentZoom}
                 center={center}
                 options={mapOptions}
-                onLoad={onMapLoad}
+                // onLoad={onMapLoad}
                 onZoomChanged={() => mapRef !== null ? mapRef.current !== undefined ? setCurrentZoom(mapRef.current.zoom) : null : null}
+                onLoad={onLoad}
             >
                 <MarkerClusterer options={clusterOptions}>
                     {clusterer => MarkerData(props.markersMap.vuzixMap, clusterer)}
@@ -85,7 +96,7 @@ function customInfoWindow(selected, setSelected, props) {
         position={{ lat: selected.lat, lng: selected.long }}
         onCloseClick={() => {
             setSelected(null);
-        } }
+        }}
     >
         {props.address !== "" ?
             <MapInfoWindow point={selected} address={props.address} baseURL={props.baseURL} /> :

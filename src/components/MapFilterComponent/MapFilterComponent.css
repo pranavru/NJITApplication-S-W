@@ -1,0 +1,48 @@
+.filterCard {
+  padding: 4px;
+  margin-top: 4%;
+}
+
+.filterFont {
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.filterCategoryLabel {
+  margin-left: 2%;
+  margin-top: 0px;
+}
+
+.cardHeaderTitleButton {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.cardHeaderTitleLabel {
+  text-align: left;
+  top: 2%;
+}
+
+.checkboxButtonLabel {
+  border: 0px;
+  padding: 1%;
+  margin-left: 3%;
+  width: 90%;
+  text-align: left;
+}
+
+.checkboxButton {
+  margin-top: 2.2%;
+}
+
+.inputGroupValue {
+  margin-left: 5%;
+}
+
+.submitButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}

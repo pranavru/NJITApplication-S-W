@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import MapComponent from './components/MapComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Animated } from 'react-animated-css';
-import MapFilterComponent from './components/MapFilterComponent'
+import MapFilterComponent from './components/MapFilterComponent/MapFilterComponent'
 import axios from 'axios';
-import MarkerPLaceDetailComponent from './components/MarkerPlaceDetailComponent';
+import MarkerPLaceDetailComponent from './components/MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
 import { Button } from 'reactstrap'
 
 class App extends Component {
@@ -182,7 +182,7 @@ class App extends Component {
                   style={{ zIndex: 4, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
                 >
                   {/** Button to toggle Card Detail Div */}
-                  <Button style={{ position: 'absolute', left: '22.1vw', top: 15 }} onClick={this.loadDetailedDiv.bind(this)}>&lt;&lt;</Button>
+                  <Button style={{ position: 'absolute', left: '22vw', top: 15, zIndex: 0 }} onClick={this.loadDetailedDiv.bind(this)}>&lt;&lt;</Button>
                   <div className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}
                     style={{ overflowY: 'scroll', height: "99.2vh" }} >
                     {

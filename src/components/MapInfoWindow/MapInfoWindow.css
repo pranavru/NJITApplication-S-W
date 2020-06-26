@@ -1,0 +1,12 @@
+#theImage {
+  width: 100%;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+  height: auto;
+}
+
+#containerImg {
+  width: 60%;
+  margin: 0 auto;
+}

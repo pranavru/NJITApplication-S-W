@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Form, FormGroup, Label, Input, Card, InputGroup, Button } from 'reactstrap';
-import '../App.css';
-import DateRangeFilter from './DateRangeFilter';
-import DisplayVideoComponent from './DisplayVideoComponent';
+import './MapFilterComponent.css'
+import DateRangeFilter from '../DateRangeFilter/DateRangeFilter';
+import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponent';
 
 class MapFilterComponent extends Component {
 
@@ -28,13 +28,8 @@ class MapFilterComponent extends Component {
     }
 
     componentDidMount() {
-        this.dateValuesData();  
+        this.dateValuesData();
     }
-
-    // shouldComponentUpdate(nextProps) {
-    //     return this.props !== nextProps;
-    // }
-
 
     handleChangeCheck(event) {
         if (event.target.name === 'addressValue') {
@@ -126,48 +121,43 @@ class MapFilterComponent extends Component {
                 }
             }
         })
-        console.log("loading data in datevalues", data)
-        this.setState({ createdAtValues: createdAt, dataValues: data})
-        console.log("after loading data");
-        console.log(this.state);
-        
+        this.setState({ createdAtValues: createdAt, dataValues: data })
     }
 
     render() {
-        // console.log("render: MapFilterComponent", this.state.dataValues)
-        
+
         return (
             <div style={{ height: '98vh', marginLeft: "2%" }}>
-                <Card style={{ padding: 4, marginTop: '4%' }}>
-                    <Button disabled style={{ borderBottomRightRadius: 0, borderBottomLeftRadius: 0 }}><Label style={{ fontWeight: 'bold', textAlign: 'left', top: '2%' }}>Filter</Label></Button>
-                    <div style={{ marginTop: "3%" }}>
+                <Card className="filterCard">
+                    <Button disabled className="cardHeaderTitleButton"><Label className="cardHeaderTitleLabel filterFont">FILTER</Label></Button>
+                    <div>
                         <Form onSubmit={this.handleSubmit}>
                             {/* * Speech Form * */}
                             <FormGroup>
-                                <InputGroup style={{  marginLeft: "5%" }}>
-                                    <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} style={{ marginTop: '3.7%' }} />
-                                    <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: 'white', color: '#000000', border: 0, fontWeight: "bold" }}>Speech</Button>
+                                <InputGroup className="inputGroupValue">
+                                    <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
+                                    <Button outline disabled className="checkboxButtonLabel filterFont" style={{ color: "black" }}>SPEECH</Button>
                                 </InputGroup>
                             </FormGroup>
 
                             {/* * Persons Form * */}
 
-                            <Label style={{ width: '14vw', fontWeight: 'bold', marginLeft: '2%' }}>People</Label>
+                            <Label className="filterCategoryLabel filterFont">PEOPLE</Label>
                             <FormGroup >
-                                <InputGroup style={{ marginLeft: '5%' }}>
+                                <InputGroup className="inputGroupValue">
                                     {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
                                     {this.props.people.map(v =>
                                         <InputGroup key={v.name}>
-                                            <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} style={{ marginTop: '3.7%' }} />
-                                            <Button disabled style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, backgroundColor: 'white', color: '#000000', border: 0, fontWeight: "bold" }}>{v.name}</Button>
+                                            <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
+                                            <Button outline disabled className="checkboxButtonLabel filterFont" style={{ color: "black" }}>{v.name.toUpperCase()}</Button>
                                         </InputGroup>
                                     )}
                                 </InputGroup>
                             </FormGroup>
 
                             {/* * Date Value Form * */}
-                            <FormGroup style={{ marginLeft: '1%' }}>
-                                <Label style={{ width: '14vw', fontWeight: 'bold' }}>Date</Label>
+                            <FormGroup>
+                                <Label className="filterCategoryLabel filterFont">DATE</Label>
                                 <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} startDate={this.props.startDate} endDate={this.props.endDate} handleChangeTime={this.handleChangeTime.bind(this)} dateValuesData={this.dateValuesData.bind(this)} createdAt={this.state.createdAtValues} data={this.state.dataValues} />
                             </FormGroup>
 
@@ -182,7 +172,7 @@ class MapFilterComponent extends Component {
                                 </select>
                             </FormGroup> */}
 
-                            <Input type="submit" value="Submit" />
+                            <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont" >SUBMIT</Button>
                         </Form>
                     </div>
                 </Card>

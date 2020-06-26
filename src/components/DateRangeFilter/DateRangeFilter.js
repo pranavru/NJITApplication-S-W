@@ -2,12 +2,12 @@ import React from 'react';
 import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import { Card } from 'reactstrap';
 import RangeSlider from './RangeFilter/RangeSlider';
+import "./DateRangeFilter.css";
 
 function DateRangeFilter(props) {
-    // console.log("Date Range filter render", props);
     return (
-        <Card style={{ padding: 4 }}>
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <Card className="dateRangeCard">
+            <div className="dateRange">
                 <DateRangePicker
                     onChange={props.handleChangeDate}
                     value={props.dateValue}
@@ -15,10 +15,19 @@ function DateRangeFilter(props) {
                     minDate={props.startDate}
                     maxDate={props.endDate}
                     required
+                    clearIcon={null}
+                    rangeDivider="to  "
+                    style={{ fontSize: '12px', fontWeight: 'light', fontFamily: 'monospace' }}
                 />
             </div>
-            <div style={{ padding: 4, height: 40, border: "none", marginTop: '3%' }}>
-                <RangeSlider DataVuzix={props.DataVuzix} dateValue={props.dateValue} style={{ height: 40 }} handleChangeTime={props.handleChangeTime} createdAt={props.createdAt} data={props.data}/>
+            <div className="rangeSliderDiv">
+                <RangeSlider
+                    DataVuzix={props.DataVuzix}
+                    dateValue={props.dateValue}
+                    handleChangeTime={props.handleChangeTime}
+                    createdAt={props.createdAt}
+                    data={props.data}
+                />
             </div>
         </Card>
     );

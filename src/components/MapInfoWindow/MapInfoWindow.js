@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card, CardText, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
+import "./MapInfoWindow.css";
 
 function displayWindowHeader(props) {
     const d = new Date(props.point.created);
@@ -7,8 +8,7 @@ function displayWindowHeader(props) {
     return (
         <>
             <CardHeader>
-                <CardTitle className="text-center" style={{ fontWeight: 'bold', fontSize: 18 }}>{props.address} </CardTitle>
-                <p style={{ padding: 0, margin: 0, alignItems: 'flex-end', display: 'flex', justifyContent: 'flex-end' }}> Created At: {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}:{d.getSeconds() < 10 ? `0${d.getSeconds()}` : d.getSeconds()}</p>
+                <CardTitle className="text-center" style={{ fontWeight: 'bold', fontSize: 16 }}>{props.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
             </CardHeader>
             {console.log(props.point)}
             <div id="containerImg">
@@ -29,7 +29,6 @@ function displayFooter(props) {
         <>
             <hr />
             <CardText>
-                {/* <p style={{ fontWeight: 'bold', fontSize: 14 }} > Person Names</p> */}
                 <div className="row">
                     {props.point.person_names.map(person =>
                         <div className="col-md-4" style={{ fontWeight: 'normal', fontSize: 12, border: 0, marginLeft: "2%" }} ><p>{'\u2022'} {person.person_name}</p> </div>

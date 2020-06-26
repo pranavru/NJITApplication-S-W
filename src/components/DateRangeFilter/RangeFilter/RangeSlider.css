@@ -1,0 +1,6 @@
+.rangeSliderGrid {
+  margin: 3%;
+  position: absolute;
+  z-index: 0;
+  bottom: 28px;
+}
