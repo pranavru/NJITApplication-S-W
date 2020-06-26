@@ -23,7 +23,8 @@ class App extends Component {
       address: "",
       id: null,
       video: "",
-      personName: []
+      personName: [],
+      detailDivData: [],
     }
   }
 
@@ -70,7 +71,7 @@ class App extends Component {
     }
   }
 
-  changeVideoProps() { this.setState({ video: "", DataVuzix: { vuzixMap: [] }}) }
+  changeVideoProps() { this.setState({ video: "", DataVuzix: { vuzixMap: [] } }) }
 
   AnimateMarker(markerData) {
     let data = this.state.DataVuzix;
@@ -141,7 +142,9 @@ class App extends Component {
   }
 
   // To render the Markers - Card Detail Div
-  loadDetailedDiv() { this.setState({ detailDiv: !this.state.detailDiv }) }
+  loadDetailedDiv = () => this.setState({ detailDiv: !this.state.detailDiv })
+
+  loadDetailedDivData = divData => this.setState({ detailDivData: divData })
 
   render() {
     return (
@@ -189,7 +192,7 @@ class App extends Component {
                       this.address !== undefined ?
                         <MarkerPLaceDetailComponent
                           baseURL={this.state.baseURL}
-                          data={this.state.DataVuzix}
+                          data={this.state.detailDivData}
                           mapAddress={this.address}
                           AnimateMarker={this.AnimateMarker.bind(this)}
                           ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
@@ -209,6 +212,7 @@ class App extends Component {
                   animateMarkerData={this.state.animateMarkerData}
                   loadDataJson={this.loadDataJson.bind(this)}
                   ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
+                  loadDetailedDivData={this.loadDetailedDivData.bind(this)}
                 />
               </>
               :

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardText, CardSubtitle, CardImg } from 'reactstrap';
 import './MarkerPlaceDetailComponent.css';
+import '../../App.css';
 
 const dateStringVal = (p) => {
     const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', hour12: false })
@@ -12,12 +13,11 @@ const dateStringVal = (p) => {
 function MarkerPLaceDetailComponent(props) {
     return (
         <>
-            {props.data.vuzixMap.map((p) =>
+            {props.data.map((p) =>
                 <Card style={{ width: '19vw', marginTop: '2%', padding: '4px' }} key={p.id}
                     onMouseOver={() => window.setTimeout(props.AnimateMarker(p), 1000)}
                     onMouseOut={() => props.AnimateMarker(null)}
                 >
-
                     <table>
                         <tbody>
                             <tr>
@@ -50,9 +50,7 @@ function MarkerPLaceDetailComponent(props) {
                         </tbody>
                     </table>
                 </Card>
-
-            )
-            }
+            )}
         </>
     );
 }
