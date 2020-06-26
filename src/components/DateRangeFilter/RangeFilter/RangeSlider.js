@@ -54,6 +54,7 @@ class RangeSlider extends React.Component {
                                 }}
                                 onChange={values => this.setState({ values })}
                                 step={0.5}
+                                mode={3}
                             >
                                 <Rail>
                                     {({ getRailProps }) => <MuiRail getRailProps={getRailProps} />}

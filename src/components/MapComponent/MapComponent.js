@@ -6,7 +6,7 @@ import {
     InfoWindow,
     MarkerClusterer
 } from "@react-google-maps/api";
-import MapInfoWindow from './MapInfoWindow/MapInfoWindow';
+import MapInfoWindow from '../MapInfoWindow/MapInfoWindow';
 
 const MapComponent = (props) => {
 

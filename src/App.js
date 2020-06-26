@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MapComponent from './components/MapComponent';
+import MapComponent from './components/MapComponent/MapComponent';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Animated } from 'react-animated-css';
 import MapFilterComponent from './components/MapFilterComponent/MapFilterComponent'
