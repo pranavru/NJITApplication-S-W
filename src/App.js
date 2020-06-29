@@ -115,10 +115,26 @@ class App extends Component {
     ).then().catch(err => err)
   }
 
+  //Setting Addresses in Local Storage for future access.
   setDetailsViewTable() {
-    let pranavaddr = Array.from(this.address, ([key, value]) => ({ key, value }))
-    let addr = { address: pranavaddr }
-    localStorage.setItem('addresses', JSON.stringify(addr))
+    const itemStr = localStorage.getItem('addresses');
+    if (!itemStr) {
+      let pranavaddr = Array.from(this.address, ([key, value]) => ({ key, value }))
+      
+      //Set expiry date for 6hrs from current time when addresses are set.
+      let expiryDate = new Date().getTime() + 21600000;
+      let addr = {
+        address: pranavaddr,
+        expiry: expiryDate,
+      }
+      localStorage.setItem('addresses', JSON.stringify(addr))
+    } else {
+      const item = JSON.parse(itemStr)
+      if (new Date().getTime() > item.expiry) {
+        localStorage.removeItem('addresses');
+        this.setDetailsViewTable()
+      }
+    }
   }
 
   //Load the Person Names in Filter
@@ -144,6 +160,7 @@ class App extends Component {
   // To render the Markers - Card Detail Div
   loadDetailedDiv = () => this.setState({ detailDiv: !this.state.detailDiv })
 
+  //Change Detail Div Array based on location
   loadDetailedDivData = divData => this.setState({ detailDivData: divData })
 
   render() {
@@ -172,7 +189,7 @@ class App extends Component {
                     {/** Button to toggle Card Detail Div */}
                     {!this.state.detailDiv ?
                       <Button
-                        style={{ zIndex: 4, position: 'absolute', top: 15, left: '22.1vw' }}
+                        style={{ zIndex: 4, position: 'absolute', top: 15, left: '22.2vw', backgroundColor: '#2C4870' }}
                         onClick={this.loadDetailedDiv.bind(this)}
                       >&gt;&gt;</Button>
                       : <></>
@@ -185,7 +202,7 @@ class App extends Component {
                   style={{ zIndex: 4, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
                 >
                   {/** Button to toggle Card Detail Div */}
-                  <Button style={{ position: 'absolute', left: '22vw', top: 15, zIndex: 0 }} onClick={this.loadDetailedDiv.bind(this)}>&lt;&lt;</Button>
+                  <Button style={{ position: 'absolute', left: '23.5vw', top: 15, zIndex: 0, backgroundColor: '#2C4870' }} onClick={this.loadDetailedDiv.bind(this)}>&lt;&lt;</Button>
                   <div className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}
                     style={{ overflowY: 'scroll', height: "99.2vh" }} >
                     {

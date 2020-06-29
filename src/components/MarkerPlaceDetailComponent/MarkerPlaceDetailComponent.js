@@ -4,17 +4,17 @@ import './MarkerPlaceDetailComponent.css';
 import '../../App.css';
 
 const dateStringVal = (p) => {
-    const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', hour12: false })
-    const [{ value: month }, , { value: day }, , { value: year }, , { value: hour }, , { value: minute }] = dateTimeFormat.formatToParts(p)
+    const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
+    const [{ value: month }, , { value: day }, , { value: year }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(p)
 
-    return `${month} ${day}, ${year} ${hour}:${minute}`;
+    return `${month} ${day}, ${year} ${hour}:${minute}:${second}`;
 }
 
 function MarkerPLaceDetailComponent(props) {
     return (
         <>
             {props.data.map((p) =>
-                <Card style={{ width: '19vw', marginTop: '2%', padding: '4px' }} key={p.id}
+                <Card style={{ width: '20vw', marginTop: '2%', padding: '2px' }} key={p.id}
                     onMouseOver={() => window.setTimeout(props.AnimateMarker(p), 1000)}
                     onMouseOut={() => props.AnimateMarker(null)}
                 >
@@ -29,20 +29,22 @@ function MarkerPLaceDetailComponent(props) {
                                     <table>
                                         <thead>
                                             <tr>
-                                                <td><CardText className="locationText">Loc: {props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`)} </CardText></td>
-                                            </tr>
-                                            {p.speech !== "" ? <tr>
-                                                <td><CardSubtitle className="speechText"><q>{p.speech}</q></CardSubtitle></td>
-                                            </tr> : <></>}
-                                            {p.person_names.length > 0 ? <tr>
                                                 <td>
-                                                    <CardSubtitle className="speechTextPerson">
-                                                        <i> &nbsp;&nbsp;&nbsp;&nbsp;--
-                                        {p.person_names.map(pn => pn.person_name)}
-                                                        </i>
-                                                    </CardSubtitle>
+                                                    <CardText className="locationText">{props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`).length === 0 ? `Location Unavailable` : props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`)} </CardText>
                                                 </td>
-                                            </tr> : <></>}
+                                            </tr>
+                                            {p.speech !== "" ?
+                                                <tr>
+                                                    <td><CardSubtitle className="speechText"><q>{p.speech}</q></CardSubtitle></td>
+                                                </tr> : <></>
+                                            }
+                                            {p.person_names.length > 0 ?
+                                                <tr>
+                                                    <td>
+                                                        <CardText className="speechTextPerson"><img src="iconmonstr-user-1.svg" className="iconImg" />{p.person_names.map(pn => pn.person_name.toUpperCase())} </CardText>
+                                                    </td>
+                                                </tr> : <></>
+                                            }
                                         </thead>
                                     </table>
                                 </td>

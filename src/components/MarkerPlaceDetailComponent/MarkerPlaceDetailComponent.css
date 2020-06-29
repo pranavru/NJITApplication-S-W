@@ -10,14 +10,14 @@
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 0px;
   border-top-right-radius: 0px;
-  width: 100%;
+  width: 90%;
   height: 22.5%;
 }
 
 .dateFieldCard {
   display: flex;
-  justify-content: flex-end;
   align-items: flex-start;
+  justify-content: center;
   position: absolute;
   font-size: 10px;
   right: 2%;
@@ -26,26 +26,39 @@
 }
 
 .locationText {
-  font-weight: bold;
+  /* font-weight: bold; */
   font-size: 10px;
   width: 12vw;
   font-family: monospace;
-  margin-top: 10px;
+  color: #2c4870;
+  margin-top: 8%;
+  margin-left: 2%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .speechText {
-  font-size: 10px;
+  font-size: 8px;
+  /* font-family: monospace; */
   margin-top: 3%;
+  margin-left: 2%;
+  text-align: justify;
+  text-justify: auto;
+  line-height: 9.5px;
+}
+
+.iconImg {
+  top: 0.3%;
+  margin-right: 2%;
 }
 
 .speechTextPerson {
-  font-weight: bold;
-  font-size: 12px;
-  margin-top: 1%;
+  /* font-weight: bold; */
+  font-size: 10px;
+  font-family: monospace;
+  margin-top: 3%;
   display: flex;
-  align-items: flex-end;
-  justify-content: flex-end;
-  position: absolute;
-  right: 10%;
-  bottom: 3px;
+  align-items: flex-start;
+  justify-content: flex-start;
+  margin-left: 15%;
 }

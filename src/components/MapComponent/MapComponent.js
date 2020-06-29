@@ -27,7 +27,7 @@ const MapComponent = (props) => {
 
     const onLoad = React.useCallback(function callback(map1) {
         const bounds = new window.google.maps.LatLngBounds();
-        props.markersMap.vuzixMap.forEach(element => {
+        props.markersMap.vuzixMap.map(element => {
             bounds.extend({ lat: element.lat, lng: element.long })
         });
         map1.fitBounds(bounds);
@@ -74,10 +74,11 @@ const MapComponent = (props) => {
         const NW = bounds.getNorthEast().toJSON();
         const SE = bounds.getSouthWest().toJSON();
         const marks = [];
-        const zoomLevel = mapR.getZoom();
+        const zoomLevel = mapR.getZoom(); 
+        const tradeOffValue = 3;
         const decimalValue = zoomLevel === 22 ? 3 : zoomLevel === 21 ? 2 : zoomLevel === 20 ? 1 : zoomLevel < 20 ? 0: 0;
         props.markersMap.vuzixMap.map(m => {
-            if(NW.lat.toFixed(decimalValue) === m.lat.toFixed(decimalValue)) {
+            if((NW.lat.toFixed(decimalValue) + tradeOffValue >= m.lat.toFixed(decimalValue)) || (NW.lat.toFixed(decimalValue) - tradeOffValue <= m.lat.toFixed(decimalValue))) {
                 marks.push(m);
             }
         })

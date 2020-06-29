@@ -129,14 +129,14 @@ class MapFilterComponent extends Component {
         return (
             <div style={{ height: '98vh', marginLeft: "2%" }}>
                 <Card className="filterCard">
-                    <Button disabled className="cardHeaderTitleButton"><Label className="cardHeaderTitleLabel filterFont">FILTER</Label></Button>
+                    <Button disabled className="cardHeaderTitleButton" style={{ backgroundColor: '#2C4870'}}><Label className="cardHeaderTitleLabel filterFont">FILTER</Label></Button>
                     <div>
                         <Form onSubmit={this.handleSubmit}>
                             {/* * Speech Form * */}
                             <FormGroup>
                                 <InputGroup className="inputGroupValue">
                                     <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
-                                    <Button outline disabled className="checkboxButtonLabel filterFont" style={{ color: "black" }}>SPEECH</Button>
+                                    <Button outline disabled className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</Button>
                                 </InputGroup>
                             </FormGroup>
 
@@ -149,7 +149,7 @@ class MapFilterComponent extends Component {
                                     {this.props.people.map(v =>
                                         <InputGroup key={v.name}>
                                             <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
-                                            <Button outline disabled className="checkboxButtonLabel filterFont" style={{ color: "black" }}>{v.name.toUpperCase()}</Button>
+                                            <Button outline disabled className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</Button>
                                         </InputGroup>
                                     )}
                                 </InputGroup>
@@ -172,7 +172,7 @@ class MapFilterComponent extends Component {
                                 </select>
                             </FormGroup> */}
 
-                            <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont" >SUBMIT</Button>
+                            <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button>
                         </Form>
                     </div>
                 </Card>

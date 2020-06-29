@@ -53,7 +53,7 @@ export const MuiRail = withStyles(muiRailStyle)(MuiRailComponent);
 
 const muiHandleStyle = theme => ({
   root: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: '#2C4870',
     marginLeft: thumbHeight * -0.5,
     marginTop: thumbHeight * -0.33,
     width: thumbHeight,
@@ -106,7 +106,7 @@ export const MuiHandle = withStyles(muiHandleStyle)(MuiHandleComponent);
 
 const muiTrackStyle = theme => ({
   track: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: '#2C4870',
     height: trackHeight,
     position: "absolute",
     zIndex: 1,
