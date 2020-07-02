@@ -25,8 +25,8 @@ function DateRangeFilter(props) {
                     DataVuzix={props.DataVuzix}
                     dateValue={props.dateValue}
                     handleChangeTime={props.handleChangeTime}
-                    createdAt={props.createdAt}
                     data={props.data}
+                    dateValuesData={props.dateValuesData}
                 />
             </div>
         </Card>

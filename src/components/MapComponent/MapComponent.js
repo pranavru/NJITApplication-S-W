@@ -75,10 +75,10 @@ const MapComponent = (props) => {
         const SE = bounds.getSouthWest().toJSON();
         const marks = [];
         const zoomLevel = mapR.getZoom(); 
-        const tradeOffValue = 3;
+        const tradeOffValue = 1;
         const decimalValue = zoomLevel === 22 ? 3 : zoomLevel === 21 ? 2 : zoomLevel === 20 ? 1 : zoomLevel < 20 ? 0: 0;
         props.markersMap.vuzixMap.map(m => {
-            if((NW.lat.toFixed(decimalValue) + tradeOffValue >= m.lat.toFixed(decimalValue)) || (NW.lat.toFixed(decimalValue) - tradeOffValue <= m.lat.toFixed(decimalValue))) {
+            if(NW.lat.toFixed(decimalValue) + tradeOffValue >= m.lat.toFixed(decimalValue) && NW.lat.toFixed(decimalValue) <= m.lat.toFixed(decimalValue)) {
                 marks.push(m);
             }
         })
@@ -86,7 +86,7 @@ const MapComponent = (props) => {
         props.loadDetailedDivData(marks.length <= 0 ? props.markersMap.vuzixMap : marks);
     }
 
-    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 21, gridSize: 40, ignoreHidden: true };
+    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 21, gridSize: 60, ignoreHidden: true };
     return (
         <div>
             <GoogleMap
@@ -94,9 +94,8 @@ const MapComponent = (props) => {
                 zoom={currentZoom}
                 center={center}
                 options={mapOptions}
-                onLoad={onMapLoad}
+                onLoad={onMapLoad, onLoad}
                 onZoomChanged={() => mapRef !== null ? mapRef.current !== undefined ? setCurrentZoom(mapRef.current.zoom) : null : null}
-                onLoad={onLoad}
                 onBoundsChanged={() => logBounds()}
             >
                 <MarkerClusterer options={clusterOptions}>
@@ -119,15 +118,15 @@ function customInfoWindow(selected, setSelected, props) {
             setSelected(null);
         }}
     >
-        {props.address !== "" ?
+        {props.address ?
             <MapInfoWindow point={selected} address={props.address} baseURL={props.baseURL} /> :
-            <div className="loader"></div>}
+            <div className="loader" style={{ width: 15, height: 15}}></div>}
     </InfoWindow>;
 }
 
 function hoverMarker(setSelected, mapVuzix, props) {
     return () => {
         setSelected(mapVuzix);
-        props.ReverseGeoCodeAPI(mapVuzix.lat, mapVuzix.long, 0);
+        props.ReverseGeoCodeAPI(mapVuzix.lat, mapVuzix.long, 3);
     };
 }

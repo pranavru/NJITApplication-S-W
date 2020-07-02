@@ -101,14 +101,14 @@ class MapFilterComponent extends Component {
                     let url = this.props.baseURL + m.src;
                     m.src = url;
                 }
+                return null;
             })
         }
         return items_array;
     }
 
     dateValuesData = () => {
-        let createdAt = new Map();
-        let data = [];
+        let createdAt = new Map(), testData = new Map(), data = [];
         this.props.DataVuzix.vuzixMap.map(m => {
             const dateValue = new Date(m.created);
             if (this.state.dateValue[0].getTime() <= dateValue.getTime() && dateValue.getTime() <= this.state.dateValue[1].getTime()) {
@@ -120,8 +120,10 @@ class MapFilterComponent extends Component {
                     createdAt.set(new Date(dateValueHours, dateValueHours + 1))
                 }
             }
+            return null;
         })
-        this.setState({ createdAtValues: createdAt, dataValues: data })
+        this.setState({ dataValues: data })
+        return testData;
     }
 
     render() {
@@ -129,7 +131,7 @@ class MapFilterComponent extends Component {
         return (
             <div style={{ height: '98vh', marginLeft: "2%" }}>
                 <Card className="filterCard">
-                    <Button disabled className="cardHeaderTitleButton" style={{ backgroundColor: '#2C4870'}}><Label className="cardHeaderTitleLabel filterFont">FILTER</Label></Button>
+                    <Button disabled className="cardHeaderTitleButton" style={{ backgroundColor: '#2C4870' }}><Label className="cardHeaderTitleLabel filterFont">FILTER</Label></Button>
                     <div>
                         <Form onSubmit={this.handleSubmit}>
                             {/* * Speech Form * */}
@@ -183,3 +185,17 @@ class MapFilterComponent extends Component {
 }
 
 export default MapFilterComponent;
+
+// const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
+// let [{ value: month }, , { value: day }, , { value: year }, , { value: hour }] = dateTimeFormat.formatToParts(dateValue);
+// const minutes = "00";
+// if(hour %3 === 1) {
+//     hour = hour - 1;
+// } else if(hour %3 === 2) {
+//     hour = hour - 2;
+// }
+// if (!testData.has(`${month} ${day}, ${year} ${hour}:${minutes}`)) {
+//     testData.set(`${month} ${day}, ${year} ${hour}:${minutes}`, 1)
+// } else {
+//     testData.set(`${month} ${day}, ${year} ${hour}:${minutes}`, testData.get(`${month} ${day}, ${year} ${hour}:${minutes}`) + 1)
+// }

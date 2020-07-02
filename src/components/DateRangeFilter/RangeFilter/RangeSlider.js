@@ -13,7 +13,6 @@ class RangeSlider extends React.Component {
         this.startDateAT = new Date(this.props.DataVuzix.startDate);
         this.endDateAT = new Date(this.props.DataVuzix.endDate);
         const range = [0.5, 23.5];
-
         this.state = {
             domain: range,
             update: range,
@@ -48,12 +47,12 @@ class RangeSlider extends React.Component {
                                     width: "100%"
                                 }}
                                 domain={domain}
-                                values={domain}
+                                values={domain} 
                                 onUpdate={update => {
                                     this.setState({ update, inputValues: update })
                                 }}
                                 onChange={values => this.setState({ values })}
-                                step={0.5}
+                                step={3}
                                 mode={3}
                             >
                                 <Rail>
@@ -108,3 +107,13 @@ class RangeSlider extends React.Component {
 }
 
 export default RangeSlider;
+
+// const dateArrayTest = [];
+// const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
+// let [{ value: month }, , { value: day }, , { value: year }, , { value: hour }] = dateTimeFormat.formatToParts(this.startDateAT);
+// this.startDateAT = new Date(`${month} ${day}, ${year} ${hour}:00`)
+// console.log(this.startDateAT, this.startDateAT.getTime(), this.endDateAT.getTime())
+// while (this.startDateAT.getTime() <= this.endDateAT.getTime()) {
+//     dateArrayTest.push(new Date(`${month} ${day}, ${year}`)
+// }
+// this.testData = Array.from(props.dateValuesData());
