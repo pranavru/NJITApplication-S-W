@@ -5,56 +5,61 @@ import { Slider, Rail, Handles, Tracks, Ticks } from "react-compound-slider";
 import { MuiRail, MuiHandle, MuiTrack, MuiTick } from "./components";
 import './RangeSlider.css';
 import { Card } from 'reactstrap';
+import { format } from "date-fns";
+import { scaleTime } from "d3-scale";
+
+const sliderStyle = {
+    position: "relative",
+    width: "100%"
+};
+
+function formatTick(ms) {
+    return format(new Date(ms), "MMM dd");
+}
 
 class RangeSlider extends React.Component {
+
     constructor(props) {
         super(props);
-
-        this.startDateAT = new Date(this.props.DataVuzix.startDate);
-        this.endDateAT = new Date(this.props.DataVuzix.endDate);
-        const range = [0.5, 23.5];
         this.state = {
-            domain: range,
-            update: range,
-            values: range,
-            inputValues: null,
-            displayChart: false
+            displayChart: false,
         };
     }
 
     render() {
-        const { update, domain, displayChart } = this.state;
+        const { updated, values, domain, hours, dateData } = this.props.state;
+        const { displayChart } = this.state
+
+        const dateTicks = scaleTime()
+            .domain(domain)
+            .ticks(5)
+            .map(d => +d);
+
         return (
-            <Grid container className="rangeSliderGrid" style={{ width: "85%" }} >
+            <Grid container className="rangeSliderGrid" style={{ width: "87.5%" }} >
                 <Grid item xs={12}>
                     <Card>
                         <div
-                            onMouseLeave={() => {
-                                this.setState({ displayChart: false })
-                                this.props.handleChangeTime(update[0], update[1]);
-                            }}>
-                            <div style={{ display: displayChart ? "flex" : "none" }}>
+                            onMouseLeave={() => this.setState({ displayChart: false })}>
+                            <div style={{ display: displayChart ? "flex" : "none", marginLeft: 4, marginRight: 4 }}>
                                 <BarChart
-                                    data={this.props.data}
-                                    highlight={update}
+                                    data={dateData}
+                                    highlight={updated}
                                     domain={domain}
+                                    multipleHours={this.props.multipleHours}
                                 />
                             </div>
 
                             <Slider
-                                rootStyle={{
-                                    position: "relative",
-                                    width: "100%"
-                                }}
+                                mode={1}
+                                step={hours}
                                 domain={domain}
-                                values={domain} 
-                                onUpdate={update => {
-                                    this.setState({ update, inputValues: update })
-                                }}
-                                onChange={values => this.setState({ values })}
-                                step={3}
-                                mode={3}
+                                rootStyle={sliderStyle}
+                                onUpdate={this.props.onUpdate}
+                                onChange={this.props.onChange}
+                                values={values}
                             >
+
                                 <Rail>
                                     {({ getRailProps }) => <MuiRail getRailProps={getRailProps} />}
                                 </Rail>
@@ -88,11 +93,16 @@ class RangeSlider extends React.Component {
                                         </div>
                                     )}
                                 </Tracks>
-                                <Ticks count={12}>
+                                <Ticks values={dateTicks}>
                                     {({ ticks }) => (
-                                        <div className="slider-ticks">
+                                        <div>
                                             {ticks.map(tick => (
-                                                <MuiTick key={tick.id} tick={tick} count={ticks.length} />
+                                                <MuiTick
+                                                    key={tick.id}
+                                                    tick={tick}
+                                                    count={ticks.length}
+                                                    format={formatTick}
+                                                />
                                             ))}
                                         </div>
                                     )}

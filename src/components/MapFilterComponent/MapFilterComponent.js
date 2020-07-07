@@ -27,9 +27,9 @@ class MapFilterComponent extends Component {
         this.locations = JSON.parse(localStorage.getItem('addresses'))
     }
 
-    componentDidMount() {
-        this.dateValuesData();
-    }
+    // componentDidMount = () => this.dateValuesData();
+
+    handleDateChange = (startDate, endDate) => this.setState({ dateValue: [startDate, endDate], disPlayVideo: false });
 
     handleChangeCheck(event) {
         if (event.target.name === 'addressValue') {
@@ -43,54 +43,8 @@ class MapFilterComponent extends Component {
 
     changePersonAsSelected(event) {
         let persons = this.props.people
-        persons.forEach(person => { if (person.name === event.target.name) person.checked = event.target.checked })
+        persons.forEach(person => person.name === event.target.name ? person.checked = event.target.checked : null)
         this.setState({ personName: persons, disPlayVideo: false })
-    }
-
-    handleChangeDate(event) {
-        let startDate = this.state.dateValue[0];
-        let endDate = this.state.dateValue[1];
-        startDate.setFullYear(event[0].getFullYear(), event[0].getMonth(), event[0].getDate());
-        endDate.setFullYear(event[1].getFullYear(), event[1].getMonth(), event[1].getDate());
-
-        this.setState({ dateValue: [startDate, endDate], disPlayVideo: false });
-        this.dateValuesData();
-    }
-
-    handleChangeTime(startTime, endTime) {
-        let startDate = this.state.dateValue[0];
-        let endDate = this.state.dateValue[1];
-        startDate.setHours(startTime);
-        startDate.setMinutes(Math.floor(startTime) < startTime ? 30 : 0);
-        endDate.setHours(endTime)
-        endDate.setMinutes(Math.floor(endTime) < endTime ? 30 : 0);
-        console.log(startDate, endDate);
-        this.setState({ dateValue: [startDate, endDate], disPlayVideo: false })
-    }
-
-    submitObjectValues() {
-        let persons = []
-        this.state.personName.map(p => p.checked === true ? persons.push(p.name) : null)
-
-        let json_body = {
-            speech: this.state.isSpeech,
-            person: persons,
-            // location: this.state.addressValue,
-            lat: "0.0",
-            long: "0.0",
-            start_date: this.state.dateValue[0].toISOString(),
-            end_date: this.state.dateValue[1].toISOString(),
-            vid: "123456789"
-        }
-
-        return json_body;
-    }
-
-    handleSubmit(event) {
-        event.preventDefault();
-        this.props.changeVideoProps();
-        this.props.loadDataJson('/query/', this.submitObjectValues())
-        this.setState({ disPlayVideo: true })
     }
 
     addImages = (video) => {
@@ -107,27 +61,32 @@ class MapFilterComponent extends Component {
         return items_array;
     }
 
-    dateValuesData = () => {
-        let createdAt = new Map(), testData = new Map(), data = [];
-        this.props.DataVuzix.vuzixMap.map(m => {
-            const dateValue = new Date(m.created);
-            if (this.state.dateValue[0].getTime() <= dateValue.getTime() && dateValue.getTime() <= this.state.dateValue[1].getTime()) {
-                const dateValueHours = dateValue.getHours()
-                data.push(dateValueHours);
-                if (!createdAt.has(dateValueHours)) {
-                    createdAt.set(dateValueHours, 1)
-                } else {
-                    createdAt.set(new Date(dateValueHours, dateValueHours + 1))
-                }
-            }
-            return null;
-        })
-        this.setState({ dataValues: data })
-        return testData;
+    submitObjectValues() {
+        let persons = []
+        this.state.personName.map(p => p.checked === true ? persons.push(p.name) : null)
+
+        let json_body = {
+            speech: this.state.isSpeech,
+            person: persons,
+            // location: this.state.addressValue,
+            lat: "0.0",
+            long: "0.0",
+            start_date: this.state.dateValue[0].toISOString(),
+            end_date: this.state.dateValue[1].toISOString(),
+            vid: "123456789"
+        }
+        console.log(json_body)
+        return json_body;
+    }
+
+    handleSubmit(event) {
+        event.preventDefault();
+        this.props.changeVideoProps();
+        this.props.loadDataJson('/query/', this.submitObjectValues())
+        this.setState({ disPlayVideo: true })
     }
 
     render() {
-
         return (
             <div style={{ height: '98vh', marginLeft: "2%" }}>
                 <Card className="filterCard">
@@ -143,7 +102,6 @@ class MapFilterComponent extends Component {
                             </FormGroup>
 
                             {/* * Persons Form * */}
-
                             <Label className="filterCategoryLabel filterFont">PEOPLE</Label>
                             <FormGroup >
                                 <InputGroup className="inputGroupValue">
@@ -160,19 +118,12 @@ class MapFilterComponent extends Component {
                             {/* * Date Value Form * */}
                             <FormGroup>
                                 <Label className="filterCategoryLabel filterFont">DATE</Label>
-                                <DateRangeFilter handleChangeDate={this.handleChangeDate.bind(this)} dateValue={this.state.dateValue} DataVuzix={this.props.DataVuzix} startDate={this.props.startDate} endDate={this.props.endDate} handleChangeTime={this.handleChangeTime.bind(this)} dateValuesData={this.dateValuesData.bind(this)} createdAt={this.state.createdAtValues} data={this.state.dataValues} />
+                                <DateRangeFilter
+                                    handleDateChange={this.handleDateChange.bind(this)}
+                                    DataVuzix={this.props.DataVuzix}
+                                    dateValue={this.state.dateValue}
+                                />
                             </FormGroup>
-
-                            {/* <FormGroup style={{ marginLeft: '1%' }}>
-                                <Label style={{ width: '14vw', fontWeight: 'bold' }}>Location</Label>
-                                <select value={this.state.addressValue} name="addressValue" onChange={this.handleChangeCheck} style={{ width: "26.2vw", height: "3vw", marginLeft: '1%' }}>
-                                    {this.locations.address.map(m => {
-                                        if(m.value !== "") {
-                                            return <option key={m.key} value={m.value}>{m.value}</option>
-                                        }
-                                    })}
-                                </select>
-                            </FormGroup> */}
 
                             <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button>
                         </Form>
@@ -186,16 +137,13 @@ class MapFilterComponent extends Component {
 
 export default MapFilterComponent;
 
-// const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
-// let [{ value: month }, , { value: day }, , { value: year }, , { value: hour }] = dateTimeFormat.formatToParts(dateValue);
-// const minutes = "00";
-// if(hour %3 === 1) {
-//     hour = hour - 1;
-// } else if(hour %3 === 2) {
-//     hour = hour - 2;
-// }
-// if (!testData.has(`${month} ${day}, ${year} ${hour}:${minutes}`)) {
-//     testData.set(`${month} ${day}, ${year} ${hour}:${minutes}`, 1)
-// } else {
-//     testData.set(`${month} ${day}, ${year} ${hour}:${minutes}`, testData.get(`${month} ${day}, ${year} ${hour}:${minutes}`) + 1)
-// }
+{/* <FormGroup style={{ marginLeft: '1%' }}>
+    <Label style={{ width: '14vw', fontWeight: 'bold' }}>Location</Label>
+    <select value={this.state.addressValue} name="addressValue" onChange={this.handleChangeCheck} style={{ width: "26.2vw", height: "3vw", marginLeft: '1%' }}>
+        {this.locations.address.map(m => {
+            if(m.value !== "") {
+                return <option key={m.key} value={m.value}>{m.value}</option>
+            }
+        })}
+    </select>
+</FormGroup> */}

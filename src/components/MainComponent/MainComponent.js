@@ -35,10 +35,7 @@ class MainComponent extends Component {
     ReverseGeoCodeAPI = (lat, long, precision) => {
         setTimeout(fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
             .then(res => res.json())
-            .then(data => {
-                // console.log(data.results)
-                this.setState({ address: data.results[precision].formatted_address })
-            })
+            .then(data => this.setState({ address: data.results[precision].formatted_address }))
             .catch(err => {
                 console.log(err);
                 this.setState({ address: "Location Unavailable" });
@@ -51,8 +48,6 @@ class MainComponent extends Component {
             axios.get(this.baseURL + '/info')
                 .then(res => {
                     this.setState({ DataVuzix: res.data, isLoading: false })
-                    this.startDate = new Date(res.data.startDate);
-                    this.endDate = new Date(res.data.endDate);
                     this.loadMarkerAddresses(this.state.DataVuzix)
                     this.loadPersonNames(this.state.DataVuzix)
                 }).catch(err => console.log(err))
@@ -180,8 +175,6 @@ class MainComponent extends Component {
                                     changeVideoProps={this.changeVideoProps.bind(this)}
                                     people={this.state.personName}
                                     mapAddress={this.address}
-                                    startDate={this.startDate}
-                                    endDate={this.endDate}
                                     baseURL={this.baseURL}
                                 />
                                 {/** Button to toggle Card Detail Div */}

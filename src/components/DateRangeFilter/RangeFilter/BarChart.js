@@ -1,31 +1,38 @@
 import React from "react";
 import { Bar } from "react-chartjs-2";
+import { format } from "date-fns";
 
 class BarChart extends React.Component {
-  render() {
-    const { data, highlight, domain } = this.props;
 
+  render() {
+    const { data, highlight, domain, multipleHours } = this.props;
     // calculate frequency of data
+
     var counts = {};
-    for (var i = 0; i < data.length; i++)
+    // let dateMap = new Map();
+    for (var i = 0; i < data.length; i++) {
       counts[data[i]] = counts[data[i]] + 1 || 1;
+    }
 
     // generate data
-    const barDataValues = [];
-    for (let i = 0; i < domain[1]; i++) {
-      barDataValues.push(counts[i] || 0);
+    const barDataValues = new Map();
+    for (let i = domain[0]; i <= domain[1]; i = i + (1000 * 30 * 60 * 2 * multipleHours)) {
+      barDataValues.set(i, counts[i] || 0);
     }
+    let keys = Array.from(barDataValues.keys())
+    let values = Array.from(barDataValues.values())
+
     const barData = {
-      labels: barDataValues.map((val, i) => i),
+      labels: values.map((val, i) => format(keys[i], "MMM dd, yyyy HH:mm")),
       datasets: [
         {
-          backgroundColor: barDataValues.map((val, i) =>
-            i >= highlight[0] && i <= highlight[1]
+          backgroundColor: values.map((val, i) =>
+            keys[i] >= highlight[0] && keys[i] <= highlight[1]
               ? "rgba(135, 206, 235, 1)"
               : "rgba(255, 99, 132, 0.2)"
           ),
           hoverBackgroundColor: "rgba(255,99,132,0.4)",
-          data: barDataValues
+          data: values
         }
       ]
     };
@@ -38,7 +45,7 @@ class BarChart extends React.Component {
       scales: {
         xAxes: [
           {
-            display: false
+            display: false,
           }
         ],
         yAxes: [
