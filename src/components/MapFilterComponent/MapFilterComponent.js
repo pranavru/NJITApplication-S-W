@@ -122,6 +122,8 @@ class MapFilterComponent extends Component {
                                     handleDateChange={this.handleDateChange.bind(this)}
                                     DataVuzix={this.props.DataVuzix}
                                     dateValue={this.state.dateValue}
+                                    startDate={this.props.startDate}
+                                    endDate={this.props.endDate}
                                 />
                             </FormGroup>
 

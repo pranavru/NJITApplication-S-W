@@ -48,6 +48,8 @@ class MainComponent extends Component {
             axios.get(this.baseURL + '/info')
                 .then(res => {
                     this.setState({ DataVuzix: res.data, isLoading: false })
+                    this.startDate = new Date(res.data.startDate)
+                    this.endDate = new Date(res.data.endDate)
                     this.loadMarkerAddresses(this.state.DataVuzix)
                     this.loadPersonNames(this.state.DataVuzix)
                 }).catch(err => console.log(err))
@@ -176,6 +178,8 @@ class MainComponent extends Component {
                                     people={this.state.personName}
                                     mapAddress={this.address}
                                     baseURL={this.baseURL}
+                                    startDate={this.startDate}
+                                    endDate={this.endDate}
                                 />
                                 {/** Button to toggle Card Detail Div */}
                                 {!this.state.detailDiv ?

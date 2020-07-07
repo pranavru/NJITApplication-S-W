@@ -93,8 +93,8 @@ class DateRangeFilter extends React.Component {
                         onChange={this.updateDomain}
                         value={this.state.values}
                         name="dateValue"
-                        minDate={new Date(this.props.DataVuzix.startDate)}
-                        maxDate={new Date(this.props.DataVuzix.endDate)}
+                        minDate={new Date(this.props.startDate)}
+                        maxDate={new Date(this.props.endDate)}
                         required
                         clearIcon={null}
                         rangeDivider="to  "
