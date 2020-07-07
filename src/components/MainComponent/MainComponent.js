@@ -31,17 +31,6 @@ class MainComponent extends Component {
     //Load the initial Data
     componentDidMount() { this.loadDataJson('/info') }
 
-    //Reverse geo code - get address using lat, long
-    ReverseGeoCodeAPI = (lat, long, precision) => {
-        setTimeout(fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
-            .then(res => res.json())
-            .then(data => this.setState({ address: data.results[precision].formatted_address }))
-            .catch(err => {
-                console.log(err);
-                this.setState({ address: "Location Unavailable" });
-            }), 1500)
-    }
-
     //Load the data from Backend - Promises
     loadDataJson(URL, objValue) {
         if (URL === '/info')
@@ -59,15 +48,24 @@ class MainComponent extends Component {
                     if (!(res.data.vuzixMap.length > 0)) {
                         alert("No data with search query")
                     } else {
-                        console.log(res.data);
                         this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
-                        this.loadMarkerAddresses(this.state.DataVuzix)
                     }
                 }).catch(err => alert(err))
         }
     }
 
-    changeVideoProps() { this.setState({ video: "", DataVuzix: { vuzixMap: [] } }) }
+    //Reverse geo code - get address using lat, long
+    ReverseGeoCodeAPI = (lat, long, precision) => {
+        setTimeout(fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
+            .then(res => res.json())
+            .then(data => this.setState({ address: data.results[precision].formatted_address }))
+            .catch(err => {
+                console.log(err);
+                this.setState({ address: "Location Unavailable" });
+            }), 1500)
+    }
+
+    changeVideoProps = () => this.setState({ video: "", DataVuzix: { vuzixMap: [] } })
 
     AnimateMarker(markerData) {
         let data = this.state.DataVuzix;
@@ -104,15 +102,16 @@ class MainComponent extends Component {
         let key = `${lat.toFixed(3)}:${lng.toFixed(3)}`;
         Promise.all(
             fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
-                .then(res => res.json()).then(data => {
+                .then(res => res.json())
+                .then(data => {
                     this.address.set(key, data.results[4].formatted_address)
-                    this.setDetailsViewTable();
+                    this.setAddressInDetailsView();
                 }).catch(err => console.log(err))
         ).then().catch(err => err)
     }
 
     //Setting Addresses in Local Storage for future access.
-    setDetailsViewTable() {
+    setAddressInDetailsView() {
         const itemStr = localStorage.getItem('addresses');
         if (!itemStr) {
             let pranavaddr = Array.from(this.address, ([key, value]) => ({ key, value }))
@@ -128,7 +127,7 @@ class MainComponent extends Component {
             const item = JSON.parse(itemStr)
             if (new Date().getTime() > item.expiry) {
                 localStorage.removeItem('addresses');
-                this.setDetailsViewTable()
+                this.setAddressInDetailsView()
             }
         }
     }
@@ -167,48 +166,11 @@ class MainComponent extends Component {
                 {!this.state.isLoading ?
                     <>
                         {/** Filter Component */}
-                        <Animated animationIn="slideInLeft" animationInDuration={450} isVisible={this.state.filter} style={{ zIndex: 4, position: 'absolute' }}>
-                            <div style={{ zIndex: 2, backgroundColor: 'white', width: '22vw' }}>
-                                <MapFilterComponent
-                                    DataVuzix={this.state.DataVuzix}
-                                    video={this.state.video}
-                                    loadDataJson={this.loadDataJson.bind(this)}
-                                    loadPersonNames={this.loadPersonNames.bind(this)}
-                                    changeVideoProps={this.changeVideoProps.bind(this)}
-                                    people={this.state.personName}
-                                    mapAddress={this.address}
-                                    baseURL={this.baseURL}
-                                    startDate={this.startDate}
-                                    endDate={this.endDate}
-                                />
-                                {/** Button to toggle Card Detail Div */}
-                                {!this.state.detailDiv ?
-                                    <Button
-                                        style={{ zIndex: 4, position: 'absolute', top: 15, left: '22.2vw', backgroundColor: '#2C4870' }}
-                                        onClick={this.loadDetailedDiv.bind(this)}
-                                    >&gt;&gt;</Button>
-                                    : <></>
-                                }
-                            </div>
-                        </Animated>
+                        {this.animatedFilterComponent()}
 
                         {/** Card Detail Div */}
-                        <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={this.state.detailDiv}
-                            style={{ zIndex: 4, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
-                        >
-                            {/** Button to toggle Card Detail Div */}
-                            <Button style={{ position: 'absolute', left: '22vw', top: 15, zIndex: 0, backgroundColor: '#2C4870' }} onClick={this.loadDetailedDiv.bind(this)}>&lt;&lt;</Button>
-                            <div className={this.state.detailDiv ? "col-md-12 displayBlock_detailedDiv" : "displayNone_detailedDiv"}
-                                style={{ overflowY: 'scroll', height: "99.2vh" }} >
-                                <MarkerPLaceDetailComponent
-                                    baseURL={this.baseURL}
-                                    data={this.state.detailDivData}
-                                    mapAddress={this.address}
-                                    AnimateMarker={this.AnimateMarker.bind(this)}
-                                    ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
-                                />
-                            </div>
-                        </Animated>
+                        {this.animatedDetailComponent()}
+
                         {/** Loading Map Div */}
                         <MapComponent
                             markersMap={this.state.DataVuzix}
@@ -229,6 +191,49 @@ class MainComponent extends Component {
             </>
         )
     }
+
+    animatedDetailComponent() {
+        return <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={this.state.detailDiv}
+            style={{ zIndex: 4, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
+        >
+
+            {this.ToggleDetailDivButton("<<", "22.1vw")}
+            <div style={{ overflowY: 'scroll', height: "99.2vh", marginLeft: '3%', width: '21vw' }}>
+                <MarkerPLaceDetailComponent
+                    baseURL={this.baseURL}
+                    data={this.state.detailDivData}
+                    mapAddress={this.address}
+                    AnimateMarker={this.AnimateMarker.bind(this)}
+                    ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)} />
+            </div>
+        </Animated>;
+    }
+
+    animatedFilterComponent() {
+        return <Animated animationIn="slideInLeft" animationInDuration={450} style={{ zIndex: 4, position: 'absolute' }}>
+            <div style={{ zIndex: 2, backgroundColor: 'white', width: '22vw' }}>
+                <MapFilterComponent
+                    DataVuzix={this.state.DataVuzix}
+                    startDate={this.startDate}
+                    endDate={this.endDate}
+                    people={this.state.personName}
+                    mapAddress={this.address}
+                    video={this.state.video}
+                    loadDataJson={this.loadDataJson.bind(this)}
+                    changeVideoProps={this.changeVideoProps.bind(this)}
+                />
+
+                {!this.state.detailDiv ?
+                    this.ToggleDetailDivButton(">>", "22.2vw")
+                    : <></>}
+            </div>
+        </Animated>;
+    }
+
+    ToggleDetailDivButton = (displayValue, leftValue) => <Button onClick={this.loadDetailedDiv.bind(this)}
+        style={{ zIndex: 4, position: 'absolute', top: 12, left: leftValue, backgroundColor: '#2C4870' }}>
+        {displayValue}</Button>
+
 }
 
 export default MainComponent;

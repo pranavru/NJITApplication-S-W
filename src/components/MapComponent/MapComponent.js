@@ -17,23 +17,26 @@ const MapComponent = (props) => {
 
     //Data Loading
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
-    const [selected, setSelected] = React.useState(null);
-    const [currentZoom, setCurrentZoom] = React.useState(10);
-    const [mapR, setMap] = React.useState(null);
     const mapRef = React.useRef();
+    const [mapR, setMap] = React.useState(null);
+    
     const onMapLoad = React.useCallback((map) => {
         mapRef.current = map;
     }, []);
-
+    
     const onLoad = React.useCallback(function callback(map1) {
-        const bounds = new window.google.maps.LatLngBounds();
-        props.markersMap.vuzixMap.map(element => {
-            bounds.extend({ lat: element.lat, lng: element.long })
-        });
+        let tempData = [];
+        const bounds = new window.google.maps.LatLngBounds(props.center);
         map1.fitBounds(bounds);
+        props.markersMap.vuzixMap.map(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)) ? tempData.push(m) : null);
+        setMapMarkerData(tempData);
         setMap(map1);
     }, [])
 
+    const [selected, setSelected] = React.useState(null);
+    const [currentZoom, setCurrentZoom] = React.useState(10);
+    const [mapMarkersData, setMapMarkerData] = React.useState([]);
+    
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
 
@@ -70,20 +73,18 @@ const MapComponent = (props) => {
     }
 
     const logBounds = () => {
+        setMapMarkerData()
         const bounds = mapR.getBounds();
-        const NW = bounds.getNorthEast().toJSON();
-        const SE = bounds.getSouthWest().toJSON();
         const marks = [];
-        const zoomLevel = mapR.getZoom(); 
-        const tradeOffValue = 1;
-        const decimalValue = zoomLevel === 22 ? 3 : zoomLevel === 21 ? 2 : zoomLevel === 20 ? 1 : zoomLevel < 20 ? 0: 0;
         props.markersMap.vuzixMap.map(m => {
-            if(NW.lat.toFixed(decimalValue) + tradeOffValue >= m.lat.toFixed(decimalValue) && NW.lat.toFixed(decimalValue) <= m.lat.toFixed(decimalValue)) {
+            if (bounds.contains(new window.google.maps.LatLng(m.lat, m.long))) {
                 marks.push(m);
             }
         })
-
-        props.loadDetailedDivData(marks.length <= 0 ? props.markersMap.vuzixMap : marks);
+        console.log(marks)
+        setMapMarkerData(marks)
+        props.loadDetailedDivData(marks.length <= 0 ? props.markersMap.vuzixMap : marks
+        );
     }
 
     const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 21, gridSize: 60, ignoreHidden: true };
@@ -99,7 +100,7 @@ const MapComponent = (props) => {
                 onBoundsChanged={() => logBounds()}
             >
                 <MarkerClusterer options={clusterOptions}>
-                    {clusterer => MarkerData(props.markersMap.vuzixMap, clusterer)}
+                    {clusterer => MarkerData(mapMarkersData, clusterer)}
                 </MarkerClusterer>
                 {selected ? (
                     customInfoWindow(selected, setSelected, props)
@@ -120,7 +121,7 @@ function customInfoWindow(selected, setSelected, props) {
     >
         {props.address ?
             <MapInfoWindow point={selected} address={props.address} baseURL={props.baseURL} /> :
-            <div className="loader" style={{ width: 15, height: 15}}></div>}
+            <div className="loader" style={{ width: 15, height: 15 }}></div>}
     </InfoWindow>;
 }
 

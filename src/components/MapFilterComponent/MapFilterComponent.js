@@ -3,6 +3,7 @@ import { Form, FormGroup, Label, Input, Card, InputGroup, Button } from 'reactst
 import './MapFilterComponent.css'
 import DateRangeFilter from '../DateRangeFilter/DateRangeFilter';
 import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponent';
+// import { baseURL } from "../../shared/baseUrl";
 
 class MapFilterComponent extends Component {
 
@@ -47,19 +48,19 @@ class MapFilterComponent extends Component {
         this.setState({ personName: persons, disPlayVideo: false })
     }
 
-    addImages = (video) => {
-        let items_array = video !== undefined ? video : []
-        if (items_array.length > 0) {
-            items_array.map(m => {
-                if (!m.src.includes('http://18.191.247.248/media')) {
-                    let url = this.props.baseURL + m.src;
-                    m.src = url;
-                }
-                return null;
-            })
-        }
-        return items_array;
-    }
+    // addImages = (video) => {
+    //     let items_array = video !== undefined ? video : []
+    //     if (items_array.length > 0) {
+    //         items_array.map(m => {
+    //             if (!m.src.includes('http://18.191.247.248/media')) {
+    //                 let url = baseURL + m.src;
+    //                 m.src = url;
+    //             }
+    //             return null;
+    //         })
+    //     }
+    //     return items_array;
+    // }
 
     submitObjectValues() {
         let persons = []

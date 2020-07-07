@@ -1,0 +1,6 @@
+.toggleDivButton {
+  z-index: 4;
+  position: "absolute";
+  top: 12px;
+  background-color: "#2C4870";
+}
