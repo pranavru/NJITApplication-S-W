@@ -33,7 +33,8 @@ class DateRangeFilter extends React.Component {
         this.props.handleDateChange(startDate, endDate)
     }
 
-    componentDidMount = () => this.dateValuesData(new Date(this.state.domain[0]), new Date(this.state.domain[1]))
+    componentDidMount = () => this.dateValuesData(new Date(this.state.domain[0]), new Date(this.state.domain[1]));
+
     dateValuesData = (start, end) => {
         let data = [];
         this.props.DataVuzix.vuzixMap.map(m => {
@@ -51,12 +52,12 @@ class DateRangeFilter extends React.Component {
         let dateVal = new Date(dateValue);
         const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
         let [{ value: month }, , { value: day }, , { value: year }, , { value: hours }] = dateTimeFormat.formatToParts(dateVal);
+        hours -= hours % 3 === 1 ? 1 : hours % 3 === 2 ? 2 : 0;
         // if (this.props.multipleHours === 6) {
         //     hours -= hours % 6 === 1 ? 1 : hours % 6 === 2 ? 2 : hours % 6 === 3 ? 3 : hours % 6 === 4 ? 4 : hours % 6 === 5 ? 5 : 0;
         // } else if (this.props.multipleHours === 4) {
         //     hours -= hours % 4 === 1 ? 1 : hours % 4 === 2 ? 2 : hours % 4 === 3 ? 3 : 0;
         // } else if (this.props.multipleHours === 3) {
-        hours -= hours % 3 === 1 ? 1 : hours % 3 === 2 ? 2 : 0;
         // } else if (this.props.multipleHours === 2) {
         //     hours -= hours % 2 === 1 ? 1 : 0;
         // }
@@ -75,7 +76,7 @@ class DateRangeFilter extends React.Component {
     updateDomain = (event) => {
         const range = [
             +new Date(event[0]).getTime(),
-            +new Date(event[1]).getTime() + 300
+            +new Date(event[1]).getTime()
         ];
         this.setState({
             updated: range,

@@ -36,12 +36,12 @@ class RangeSlider extends React.Component {
             .map(d => +d);
 
         return (
-            <Grid container className="rangeSliderGrid" style={{ width: "87.5%" }} >
+            <Grid container className="rangeSliderGrid" style={{ width: "85%", marginLeft: 4, marginRight: 4 }} >
                 <Grid item xs={12}>
                     <Card>
                         <div
                             onMouseLeave={() => this.setState({ displayChart: false })}>
-                            <div style={{ display: displayChart ? "flex" : "none", marginLeft: 4, marginRight: 4 }}>
+                            <div style={{ display: displayChart ? "flex" : "none" }}>
                                 <BarChart
                                     data={dateData}
                                     highlight={updated}
