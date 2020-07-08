@@ -37,6 +37,11 @@ class DateRangeFilter extends React.Component {
 
     dateValuesData = (start, end) => {
         let data = [];
+        if ((new Date(this.props.DataVuzix.endDate).getTime() - end.getTime()) < 1000 * 60 * 30 * 2 * 23.99) {
+            end = new Date(this.props.DataVuzix.endDate);
+        } else {
+            end = new Date(end.getTime() + 1000 * 60 * 30 * 2 * 23.99);
+        }
         this.props.DataVuzix.vuzixMap.map(m => {
             const date = this.setDateValueinMilliSeconds(m.created);
             if (start.getTime() <= date && date <= end.getTime()) {
@@ -53,14 +58,6 @@ class DateRangeFilter extends React.Component {
         const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
         let [{ value: month }, , { value: day }, , { value: year }, , { value: hours }] = dateTimeFormat.formatToParts(dateVal);
         hours -= hours % 3 === 1 ? 1 : hours % 3 === 2 ? 2 : 0;
-        // if (this.props.multipleHours === 6) {
-        //     hours -= hours % 6 === 1 ? 1 : hours % 6 === 2 ? 2 : hours % 6 === 3 ? 3 : hours % 6 === 4 ? 4 : hours % 6 === 5 ? 5 : 0;
-        // } else if (this.props.multipleHours === 4) {
-        //     hours -= hours % 4 === 1 ? 1 : hours % 4 === 2 ? 2 : hours % 4 === 3 ? 3 : 0;
-        // } else if (this.props.multipleHours === 3) {
-        // } else if (this.props.multipleHours === 2) {
-        //     hours -= hours % 2 === 1 ? 1 : 0;
-        // }
 
         return new Date(`${month} ${day}, ${year} ${hours}:00:00`).getTime();
     }
@@ -118,3 +115,12 @@ class DateRangeFilter extends React.Component {
 }
 
 export default DateRangeFilter;
+
+// if (this.props.multipleHours === 6) {
+        //     hours -= hours % 6 === 1 ? 1 : hours % 6 === 2 ? 2 : hours % 6 === 3 ? 3 : hours % 6 === 4 ? 4 : hours % 6 === 5 ? 5 : 0;
+        // } else if (this.props.multipleHours === 4) {
+        //     hours -= hours % 4 === 1 ? 1 : hours % 4 === 2 ? 2 : hours % 4 === 3 ? 3 : 0;
+        // } else if (this.props.multipleHours === 3) {
+        // } else if (this.props.multipleHours === 2) {
+        //     hours -= hours % 2 === 1 ? 1 : 0;
+        // }
