@@ -28,8 +28,6 @@ class MapFilterComponent extends Component {
         this.locations = JSON.parse(localStorage.getItem('addresses'))
     }
 
-    // componentDidMount = () => this.dateValuesData();
-
     handleDateChange = (startDate, endDate) => this.setState({ dateValue: [startDate, endDate], disPlayVideo: false });
 
     handleChangeCheck(event) {

@@ -32,7 +32,7 @@ class RangeSlider extends React.Component {
 
         const dateTicks = scaleTime()
             .domain(domain)
-            .ticks(5)
+            .ticks(4)
             .map(d => +d);
 
         return (
