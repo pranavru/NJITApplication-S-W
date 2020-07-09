@@ -15,15 +15,8 @@ const MapComponent = (props) => {
     const center = props.center;
     const GOOGLE_API_KEY = 'AIzaSyABBr3dtnI6vkHnyzMjztupIDjhxNXCmng';
 
-    //Data Loading
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
-    const mapRef = React.useRef();
     const [mapR, setMap] = React.useState(null);
-    
-    const onMapLoad = React.useCallback((map) => {
-        mapRef.current = map;
-    }, []);
-    
     const onLoad = React.useCallback(function callback(map1) {
         let tempData = [];
         const bounds = new window.google.maps.LatLngBounds(props.center);
@@ -33,10 +26,11 @@ const MapComponent = (props) => {
         setMap(map1);
     }, [])
 
+    //Data Loading
     const [selected, setSelected] = React.useState(null);
     const [currentZoom, setCurrentZoom] = React.useState(10);
     const [mapMarkersData, setMapMarkerData] = React.useState([]);
-    
+
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
 
@@ -76,15 +70,13 @@ const MapComponent = (props) => {
         setMapMarkerData()
         const bounds = mapR.getBounds();
         const marks = [];
-        props.markersMap.vuzixMap.map(m => {
-            if (bounds.contains(new window.google.maps.LatLng(m.lat, m.long))) {
+        props.markersMap.vuzixMap
+            .filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
+            .map(m => {
                 marks.push(m);
-            }
-        })
-        console.log(marks)
+            })
         setMapMarkerData(marks)
-        props.loadDetailedDivData(marks.length <= 0 ? props.markersMap.vuzixMap : marks
-        );
+        props.loadDetailedDivData(marks);
     }
 
     const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 21, gridSize: 60, ignoreHidden: true };
@@ -95,8 +87,7 @@ const MapComponent = (props) => {
                 zoom={currentZoom}
                 center={center}
                 options={mapOptions}
-                onLoad={onMapLoad, onLoad}
-                onZoomChanged={() => mapRef !== null ? mapRef.current !== undefined ? setCurrentZoom(mapRef.current.zoom) : null : null}
+                onLoad={onLoad}
                 onBoundsChanged={() => logBounds()}
             >
                 <MarkerClusterer options={clusterOptions}>

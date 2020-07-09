@@ -67,21 +67,27 @@ class MainComponent extends Component {
 
     changeVideoProps = () => this.setState({ video: "", DataVuzix: { vuzixMap: [] } })
 
+    //Animation to make Marker Bounce
     AnimateMarker(markerData) {
         let data = this.state.DataVuzix;
         if (markerData !== null) {
-            data.vuzixMap.map(d => {
-                if (d.id === markerData.id) {
-                    d.visible = true
-                }
-            })
+            data.vuzixMap
+                .filter((d) => d.id === markerData.id)
+                .map(d => {
+                    if (d.id === markerData.id) {
+                        d.visible = true
+                    }
+                })
             this.setState({ DataVuzix: data, id: markerData.id })
         } else {
-            data.vuzixMap.map((d) => {
-                if (d.id === this.state.id) {
-                    d.visible = false
-                }
-            })
+            console.log(data.vuzixMap.filter((d) => d.visible === true))
+            data.vuzixMap
+                .filter((d) => d.visible === true)
+                .map((d) => {
+                    if (d.id === this.state.id) {
+                        d.visible = false
+                    }
+                })
             this.setState({ DataVuzix: data, id: null })
         }
     }
@@ -194,7 +200,7 @@ class MainComponent extends Component {
 
     animatedDetailComponent() {
         return <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={this.state.detailDiv}
-            style={{ zIndex: 4, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
+            style={{ zIndex: 1, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}
         >
 
             {this.ToggleDetailDivButton("<<", "22.1vw")}
@@ -211,7 +217,7 @@ class MainComponent extends Component {
 
     animatedFilterComponent() {
         return <Animated animationIn="slideInLeft" animationInDuration={450} style={{ zIndex: 4, position: 'absolute' }}>
-            <div style={{ zIndex: 2, backgroundColor: 'white', width: '22vw' }}>
+            <div style={{ zIndex: 2, backgroundColor: 'white', width: '22.2vw' }}>
                 <MapFilterComponent
                     DataVuzix={this.state.DataVuzix}
                     startDate={this.startDate}

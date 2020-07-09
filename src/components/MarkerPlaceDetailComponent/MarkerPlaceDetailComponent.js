@@ -13,7 +13,12 @@ const dateStringVal = (p) => {
 function MarkerPLaceDetailComponent(props) {
     return (
         <>
-            {props.data === [] ? <div className="loader" style={{ width: "19vw", position: "relative" }}></div> :
+            {props.data.length <= 0 ?
+                <div className="emptyDivDisplayInfo">
+                    <img src="/mapImage.png" width="85%" height="17.5%" className="emptyDivImage" />
+                    <p className="emptyDivText">NO EVENTS TO DISPLAY !!!</p>
+                    <p className="emptyDivText">PLEASE PAN TO DIFFERENT AREA</p>
+                </div> :
                 props.data.map((p) =>
                     <Card style={{ width: '19vw', marginTop: '2%', padding: '2px' }} key={p.id}
                         onMouseOver={() => window.setTimeout(props.AnimateMarker(p), 1000)}
