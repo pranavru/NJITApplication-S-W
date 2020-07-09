@@ -27,8 +27,8 @@ class DateRangeFilter extends React.Component {
     handleChangeDate(event) {
         let startDate = this.props.dateValue[0];
         let endDate = this.props.dateValue[1];
-        startDate = new Date(event[0].getFullYear(), event[0].getMonth(), event[0].getDate());
-        endDate = new Date(event[1].getFullYear(), event[1].getMonth(), event[1].getDate());
+        startDate = new Date(event[0]);
+        endDate = new Date(event[1]);
         this.dateValuesData(startDate, endDate);
         this.props.handleDateChange(startDate, endDate)
     }
@@ -37,11 +37,12 @@ class DateRangeFilter extends React.Component {
 
     dateValuesData = (start, end) => {
         let data = [];
-        if ((new Date(this.props.DataVuzix.endDate).getTime() - end.getTime()) < 1000 * 60 * 30 * 2 * 23.99) {
-            end = new Date(this.props.DataVuzix.endDate);
-        } else {
-            end = new Date(end.getTime() + 1000 * 60 * 30 * 2 * 23.99);
-        }
+        console.log(start, end)
+        // if ((new Date(this.props.DataVuzix.endDate).getTime() - end.getTime()) < 1000 * 60 * 30 * 2 * 23.99) {
+        //     end = new Date(this.props.DataVuzix.endDate);
+        // } else {
+        //     end = new Date(end.getTime() + 1000 * 60 * 30 * 2 * 23.99);
+        // }
         this.props.DataVuzix.vuzixMap.map(m => {
             const date = this.setDateValueinMilliSeconds(m.created);
             if (start.getTime() <= date && date <= end.getTime()) {
@@ -80,6 +81,7 @@ class DateRangeFilter extends React.Component {
             domain: range,
             values: range,
         })
+        console.log(event)
         this.handleChangeDate(event)
     }
 
