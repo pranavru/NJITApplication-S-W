@@ -88,7 +88,7 @@ const MapComponent = (props) => {
                 center={center}
                 options={mapOptions}
                 onLoad={onLoad}
-                onBoundsChanged={() => logBounds()}
+                onBoundsChanged={() => setTimeout(logBounds(), 1500)}
             >
                 <MarkerClusterer options={clusterOptions}>
                     {clusterer => MarkerData(mapMarkersData, clusterer)}
