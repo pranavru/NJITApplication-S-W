@@ -7,6 +7,7 @@ import {
     MarkerClusterer
 } from "@react-google-maps/api";
 import MapInfoWindow from '../MapInfoWindow/MapInfoWindow';
+import LoadingOverlay from 'react-loading-overlay';
 
 const MapComponent = (props) => {
 
@@ -18,11 +19,8 @@ const MapComponent = (props) => {
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
     const [mapR, setMap] = React.useState(null);
     const onLoad = React.useCallback(function callback(map1) {
-        let tempData = [];
         const bounds = new window.google.maps.LatLngBounds(props.center);
         map1.fitBounds(bounds);
-        props.markersMap.vuzixMap.map(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)) ? tempData.push(m) : null);
-        setMapMarkerData(tempData);
         setMap(map1);
     }, [])
 
@@ -30,6 +28,8 @@ const MapComponent = (props) => {
     const [selected, setSelected] = React.useState(null);
     const [currentZoom, setCurrentZoom] = React.useState(10);
     const [mapMarkersData, setMapMarkerData] = React.useState([]);
+    const [initialLoadOnBoundsChanged, initialLoad] = React.useState(true);
+    const [isActive, setActiveLoader] = React.useState(false);
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
@@ -67,7 +67,9 @@ const MapComponent = (props) => {
     }
 
     const logBounds = () => {
-        setMapMarkerData()
+        console.log(isActive)
+        initialLoad(false);
+        setMapMarkerData();
         const bounds = mapR.getBounds();
         const marks = [];
         props.markersMap.vuzixMap
@@ -77,26 +79,41 @@ const MapComponent = (props) => {
             })
         setMapMarkerData(marks)
         props.loadDetailedDivData(marks);
+        setActiveLoader(false);
     }
 
-    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 21, gridSize: 60, ignoreHidden: true };
+    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 20, gridSize: 60, ignoreHidden: true };
     return (
         <div>
-            <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                zoom={currentZoom}
-                center={center}
-                options={mapOptions}
-                onLoad={onLoad}
-                onBoundsChanged={() => setTimeout(logBounds(), 1500)}
+            <LoadingOverlay
+                active={isActive}
+                spinner
+                text='Loading your content...'
             >
-                <MarkerClusterer options={clusterOptions}>
-                    {clusterer => MarkerData(mapMarkersData, clusterer)}
-                </MarkerClusterer>
-                {selected ? (
-                    customInfoWindow(selected, setSelected, props)
-                ) : null}
-            </GoogleMap>
+                <GoogleMap
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={currentZoom}
+                    center={center}
+                    clickableIcons={false}
+                    options={mapOptions}
+                    onLoad={onLoad}
+                    onBoundsChanged={() => {
+                        if (initialLoadOnBoundsChanged) {
+                            logBounds()
+                        }
+                    }}
+                    onDragStart={() => setActiveLoader(true)}
+                    onDragEnd={() => logBounds()}
+                >
+
+                    <MarkerClusterer options={clusterOptions}>
+                        {clusterer => MarkerData(mapMarkersData, clusterer)}
+                    </MarkerClusterer>
+                    {selected ? (
+                        customInfoWindow(selected, setSelected, props)
+                    ) : null}
+                </GoogleMap>
+            </LoadingOverlay>
         </div>
     );
 }
@@ -106,9 +123,8 @@ export default MapComponent;
 function customInfoWindow(selected, setSelected, props) {
     return <InfoWindow
         position={{ lat: selected.lat, lng: selected.long }}
-        onCloseClick={() => {
-            setSelected(null);
-        }}
+        onCloseClick={() => setSelected(null)}
+        onMouseOut={() => setSelected(null)}
     >
         {props.address ?
             <MapInfoWindow point={selected} address={props.address} baseURL={props.baseURL} /> :
