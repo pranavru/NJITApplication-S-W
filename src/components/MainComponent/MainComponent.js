@@ -25,6 +25,7 @@ class MainComponent extends Component {
             video: "",
             personName: [],
             detailDivData: [],
+            initialLoadOnBoundsChanged: true
         }
     }
 
@@ -43,11 +44,13 @@ class MainComponent extends Component {
                     this.loadPersonNames(this.state.DataVuzix)
                 }).catch(err => console.log(err))
         else if (URL === '/query/') {
+            this.initialLoad(true);
             axios.post(this.baseURL + '/query/', objValue)
                 .then(res => {
                     if (!(res.data.vuzixMap.length > 0)) {
                         alert("No data with search query")
                     } else {
+                        console.log(res.data)
                         this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
                     }
                 }).catch(err => alert(err))
@@ -80,7 +83,6 @@ class MainComponent extends Component {
                 })
             this.setState({ DataVuzix: data, id: markerData.id })
         } else {
-            console.log(data.vuzixMap.filter((d) => d.visible === true))
             data.vuzixMap
                 .filter((d) => d.visible === true)
                 .map((d) => {
@@ -165,6 +167,9 @@ class MainComponent extends Component {
     //Change Detail Div Array based on location
     loadDetailedDivData = divData => this.setState({ detailDivData: divData })
 
+    //Initial Data Load after query is hit
+    initialLoad = (value) => this.setState({ initialLoadOnBoundsChanged: value })
+
     render() {
         return (
             <>
@@ -189,6 +194,8 @@ class MainComponent extends Component {
                             loadDataJson={this.loadDataJson.bind(this)}
                             ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
                             loadDetailedDivData={this.loadDetailedDivData.bind(this)}
+                            initialLoadOnBoundsChanged={this.state.initialLoadOnBoundsChanged}
+                            initialLoad={this.initialLoad.bind(this)}
                         />
                     </>
                     :

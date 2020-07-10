@@ -26,17 +26,14 @@ const MapComponent = (props) => {
 
     //Data Loading
     const [selected, setSelected] = React.useState(null);
-    const [currentZoom, setCurrentZoom] = React.useState(10);
+    // const [currentZoom, setCurrentZoom] = React.useState(10);
     const [mapMarkersData, setMapMarkerData] = React.useState([]);
-    const [initialLoadOnBoundsChanged, initialLoad] = React.useState(true);
     const [isActive, setActiveLoader] = React.useState(false);
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
 
-    const createKey = (location) => {
-        return location.lat + location.long
-    };
+    const createKey = (location) => location.lat + location.long;
 
     //Markers
     const MarkerData = (data, clusterer) => {
@@ -67,8 +64,7 @@ const MapComponent = (props) => {
     }
 
     const logBounds = () => {
-        console.log(isActive)
-        initialLoad(false);
+        props.initialLoad(false);
         setMapMarkerData();
         const bounds = mapR.getBounds();
         const marks = [];
@@ -82,39 +78,35 @@ const MapComponent = (props) => {
         setActiveLoader(false);
     }
 
-    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 20, gridSize: 60, ignoreHidden: true };
+    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 19, gridSize: 60, ignoreHidden: true };
     return (
-        <div>
-            <LoadingOverlay
-                active={isActive}
-                spinner
-                text='Loading your content...'
+        <LoadingOverlay
+            active={isActive}
+            spinner
+            text='Loading...'
+        >
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={center}
+                clickableIcons={false}
+                options={mapOptions}
+                onLoad={onLoad}
+                onIdle={() => {
+                    setActiveLoader(true);
+                    logBounds();
+                }}
+                onDragStart={() => setActiveLoader(true)}
+                onZoomChanged={() => setActiveLoader(true)}
             >
-                <GoogleMap
-                    mapContainerStyle={mapContainerStyle}
-                    zoom={currentZoom}
-                    center={center}
-                    clickableIcons={false}
-                    options={mapOptions}
-                    onLoad={onLoad}
-                    onBoundsChanged={() => {
-                        if (initialLoadOnBoundsChanged) {
-                            logBounds()
-                        }
-                    }}
-                    onDragStart={() => setActiveLoader(true)}
-                    onDragEnd={() => logBounds()}
-                >
 
-                    <MarkerClusterer options={clusterOptions}>
-                        {clusterer => MarkerData(mapMarkersData, clusterer)}
-                    </MarkerClusterer>
-                    {selected ? (
-                        customInfoWindow(selected, setSelected, props)
-                    ) : null}
-                </GoogleMap>
-            </LoadingOverlay>
-        </div>
+                <MarkerClusterer options={clusterOptions}>
+                    {clusterer => MarkerData(mapMarkersData, clusterer)}
+                </MarkerClusterer>
+                {selected ? (
+                    customInfoWindow(selected, setSelected, props)
+                ) : null}
+            </GoogleMap>
+        </LoadingOverlay >
     );
 }
 

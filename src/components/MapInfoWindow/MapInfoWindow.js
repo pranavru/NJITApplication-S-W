@@ -10,7 +10,6 @@ function displayWindowHeader(props) {
             <CardHeader>
                 <CardTitle className="text-center" style={{ fontWeight: 'bold', fontSize: 16 }}>{props.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
             </CardHeader>
-            {console.log(props.point)}
             <div id="containerImg">
                 <img src={props.baseURL + props.point.imageFile} alt={props.point.id} id="theImage" />
             </div>

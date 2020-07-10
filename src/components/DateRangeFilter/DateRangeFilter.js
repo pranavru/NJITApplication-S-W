@@ -37,12 +37,6 @@ class DateRangeFilter extends React.Component {
 
     dateValuesData = (start, end) => {
         let data = [];
-        console.log(start, end)
-        // if ((new Date(this.props.DataVuzix.endDate).getTime() - end.getTime()) < 1000 * 60 * 30 * 2 * 23.99) {
-        //     end = new Date(this.props.DataVuzix.endDate);
-        // } else {
-        //     end = new Date(end.getTime() + 1000 * 60 * 30 * 2 * 23.99);
-        // }
         this.props.DataVuzix.vuzixMap.map(m => {
             const date = this.setDateValueinMilliSeconds(m.created);
             if (start.getTime() <= date && date <= end.getTime()) {
@@ -81,7 +75,6 @@ class DateRangeFilter extends React.Component {
             domain: range,
             values: range,
         })
-        console.log(event)
         this.handleChangeDate(event)
     }
 
