@@ -18,14 +18,13 @@ class MainComponent extends Component {
             center: { lat: 40.74918, lng: -74.156204 },
             DataVuzix: {},
             isLoading: true,
-            filter: true,
             detailDiv: false,
             address: null,
             id: null,
             video: "",
             personName: [],
             detailDivData: [],
-            initialLoadOnBoundsChanged: true
+            isActive: false
         }
     }
 
@@ -44,14 +43,14 @@ class MainComponent extends Component {
                     this.loadPersonNames(this.state.DataVuzix)
                 }).catch(err => console.log(err))
         else if (URL === '/query/') {
-            this.initialLoad(true);
+            this.activateLoader(true)
             axios.post(this.baseURL + '/query/', objValue)
                 .then(res => {
                     if (!(res.data.vuzixMap.length > 0)) {
                         alert("No data with search query")
                     } else {
                         console.log(res.data)
-                        this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false })
+                        this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false, center: { lat: 40.74918, lng: -74.15620 } })
                     }
                 }).catch(err => alert(err))
         }
@@ -167,8 +166,8 @@ class MainComponent extends Component {
     //Change Detail Div Array based on location
     loadDetailedDivData = divData => this.setState({ detailDivData: divData })
 
-    //Initial Data Load after query is hit
-    initialLoad = (value) => this.setState({ initialLoadOnBoundsChanged: value })
+    //To Activate/De-activate the loader
+    activateLoader = isActive => this.setState({ isActive })
 
     render() {
         return (
@@ -184,6 +183,7 @@ class MainComponent extends Component {
 
                         {/** Loading Map Div */}
                         <MapComponent
+                            isActive={this.state.isActive}
                             markersMap={this.state.DataVuzix}
                             details={this.state.detailDiv}
                             detailDivData={this.state.detailDivData}
@@ -191,11 +191,9 @@ class MainComponent extends Component {
                             baseURL={this.baseURL}
                             center={this.state.center}
                             animateMarkerData={this.state.animateMarkerData}
-                            loadDataJson={this.loadDataJson.bind(this)}
                             ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
                             loadDetailedDivData={this.loadDetailedDivData.bind(this)}
-                            initialLoadOnBoundsChanged={this.state.initialLoadOnBoundsChanged}
-                            initialLoad={this.initialLoad.bind(this)}
+                            activateLoader={this.activateLoader.bind(this)}
                         />
                     </>
                     :
@@ -237,7 +235,7 @@ class MainComponent extends Component {
                 />
 
                 {!this.state.detailDiv ?
-                    this.ToggleDetailDivButton(">>", "22.2vw")
+                    this.ToggleDetailDivButton(">>", "22.3vw")
                     : <></>}
             </div>
         </Animated>;
