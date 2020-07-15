@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, FormGroup, Label, Input, Card, InputGroup, Button } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Card, InputGroup, Button, CardText } from 'reactstrap';
 import './MapFilterComponent.css'
 import DateRangeFilter from '../DateRangeFilter/DateRangeFilter';
 import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponent';
@@ -96,7 +96,7 @@ class MapFilterComponent extends Component {
                             <FormGroup>
                                 <InputGroup className="inputGroupValue">
                                     <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
-                                    <Button outline disabled className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</Button>
+                                    <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
                                 </InputGroup>
                             </FormGroup>
 
@@ -108,7 +108,7 @@ class MapFilterComponent extends Component {
                                     {this.props.people.map(v =>
                                         <InputGroup key={v.name}>
                                             <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
-                                            <Button outline disabled className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</Button>
+                                            <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</CardText>
                                         </InputGroup>
                                     )}
                                 </InputGroup>

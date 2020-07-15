@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
-import MapComponent from '../MapComponent/MapComponent';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { Animated } from 'react-animated-css';
-import MapFilterComponent from '../MapFilterComponent/MapFilterComponent'
-import axios from 'axios';
-import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
 import { Button } from 'reactstrap'
+import { Animated } from 'react-animated-css';
+import LoadingOverlay from 'react-loading-overlay';
+
+import axios from 'axios';
+
+import MapFilterComponent from '../MapFilterComponent/MapFilterComponent'
+import MapComponent from '../MapComponent/MapComponent';
+import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 class MainComponent extends Component {
 
@@ -59,13 +63,13 @@ class MainComponent extends Component {
 
     //Reverse geo code - get address using lat, long
     ReverseGeoCodeAPI = (lat, long, precision) => {
-        setTimeout(fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
+        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
             .then(res => res.json())
             .then(data => this.setState({ address: data.results[precision].formatted_address }))
             .catch(err => {
                 console.log(err);
                 this.setState({ address: "Location Unavailable" });
-            }), 1500)
+            })
     }
 
     changeVideoProps = () => this.setState({ video: "", DataVuzix: { vuzixMap: [] } })
@@ -165,17 +169,24 @@ class MainComponent extends Component {
     loadDetailedDiv = () => this.setState({ detailDiv: !this.state.detailDiv })
 
     //Change Detail Div Array based on location
-    loadDetailedDivData = divData => this.setState({ detailDivData: divData })
+    loadDetailedDivData = (detailDivData, isActive) => this.setState({ detailDivData, isActive })
 
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
 
     render() {
+        const { isLoading, isActive, DataVuzix, detailDiv, detailDivData, address, center, animateMarkerData } = this.state
+
         return (
             <>
                 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
-                {!this.state.isLoading ?
-                    <>
+                {!isLoading ?
+                    <LoadingOverlay
+                        active={isActive}
+                        spinner
+                        text='Loading...'
+                    // style={mapContainerStyle}
+                    >
                         {/** Filter Component */}
                         {this.animatedFilterComponent()}
 
@@ -184,19 +195,19 @@ class MainComponent extends Component {
 
                         {/** Loading Map Div */}
                         <MapComponent
-                            isActive={this.state.isActive}
-                            markersMap={this.state.DataVuzix}
-                            details={this.state.detailDiv}
-                            detailDivData={this.state.detailDivData}
-                            address={this.state.address}
+                            // isActive={this.state.isActive}
+                            markersMap={DataVuzix}
+                            details={detailDiv}
+                            detailDivData={detailDivData}
+                            address={address}
                             baseURL={this.baseURL}
-                            center={this.state.center}
-                            animateMarkerData={this.state.animateMarkerData}
+                            center={center}
+                            animateMarkerData={animateMarkerData}
                             ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
                             loadDetailedDivData={this.loadDetailedDivData.bind(this)}
                             activateLoader={this.activateLoader.bind(this)}
                         />
-                    </>
+                    </LoadingOverlay>
                     :
                     <div className="loader" ></div>
                 }

@@ -84,7 +84,7 @@ class DateRangeFilter extends React.Component {
                 <div className="dateRange">
                     <DateRangePicker
                         onChange={this.updateDomain}
-                        value={this.state.values}
+                        value={this.state.values.map(m => new Date(m))}
                         name="dateValue"
                         minDate={new Date(this.props.startDate)}
                         maxDate={new Date(this.props.endDate)}

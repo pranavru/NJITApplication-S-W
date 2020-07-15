@@ -7,7 +7,6 @@ import {
     MarkerClusterer
 } from "@react-google-maps/api";
 import MapInfoWindow from '../MapInfoWindow/MapInfoWindow';
-import LoadingOverlay from 'react-loading-overlay';
 
 const MapComponent = (props) => {
 
@@ -26,22 +25,19 @@ const MapComponent = (props) => {
 
     //Data Loading
     const [selected, setSelected] = React.useState(null);
-    const [mapMarkersData, setMapMarkerData] = React.useState([]);
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
-
-    const createKey = (location) => location.lat + location.long;
 
     //Markers
     const MarkerData = (data, clusterer) => {
         if (data !== undefined) {
             return (
-                data.map(mapVuzix =>
+                data.map((mapVuzix, index) =>
                     <Marker
                         onMouseOver={hoverMarker(setSelected, mapVuzix, props)}
                         onMouseOut={() => setSelected(null)}
-                        key={createKey(mapVuzix)}
+                        key={index}
                         animation={mapVuzix.visible ? window.google.maps.Animation.BOUNCE : null}
                         position={{ lat: mapVuzix.lat, lng: mapVuzix.long }}
                         icon={{ url: iconImage(mapVuzix) }}
@@ -54,46 +50,32 @@ const MapComponent = (props) => {
             return (<div></div>);
     }
 
-    const logBounds = () => {
-        setMapMarkerData();
-        const bounds = mapR.getBounds();
-        const marks = [];
-        props.markersMap.vuzixMap
-            .filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
-            .map(m => {
-                marks.push(m);
-            })
-        setMapMarkerData(marks)
-        props.loadDetailedDivData(marks);
-        props.activateLoader(false);
-    }
+    const logBounds = () => props.loadDetailedDivData(props.markersMap.vuzixMap.filter(m => mapR.getBounds().contains(new window.google.maps.LatLng(m.lat, m.long))), false);
 
     const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 19, gridSize: 60, ignoreHidden: true };
     return (
-        <LoadingOverlay
-            active={props.isActive}
-            spinner
-            text='Loading...'
+
+        <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            center={center}
+            clickableIcons={false}
+            options={mapOptions}
+            onLoad={onLoad}
+            onIdle={() => logBounds()}
+            onDragEnd={() => props.activateLoader(true)}
+            onZoomChanged={() => {
+                if (mapR) {
+                    if (mapR.getZoom() < 22) {
+                        props.activateLoader(true);
+                    }
+                }
+            }}
         >
-            <GoogleMap
-                mapContainerStyle={mapContainerStyle}
-                center={center}
-                clickableIcons={false}
-                options={mapOptions}
-                onLoad={onLoad}
-                onIdle={() => {
-                    props.activateLoader(true);
-                    logBounds();
-                }}
-                onDragStart={() => props.activateLoader(true)}
-                onZoomChanged={() => props.activateLoader(true)}
-            >
-                <MarkerClusterer options={clusterOptions}>
-                    {clusterer => MarkerData(mapMarkersData, clusterer)}
-                </MarkerClusterer>
-                {selected ? customInfoWindow(selected, setSelected, props) : null}
-            </GoogleMap>
-        </LoadingOverlay >
+            <MarkerClusterer options={clusterOptions}>
+                {clusterer => MarkerData(props.detailDivData, clusterer)}
+            </MarkerClusterer>
+            {selected ? customInfoWindow(selected, setSelected, props) : null}
+        </GoogleMap>
     );
 }
 
@@ -108,8 +90,8 @@ function iconImage(mapVuzix) {
 
 function hoverMarker(setSelected, mapVuzix, props) {
     return () => {
-        setSelected(mapVuzix);
         props.ReverseGeoCodeAPI(mapVuzix.lat, mapVuzix.long, 3);
+        setSelected(mapVuzix);
     };
 }
 
@@ -117,6 +99,7 @@ function customInfoWindow(selected, setSelected, props) {
     return <InfoWindow
         position={{ lat: selected.lat, lng: selected.long }}
         onCloseClick={() => setSelected(null)}
+        onMouseOut={() => setSelected(null)}
     >
         {props.address ?
             <MapInfoWindow point={selected} address={props.address} baseURL={props.baseURL} /> :
