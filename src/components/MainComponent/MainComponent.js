@@ -174,6 +174,12 @@ class MainComponent extends Component {
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
 
+    //Change Center if it doesn't Lie in Bounds
+    changeCenter = (mapR) => {
+        console.log({ lat: mapR.getCenter().lat(), lng: mapR.getCenter().lng() })
+        this.setState({ center: { lat: mapR.getCenter().lat(), lng: mapR.getCenter().lng() - (4 * Math.pow(10, -6)) } })
+    }
+
     render() {
         const { isLoading, isActive, DataVuzix, detailDiv, detailDivData, address, center, animateMarkerData } = this.state
 
@@ -185,7 +191,6 @@ class MainComponent extends Component {
                         active={isActive}
                         spinner
                         text='Loading...'
-                    // style={mapContainerStyle}
                     >
                         {/** Filter Component */}
                         {this.animatedFilterComponent()}
@@ -206,6 +211,7 @@ class MainComponent extends Component {
                             ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
                             loadDetailedDivData={this.loadDetailedDivData.bind(this)}
                             activateLoader={this.activateLoader.bind(this)}
+                            changeCenter={this.changeCenter.bind(this)}
                         />
                     </LoadingOverlay>
                     :

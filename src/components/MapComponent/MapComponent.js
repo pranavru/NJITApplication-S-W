@@ -62,10 +62,13 @@ const MapComponent = (props) => {
             options={mapOptions}
             onLoad={onLoad}
             onIdle={() => logBounds()}
-            onDragEnd={() => props.activateLoader(true)}
+            onDragEnd={() => {
+                props.changeCenter(mapR);
+                props.activateLoader(true);
+            }}
             onZoomChanged={() => {
                 if (mapR) {
-                    if (mapR.getZoom() < 22) {
+                    if (mapR.getZoom() < 21) {
                         props.activateLoader(true);
                     }
                 }
@@ -74,7 +77,7 @@ const MapComponent = (props) => {
             <MarkerClusterer options={clusterOptions}>
                 {clusterer => MarkerData(props.detailDivData, clusterer)}
             </MarkerClusterer>
-            {selected ? customInfoWindow(selected, setSelected, props) : null}
+            {selected ? customInfoWindow(selected, mapR, setSelected, props) : null}
         </GoogleMap>
     );
 }
@@ -95,14 +98,14 @@ function hoverMarker(setSelected, mapVuzix, props) {
     };
 }
 
-function customInfoWindow(selected, setSelected, props) {
+function customInfoWindow(selected, mapR, setSelected, props) {
+
     return <InfoWindow
-        position={{ lat: selected.lat, lng: selected.long }}
+        position={{ lat: props.center.lat, lng: props.center.lng }}
         onCloseClick={() => setSelected(null)}
         onMouseOut={() => setSelected(null)}
+    // options={{ disableAutoPan: true }}
     >
-        {props.address ?
-            <MapInfoWindow point={selected} address={props.address} baseURL={props.baseURL} /> :
-            <div className="loader" style={{ width: 15, height: 15 }}></div>}
+        <MapInfoWindow point={selected} address={props.address} baseURL={props.baseURL} />
     </InfoWindow>;
 }
