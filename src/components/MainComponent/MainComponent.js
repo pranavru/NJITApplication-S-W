@@ -48,6 +48,7 @@ class MainComponent extends Component {
                 .then(res => {
                     if (!(res.data.vuzixMap.length > 0)) {
                         alert("No data with search query")
+                        this.activateLoader(false);
                     } else {
                         console.log(res.data)
                         this.setState({ DataVuzix: res.data, video: res.data.video, isLoading: false, center: { lat: 40.74918, lng: -74.15620 } })
