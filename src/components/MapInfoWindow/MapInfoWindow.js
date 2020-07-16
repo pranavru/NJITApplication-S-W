@@ -8,7 +8,7 @@ function displayWindowHeader(props) {
     return (
         <>
             <CardHeader>
-                <CardTitle className="text-center" style={{ fontWeight: 'bold', fontSize: 0.015 * window.innerWidth }}>{props.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
+                <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
             </CardHeader>
             <div id="containerImg">
                 <img src={props.baseURL + props.point.imageFile} alt={props.point.id} id="theImage" />
@@ -18,19 +18,17 @@ function displayWindowHeader(props) {
 }
 function displayBody(props) {
     return props.point.speech !== "" ?
-        <CardFooter style={{ paddingBottom: 15, paddingTop: 25 }}>
-            <CardSubtitle style={{ fontWeight: 'bold', fontSize: 14 }}><i><q>{props.point.speech}</q></i></CardSubtitle>
-        </CardFooter> : <div></div>
+        <CardSubtitle style={{ font: "1em monospace", fontWeight: 'bold' }}><q>{props.point.speech}</q></CardSubtitle>
+        : <div></div>
 };
 
 function displayFooter(props) {
     return props.point.person_names.length !== 0 ?
         <>
-            <hr />
             <CardText>
                 <div className="row">
                     {props.point.person_names.map(person =>
-                        <div className="col-md-4" style={{ fontWeight: 'normal', fontSize: 12, border: 0, marginLeft: "2%" }} ><p>{'\u2022'} {person.person_name}</p> </div>
+                        <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} ><p>{'\u2022'} {person.person_name.toUpperCase()}</p> </div>
                     )}
                 </div>
             </CardText>
@@ -40,10 +38,12 @@ function displayFooter(props) {
 
 function MapInfoWindow(props) {
     return (
-        <Card>
+        <Card style={{ width: "30vw" }}>
             {displayWindowHeader(props)}
-            {displayBody(props)}
-            {displayFooter(props)}
+            <CardFooter className="footer">
+                {displayBody(props)}
+                {displayFooter(props)}
+            </CardFooter>
         </Card>
     )
 }

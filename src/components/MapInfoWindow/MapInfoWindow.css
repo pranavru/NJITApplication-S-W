@@ -1,12 +1,29 @@
 #theImage {
   width: 100%;
   display: inline-block;
-  margin-left: auto;
-  margin-right: auto;
-  height: auto;
 }
 
 #containerImg {
-  width: 60%;
+  width: 80%;
   margin: 0 auto;
+}
+
+.speechText {
+  font: 2em monospace;
+  font-weight: bold;
+}
+
+.locationText {
+  font: 1.3em monospace;
+}
+
+.personNameText {
+  font: 2em monospace;
+  font-weight: lighter;
+  margin-left: "2%";
+}
+
+.footer {
+  line-height: 1.2em;
+  margin-top: 3%;
 }

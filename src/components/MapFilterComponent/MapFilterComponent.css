@@ -4,9 +4,9 @@
 }
 
 .filterFont {
-  font-family: monospace;
+  font: 0.9em monospace;
   font-weight: bold;
-  font-size: 12px;
+  margin-top: 4px;
 }
 
 .filterCategoryLabel {
