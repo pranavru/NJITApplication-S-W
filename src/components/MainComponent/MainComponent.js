@@ -10,6 +10,7 @@ import MapComponent from '../MapComponent/MapComponent';
 import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { wait } from '@testing-library/react';
 
 class MainComponent extends Component {
 
@@ -175,13 +176,36 @@ class MainComponent extends Component {
     activateLoader = isActive => this.setState({ isActive })
 
     //Change Center if it doesn't Lie in Bounds
-    changeCenter = (mapR) => {
-        console.log({ lat: mapR.getCenter().lat(), lng: mapR.getCenter().lng() })
-        this.setState({ center: { lat: mapR.getCenter().lat(), lng: mapR.getCenter().lng() - (4 * Math.pow(10, -6)) } })
+    changeCenter = (mapR) => this.setState({ center: { lat: mapR.getCenter().lat(), lng: mapR.getCenter().lng() - (4 * Math.pow(10, -6)) } })
+
+    // Pan to the Closest Marker if current Bounds contains zero markers
+    rad = (x) => x * Math.PI / 180;
+    sinSquare = (x) => Math.pow(Math.sin(x), 2);
+    cosSquare = (x) => Math.pow(Math.cos(x), 2);
+    findClosestMarker = () => {
+        let latLng = this.state.center;
+        let R = 6371; // radius of earth in km
+        let distances = [];
+        let closest = -1;
+        let data = this.state.DataVuzix.vuzixMap;
+        for (let i = 0; i < data.length; i++) {
+            let mlatLng = { lat: data[i].lat, lng: data[i].long };
+            let dLat = this.rad(mlatLng.lat - latLng.lat);
+            let dLong = this.rad(mlatLng.lng - latLng.lng);
+            let a = this.sinSquare(dLat / 2) + this.cosSquare(this.rad(latLng.lat)) * this.sinSquare(dLong / 2);
+            let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            let d = R * c;
+            distances[i] = d;
+            if (closest == -1 || d < distances[closest]) {
+                closest = i;
+            }
+        }
+        const center = { lat: data[closest].lat, lng: data[closest].long };
+        this.setState({ center });
     }
 
     render() {
-        const { isLoading, isActive, DataVuzix, detailDiv, detailDivData, address, center, animateMarkerData } = this.state
+        const { isLoading, isActive, DataVuzix, detailDiv, detailDivData, address, center, animateMarkerData, personName, video } = this.state
 
         return (
             <>
@@ -193,32 +217,38 @@ class MainComponent extends Component {
                         text='Loading...'
                     >
                         {/** Filter Component */}
-                        {this.animatedFilterComponent()}
+                        {this.animatedFilterComponent(DataVuzix, personName, video)}
 
                         {/** Card Detail Div */}
                         {this.animatedDetailComponent()}
 
                         {/** Loading Map Div */}
-                        <MapComponent
-                            // isActive={this.state.isActive}
-                            markersMap={DataVuzix}
-                            details={detailDiv}
-                            detailDivData={detailDivData}
-                            address={address}
-                            baseURL={this.baseURL}
-                            center={center}
-                            animateMarkerData={animateMarkerData}
-                            ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
-                            loadDetailedDivData={this.loadDetailedDivData.bind(this)}
-                            activateLoader={this.activateLoader.bind(this)}
-                            changeCenter={this.changeCenter.bind(this)}
-                        />
+                        {this.loadMap(DataVuzix, detailDiv, detailDivData, address, center, animateMarkerData)}
                     </LoadingOverlay>
                     :
                     <div className="loader" ></div>
                 }
             </>
         )
+    }
+
+    loadMap(DataVuzix, detailDiv, detailDivData, address, center, animateMarkerData) {
+        return (
+            <MapComponent
+                markersMap={DataVuzix}
+                details={detailDiv}
+                detailDivData={detailDivData}
+                address={address}
+                baseURL={this.baseURL}
+                center={center}
+                animateMarkerData={animateMarkerData}
+                ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
+                loadDetailedDivData={this.loadDetailedDivData.bind(this)}
+                activateLoader={this.activateLoader.bind(this)}
+                changeCenter={this.changeCenter.bind(this)}
+                findClosestMarker={this.findClosestMarker.bind(this)}
+            />
+        );
     }
 
     animatedDetailComponent() {
@@ -233,21 +263,22 @@ class MainComponent extends Component {
                     data={this.state.detailDivData}
                     mapAddress={this.address}
                     AnimateMarker={this.AnimateMarker.bind(this)}
-                    ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)} />
+                    ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
+                />
             </div>
         </Animated>;
     }
 
-    animatedFilterComponent() {
+    animatedFilterComponent(DataVuzix, personName, video) {
         return <Animated animationIn="slideInLeft" animationInDuration={450} style={{ zIndex: 4, position: 'absolute' }}>
             <div style={{ zIndex: 2, backgroundColor: 'white', width: '22.2vw' }}>
                 <MapFilterComponent
-                    DataVuzix={this.state.DataVuzix}
+                    DataVuzix={DataVuzix}
                     startDate={this.startDate}
                     endDate={this.endDate}
-                    people={this.state.personName}
+                    people={personName}
                     mapAddress={this.address}
-                    video={this.state.video}
+                    video={video}
                     loadDataJson={this.loadDataJson.bind(this)}
                     changeVideoProps={this.changeVideoProps.bind(this)}
                 />

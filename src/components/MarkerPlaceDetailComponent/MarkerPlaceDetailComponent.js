@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardText, CardSubtitle, CardImg } from 'reactstrap';
+import { Card, CardText, CardSubtitle, CardImg, Button } from 'reactstrap';
 import './MarkerPlaceDetailComponent.css';
 import '../../App.css';
 
