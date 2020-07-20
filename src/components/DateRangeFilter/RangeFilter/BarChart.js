@@ -23,7 +23,7 @@ class BarChart extends React.Component {
     let values = Array.from(barDataValues.values())
 
     const barData = {
-      labels: values.map((val, i) => format(keys[i], "MMM dd, yyyy HH:mm")),
+      labels: values.map((val, i) => format(keys[i], "MMM dd, y HH:mm")),
       datasets: [
         {
           backgroundColor: values.map((val, i) =>

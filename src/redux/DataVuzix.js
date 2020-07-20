@@ -3,7 +3,7 @@ import * as ActionTypes from './ActionTypes';
 export const DataVuzix = (state = {
     isLoading: true,
     errMess: null,
-    dataVuzix: []
+    dataVuzix: {}
 }, action) => {
     switch (action.type) {
         case ActionTypes.ADD_DATAVUZIX:

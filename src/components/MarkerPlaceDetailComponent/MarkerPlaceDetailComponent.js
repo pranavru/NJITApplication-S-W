@@ -21,8 +21,8 @@ function MarkerPLaceDetailComponent(props) {
                 </div> :
                 props.data.map((p) =>
                     <Card style={{ width: '19vw', marginTop: '2%', padding: '2px' }} key={p.id}
-                        onMouseOver={() => window.setTimeout(props.AnimateMarker(p), 1000)}
-                        onMouseOut={() => props.AnimateMarker(null)}
+                        onMouseOver={() => props.animateMapMarker(props.mapReference, p)}
+                        onMouseOut={() => props.animateMapMarker(props.mapReference, null)}
                     >
                         <table>
                             <tbody>
@@ -39,9 +39,11 @@ function MarkerPLaceDetailComponent(props) {
                                                         <CardText className="locationText">{props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`).length === 0 ? `Location Unavailable` : props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`)} </CardText>
                                                     </td>
                                                 </tr>
+                                            </thead>
+                                            <tbody>
                                                 {p.speech !== "" ?
                                                     <tr>
-                                                        <td><CardSubtitle className="speechText"><q>{p.speech}</q></CardSubtitle></td>
+                                                        <td style={{ margin: '2%' }}><CardText className="speechText"><q>{p.speech}</q></CardText></td>
                                                     </tr> : <></>
                                                 }
                                                 {p.person_names.length > 0 ?
@@ -51,7 +53,7 @@ function MarkerPLaceDetailComponent(props) {
                                                         </td>
                                                     </tr> : <></>
                                                 }
-                                            </thead>
+                                            </tbody>
                                         </table>
                                     </td>
                                 </tr>

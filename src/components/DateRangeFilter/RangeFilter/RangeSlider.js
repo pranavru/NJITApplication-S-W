@@ -27,7 +27,7 @@ class RangeSlider extends React.Component {
     }
 
     render() {
-        const { updated, values, domain, hours, dateData } = this.props.state;
+        const { updated, values, domain, data } = this.props.mapFilter.mapDateRange;
         const { displayChart } = this.state
 
         const dateTicks = scaleTime()
@@ -43,7 +43,7 @@ class RangeSlider extends React.Component {
                             onMouseLeave={() => this.setState({ displayChart: false })}>
                             <div style={{ display: displayChart ? "flex" : "none" }}>
                                 <BarChart
-                                    data={dateData}
+                                    data={data}
                                     highlight={updated}
                                     domain={domain}
                                     multipleHours={this.props.multipleHours}
@@ -52,7 +52,7 @@ class RangeSlider extends React.Component {
 
                             <Slider
                                 mode={1}
-                                step={hours}
+                                step={this.props.hours}
                                 domain={domain}
                                 rootStyle={sliderStyle}
                                 onUpdate={this.props.onUpdate}

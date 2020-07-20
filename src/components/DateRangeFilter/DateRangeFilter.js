@@ -4,36 +4,22 @@ import { Card } from 'reactstrap';
 import RangeSlider from './RangeFilter/RangeSlider';
 import "./DateRangeFilter.css";
 
-const multipleHours = 3;
+const multipleHours = 3, hours = 1000 * 60 * 30 * 2 * multipleHours;
 class DateRangeFilter extends React.Component {
 
     constructor(props) {
         super(props);
-        const range = [
-            +this.setDateValueinMilliSeconds(props.DataVuzix.startDate),
-            +this.setDateValueinMilliSeconds(props.DataVuzix.endDate)
-        ];
-        this.state = {
-            hours: 1000 * 60 * 30 * 2 * multipleHours,
-            updated: range,
-            domain: range,
-            values: range,
-            dateData: [],
-            displayChart: false,
-            multipleHours: 3
-        };
     }
 
     handleChangeDate(event) {
-        let startDate = this.props.dateValue[0];
-        let endDate = this.props.dateValue[1];
-        startDate = new Date(event[0]);
-        endDate = new Date(event[1]);
-        this.dateValuesData(startDate, endDate);
+        let startDate = this.props.mapFilter.dateValues[0];
+        let endDate = this.props.mapFilter.dateValues[1];
+        startDate = new Date(event[0]).getTime();
+        endDate = new Date(event[1]).getTime();
         this.props.handleDateChange(startDate, endDate)
     }
 
-    componentDidMount = () => this.dateValuesData(new Date(this.state.domain[0]), new Date(this.state.domain[1]));
+    componentDidMount = () => { }
 
     dateValuesData = (start, end) => {
         let data = [];
@@ -59,35 +45,25 @@ class DateRangeFilter extends React.Component {
 
     getDateFromMilliSeconds = (ms) => new Date(ms);
 
-    onChange = ([ms, ms1]) => this.setState({ values: [ms, ms1] })
+    onChange = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "onChange", value: [ms, ms1] }, this.props.mapFilter)
 
-    onUpdate = ([ms, ms1]) => this.setState({ updated: [ms, ms1] })
+    onUpdate = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "update", value: [ms, ms1] }, this.props.mapFilter)
 
     onUpdateData = dateData => this.setState({ dateData: dateData });
 
-    updateDomain = (event) => {
-        const range = [
-            +new Date(event[0]).getTime(),
-            +new Date(event[1]).getTime()
-        ];
-        this.setState({
-            updated: range,
-            domain: range,
-            values: range,
-        })
-        this.handleChangeDate(event)
-    }
+    updateDomain = (event) => this.handleChangeDate(event);
 
     render() {
+        const { startDate, endDate, mapDateRange } = this.props.mapFilter;
         return (
             <Card className="dateRangeCard">
                 <div className="dateRange">
                     <DateRangePicker
                         onChange={this.updateDomain}
-                        value={this.state.values.map(m => new Date(m))}
+                        value={mapDateRange.values.map(m => new Date(m))}
                         name="dateValue"
-                        minDate={new Date(this.props.startDate)}
-                        maxDate={new Date(this.props.endDate)}
+                        minDate={new Date(startDate)}
+                        maxDate={new Date(endDate)}
                         required
                         clearIcon={null}
                         rangeDivider="to  "
@@ -96,10 +72,9 @@ class DateRangeFilter extends React.Component {
                 <div className="rangeSliderDiv">
                     <RangeSlider
                         DataVuzix={this.props.DataVuzix}
-                        dateValue={this.props.dateValue}
                         multipleHours={multipleHours}
-                        state={this.state}
-                        dateValuesData={this.dateValuesData.bind(this)}
+                        hours={hours}
+                        mapFilter={this.props.mapFilter}
                         onChange={this.onChange.bind(this)}
                         onUpdate={this.onUpdate.bind(this)}
                     />

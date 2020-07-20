@@ -10,25 +10,15 @@ class MapFilterComponent extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            isSpeech: false,
-            personName: [],
-            dateValue: [new Date(this.props.DataVuzix.startDate), new Date(this.props.DataVuzix.endDate)],
-            disPlayVideo: false,
-            isLoading: true,
-            // addressValue: '',
-            createdAtValues: new Map(),
-            dataValues: []
-        }
-
         this.handleChangeCheck = this.handleChangeCheck.bind(this);
         this.changePersonAsSelected = this.changePersonAsSelected.bind(this)
         this.submitObjectValues = this.submitObjectValues.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.locations = JSON.parse(localStorage.getItem('addresses'))
     }
 
-    handleDateChange = (startDate, endDate) => this.setState({ dateValue: [startDate, endDate], disPlayVideo: false });
+    componentDidMount = () => this.props.fetchMapFilter(this.props.DataVuzix);
+
+    handleDateChange = (startDate, endDate) => this.props.editMapFilter("dateValues", [startDate, endDate], this.props.MapFilter.mapFilter);
 
     handleChangeCheck(event) {
         if (event.target.name === 'addressValue') {
@@ -36,14 +26,14 @@ class MapFilterComponent extends Component {
             this.setState({ [name]: value })
         } else {
             const { name, checked } = event.target;
-            this.setState({ [name]: checked, disPlayVideo: false })
+            this.props.editMapFilter(name, checked, this.props.MapFilter.mapFilter);
         }
     }
 
     changePersonAsSelected(event) {
-        let persons = this.props.people
+        let persons = this.props.MapFilter.mapFilter.personNames;
         persons.forEach(person => person.name === event.target.name ? person.checked = event.target.checked : null)
-        this.setState({ personName: persons, disPlayVideo: false })
+        this.props.editMapFilter("personNames", persons, this.props.MapFilter.mapFilter);
     }
 
     // addImages = (video) => {
@@ -61,17 +51,17 @@ class MapFilterComponent extends Component {
     // }
 
     submitObjectValues() {
-        let persons = []
-        this.state.personName.map(p => p.checked === true ? persons.push(p.name) : null)
-
+        const { isSpeech, startDate, endDate, video, dateValues, personNames, isLoading } = this.props.MapFilter.mapFilter;
+        let people = [];
+        personNames.forEach(p => (p.checked === true) ? people.push(p.name) : null)
         let json_body = {
-            speech: this.state.isSpeech,
-            person: persons,
+            speech: isSpeech,
+            person: people,
             // location: this.state.addressValue,
             lat: "0.0",
             long: "0.0",
-            start_date: this.state.dateValue[0].toISOString(),
-            end_date: this.state.dateValue[1].toISOString(),
+            start_date: new Date(dateValues[0]).toISOString(),
+            end_date: new Date(dateValues[1]).toISOString(),
             vid: "123456789"
         }
         console.log(json_body)
@@ -80,59 +70,61 @@ class MapFilterComponent extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.changeVideoProps();
-        this.props.loadDataJson('/query/', this.submitObjectValues())
-        this.setState({ disPlayVideo: true })
+        // this.props.changeVideoProps();
+        this.submitObjectValues()
+        // this.props.loadDataJson('/query/', this.submitObjectValues())
     }
 
     render() {
-        return (
-            <div style={{ height: '98vh', marginLeft: "2%" }}>
-                <Card className="filterCard">
-                    <Button disabled className="cardHeaderTitleButton" style={{ backgroundColor: '#2C4870' }}><Label className="cardHeaderTitleLabel filterFont">FILTER</Label></Button>
-                    <div>
-                        <Form onSubmit={this.handleSubmit}>
-                            {/* * Speech Form * */}
-                            <FormGroup>
-                                <InputGroup className="inputGroupValue">
-                                    <Input addon type="checkbox" name="isSpeech" value={this.state.isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
-                                    <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
-                                </InputGroup>
-                            </FormGroup>
+        const { isSpeech, video, personNames, isLoading, mapDateRange } = this.props.MapFilter.mapFilter;
+        if (!isLoading) {
+            return (
+                <div style={{ height: '98vh', marginLeft: "2%" }}>
+                    <Card className="filterCard">
+                        <Button disabled className="cardHeaderTitleButton" style={{ backgroundColor: '#2C4870' }}><Label className="cardHeaderTitleLabel filterFont">FILTER</Label></Button>
+                        <div>
+                            <Form onSubmit={this.handleSubmit}>
+                                {/* * Speech Form * */}
+                                <FormGroup>
+                                    <InputGroup className="inputGroupValue">
+                                        <Input addon type="checkbox" name="isSpeech" value={isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
+                                        <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
+                                    </InputGroup>
+                                </FormGroup>
 
-                            {/* * Persons Form * */}
-                            <Label className="filterCategoryLabel filterFont">PEOPLE</Label>
-                            <FormGroup >
-                                <InputGroup className="inputGroupValue">
-                                    {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
-                                    {this.props.people.map(v =>
-                                        <InputGroup key={v.name}>
-                                            <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
-                                            <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</CardText>
-                                        </InputGroup>
-                                    )}
-                                </InputGroup>
-                            </FormGroup>
+                                {/* * Persons Form * */}
+                                <CardText className="filterCategoryLabel filterFont">PEOPLE</CardText>
+                                {personNames && <FormGroup>
+                                    <InputGroup className="inputGroupValue">
+                                        {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
+                                        {personNames.map(v =>
+                                            <InputGroup key={v.name}>
+                                                <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
+                                                <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</CardText>
+                                            </InputGroup>
+                                        )}
+                                    </InputGroup>
+                                </FormGroup>}
 
-                            {/* * Date Value Form * */}
-                            <FormGroup>
-                                <Label className="filterCategoryLabel filterFont">DATE</Label>
-                                <DateRangeFilter
-                                    handleDateChange={this.handleDateChange.bind(this)}
-                                    DataVuzix={this.props.DataVuzix}
-                                    dateValue={this.state.dateValue}
-                                    startDate={this.props.startDate}
-                                    endDate={this.props.endDate}
-                                />
-                            </FormGroup>
+                                {/* * Date Value Form * */}
+                                <FormGroup>
+                                    <CardText className="filterCategoryLabel filterFont">DATE</CardText>
+                                    {mapDateRange && <DateRangeFilter
+                                        handleDateChange={this.handleDateChange.bind(this)}
+                                        DataVuzix={this.props.DataVuzix}
+                                        mapFilter={this.props.MapFilter.mapFilter}
+                                        editMapFilter={this.props.editMapFilter}
+                                    />}
+                                </FormGroup>
 
-                            <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button>
-                        </Form>
-                    </div>
-                </Card>
-                {this.state.disPlayVideo && <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />}
-            </div>
-        );
+                                <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button>
+                            </Form>
+                        </div>
+                    </Card>
+                    {false && <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />}
+                </div>
+            );
+        }
     }
 }
 
