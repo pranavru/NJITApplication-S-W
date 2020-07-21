@@ -186,9 +186,6 @@ class MainComponent extends Component {
                 address={this.props.Addresses.addresses.address}
                 infoWindow={this.props.InfoWindow}
                 baseURL={this.baseURL}
-                // animateMarkerData={animateMarkerData}
-                // ReverseGeoCodeAPI={this.ReverseGeoCodeAPI.bind(this)}
-                // loadDetailedDivData={this.loadDetailedDivData.bind(this)}
                 // activateLoader={this.activateLoader.bind(this)}
                 // changeCenter={this.changeCenter.bind(this)}
                 findClosestMarker={this.findClosestMarker.bind(this)}
@@ -202,8 +199,8 @@ class MainComponent extends Component {
         return <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={this.props.MapMarkersData.mapMarkersData.detail}
             style={{ zIndex: 1, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}>
 
-            {this.ToggleDetailDivButton("<<", "22.1vw")}
-            <div style={{ overflowY: 'scroll', height: "99.2vh", marginLeft: '3%', width: '21vw' }}>
+            {this.ToggleDetailDivButton("<<", "23vw")}
+            <div style={{ overflowY: 'scroll', height: "99.2vh", marginLeft: '3%', width: '22vw' }}>
                 <MarkerPLaceDetailComponent
                     baseURL={this.baseURL}
                     data={this.props.MapMarkersData.mapMarkersData.mapMarkers}

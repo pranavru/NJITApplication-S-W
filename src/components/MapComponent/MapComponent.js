@@ -76,7 +76,7 @@ const MapComponent = (props) => {
             {<MarkerClusterer options={clusterOptions}>
                 {clusterer => MarkerData(mapMarkers, clusterer)}
             </MarkerClusterer>}
-            {props.infoWindow.infoWindow ? customInfoWindow(props) : null}
+            {props.infoWindow.infoWindow ? customInfoWindow(props, center) : null}
             {!mapMarkers.length && <Button
                 value="Pan to Closest Marker"
                 color="info"
@@ -104,9 +104,9 @@ function hoverMarker(mapVuzix, props) {
     props.infoWindowMarker(mapVuzix);
 }
 
-function customInfoWindow(props) {
+function customInfoWindow(props, center) {
     return <InfoWindow
-        position={{ lat: props.infoWindow.infoWindow.lat, lng: props.infoWindow.infoWindow.long }}
+        position={{ lat: center.lat, lng: center.lng }}
         onCloseClick={() => props.infoWindowMarker(null)}
         onMouseOut={() => props.infoWindowMarker(null)}
     >

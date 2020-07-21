@@ -81,7 +81,7 @@ class MapFilterComponent extends Component {
             return (
                 <div style={{ height: '98vh', marginLeft: "2%" }}>
                     <Card className="filterCard">
-                        <Button disabled className="cardHeaderTitleButton" style={{ backgroundColor: '#2C4870' }}><Label className="cardHeaderTitleLabel filterFont">FILTER</Label></Button>
+                        <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
                         <div>
                             <Form onSubmit={this.handleSubmit}>
                                 {/* * Speech Form * */}
