@@ -10,7 +10,7 @@ import MapComponent from '../MapComponent/MapComponent';
 import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
 
 import { connect } from 'react-redux';
-import { fetchDataVuzix, fetchMapFilter, editMapFilter, updateMapAddressOnExpiry, initMapDetails, animateMapMarker, loadMarkers, infoWindowMarker, } from '../../redux/ActionCreators'
+import { fetchDataVuzix, fetchMapFilter, editMapFilter, updateMapAddressOnExpiry, initMapDetails, animateMapMarker, loadMarkers, infoWindowMarker, changeMapCenter, findClosestMarker, } from '../../redux/ActionCreators'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -32,7 +32,9 @@ const mapDispatchToProps = (dispatch) => ({
     editMapFilter: (type, newValue, props) => dispatch(editMapFilter(type, newValue, props)),
     updateMapAddressOnExpiry: () => dispatch(updateMapAddressOnExpiry()),
     animateMapMarker: (data, marker) => dispatch(animateMapMarker(data, marker)),
-    infoWindowMarker: (data) => dispatch(infoWindowMarker(data))
+    infoWindowMarker: (data) => dispatch(infoWindowMarker(data)),
+    changeMapCenter: (data) => dispatch(changeMapCenter(data)),
+    findClosestMarker: (data, mapRef) => dispatch(findClosestMarker(data, mapRef)),
 })
 
 
@@ -43,6 +45,7 @@ class MainComponent extends Component {
         super(props);
 
         this.baseURL = "http://18.191.247.248";
+        this.state = { isActive: false }
     }
 
     //Load the initial Data
@@ -57,7 +60,7 @@ class MainComponent extends Component {
                 <div>
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
                     <LoadingOverlay
-                        active={this.props.MapMarkersData.isLoading}
+                        active={this.state.isActive}
                         spinner
                         text='Loading...'
                     >
@@ -65,7 +68,7 @@ class MainComponent extends Component {
                         {this.props.MapFilter.mapFilter !== {} && this.animatedFilterComponent()}
 
                         {/** Card Detail Div */}
-                        {this.animatedDetailComponent()}
+                        {!this.props.MapMarkersData.mapMarkersData.isLoading && this.animatedDetailComponent()}
 
                         {/** Loading Map Div */}
                         {this.props.MapMarkersData.mapMarkersData !== {} && this.loadMap()}
@@ -103,80 +106,10 @@ class MainComponent extends Component {
         }
     }
 
-    //Reverse geo code - get address using lat, long
-    ReverseGeoCodeAPI = (lat, long, precision) => {
-        fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
-            .then(res => res.json())
-            .then(data => this.setState({ address: data.results[precision].formatted_address }))
-            .catch(err => {
-                console.log(err);
-                this.setState({ address: "Location Unavailable" });
-            })
-    }
-
     changeVideoProps = () => this.setState({ video: "", DataVuzix: { vuzixMap: [] } })
-
-    //Animation to make Marker Bounce
-    AnimateMarker(markerData) {
-        let data = this.state.DataVuzix;
-        if (markerData !== null) {
-            data.vuzixMap
-                .filter((d) => d.id === markerData.id)
-                .map(d => {
-                    if (d.id === markerData.id) {
-                        d.visible = true
-                    }
-                })
-            this.setState({ DataVuzix: data, id: markerData.id })
-        } else {
-            data.vuzixMap
-                .filter((d) => d.visible === true)
-                .map((d) => {
-                    if (d.id === this.state.id) {
-                        d.visible = false
-                    }
-                })
-            this.setState({ DataVuzix: data, id: null })
-        }
-    }
-
-    // To render the Markers - Card Detail Div
-    loadDetailedDiv = () => this.setState({ detailDiv: !this.state.detailDiv })
-
-    //Change Detail Div Array based on location
-    loadDetailedDivData = (detailDivData, isActive) => this.setState({ detailDivData, isActive })
 
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
-
-    //Change Center if it doesn't Lie in Bounds
-    changeCenter = (mapR) => this.setState({ center: { lat: mapR.getCenter().lat(), lng: mapR.getCenter().lng() - (4 * Math.pow(10, -6)) } })
-
-    // Pan to the Closest Marker if current Bounds contains zero markers
-    rad = (x) => x * Math.PI / 180;
-    sinSquare = (x) => Math.pow(Math.sin(x), 2);
-    cosSquare = (x) => Math.pow(Math.cos(x), 2);
-    findClosestMarker = () => {
-        let latLng = this.state.center;
-        let R = 6371; // radius of earth in km
-        let distances = [];
-        let closest = -1;
-        let data = this.state.DataVuzix.vuzixMap;
-        for (let i = 0; i < data.length; i++) {
-            let mlatLng = { lat: data[i].lat, lng: data[i].long };
-            let dLat = this.rad(mlatLng.lat - latLng.lat);
-            let dLong = this.rad(mlatLng.lng - latLng.lng);
-            let a = this.sinSquare(dLat / 2) + this.cosSquare(this.rad(latLng.lat)) * this.sinSquare(dLong / 2);
-            let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            let d = R * c;
-            distances[i] = d;
-            if (closest == -1 || d < distances[closest]) {
-                closest = i;
-            }
-        }
-        const center = { lat: data[closest].lat, lng: data[closest].long };
-        this.setState({ center });
-    }
 
     loadMap() {
         return (
@@ -186,9 +119,9 @@ class MainComponent extends Component {
                 address={this.props.Addresses.addresses.address}
                 infoWindow={this.props.InfoWindow}
                 baseURL={this.baseURL}
-                // activateLoader={this.activateLoader.bind(this)}
-                // changeCenter={this.changeCenter.bind(this)}
-                findClosestMarker={this.findClosestMarker.bind(this)}
+                activateLoader={this.activateLoader.bind(this)}
+                changeMapCenter={this.props.changeMapCenter}
+                findClosestMarker={this.props.findClosestMarker}
                 loadMarkers={this.props.loadMarkers}
                 infoWindowMarker={this.props.infoWindowMarker}
             />
@@ -196,11 +129,11 @@ class MainComponent extends Component {
     }
 
     animatedDetailComponent() {
-        return <Animated animationIn="fadeIn" animationOut="fadeOut" isVisible={this.props.MapMarkersData.mapMarkersData.detail}
-            style={{ zIndex: 1, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid gray" }}>
+        return <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={this.props.MapMarkersData.mapMarkersData.detail}
+            style={{ zIndex: 1, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid #e6e6e6" }}>
 
             {this.ToggleDetailDivButton("<<", "23vw")}
-            <div style={{ overflowY: 'scroll', height: "99.2vh", marginLeft: '3%', width: '22vw' }}>
+            <div style={{ overflowY: 'scroll', height: "99.2vh", width: '22.5vw' }}>
                 <MarkerPLaceDetailComponent
                     baseURL={this.baseURL}
                     data={this.props.MapMarkersData.mapMarkersData.mapMarkers}
@@ -213,21 +146,19 @@ class MainComponent extends Component {
     }
 
     animatedFilterComponent() {
-        return <Animated animationIn="slideInLeft" animationInDuration={450} style={{ zIndex: 4, position: 'absolute' }}>
-            <div style={{ zIndex: 2, backgroundColor: 'white', width: '22.2vw' }}>
-                <MapFilterComponent
-                    DataVuzix={this.props.DataVuzix.dataVuzix}
-                    MapFilter={this.props.MapFilter}
-                    fetchMapFilter={this.props.fetchMapFilter}
-                    editMapFilter={this.props.editMapFilter}
-                // changeVideoProps={this.changeVideoProps.bind(this)}
-                />
+        return <div style={{ zIndex: 2, backgroundColor: 'white', width: '22.2vw', position: 'absolute' }}>
+            <MapFilterComponent
+                DataVuzix={this.props.DataVuzix.dataVuzix}
+                MapFilter={this.props.MapFilter}
+                fetchMapFilter={this.props.fetchMapFilter}
+                editMapFilter={this.props.editMapFilter}
+            // changeVideoProps={this.changeVideoProps.bind(this)}
+            />
 
-                {!this.props.MapMarkersData.mapMarkersData.detail ?
-                    this.ToggleDetailDivButton(">>", "22.3vw")
-                    : <></>}
-            </div>
-        </Animated>;
+            {!this.props.MapMarkersData.mapMarkersData.detail ?
+                this.ToggleDetailDivButton(">>", "22.3vw")
+                : <></>}
+        </div>
     }
 
     ToggleDetailDivButton = (displayValue, leftValue) => <Button onClick={() => this.props.loadMarkers([], null, this.props.MapMarkersData.mapMarkersData, "displayDetails")}

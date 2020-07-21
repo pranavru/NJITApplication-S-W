@@ -36,7 +36,7 @@ class RangeSlider extends React.Component {
             .map(d => +d);
 
         return (
-            <Grid container className="rangeSliderGrid" style={{ width: "85%", marginLeft: 4, marginRight: 4 }} >
+            <Grid container className="rangeSliderGrid" style={{ width: "85%"}} >
                 <Grid item xs={12}>
                     <Card>
                         <div
@@ -51,7 +51,7 @@ class RangeSlider extends React.Component {
                             </div>
 
                             <Slider
-                                mode={1}
+                                mode={3}
                                 step={this.props.hours}
                                 domain={domain}
                                 rootStyle={sliderStyle}

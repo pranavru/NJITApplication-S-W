@@ -1,17 +1,11 @@
 import React from "react";
 import { Button, CardText } from 'reactstrap';
-import {
-    GoogleMap,
-    useLoadScript,
-    Marker,
-    InfoWindow,
-    MarkerClusterer
-} from "@react-google-maps/api";
+import { GoogleMap, useLoadScript, Marker, InfoWindow, MarkerClusterer } from "@react-google-maps/api";
 import MapInfoWindow from '../MapInfoWindow/MapInfoWindow';
 import "../MapComponent/MapComponent.css"
 
 const MapComponent = (props) => {
-    const { center, detail, mapMarkers, animatedMarkerID, mapObject } = props.mapDetailsData;
+    const { center, detail, mapMarkers, mapObject } = props.mapDetailsData;
     const mapContainerStyle = { height: window.innerHeight, width: detail ? "55vw" : "77.5vw", left: detail ? "45vw" : "22.5vw" };
     const mapOptions = { disableDefaultUI: true, zoomControl: true };
     const GOOGLE_API_KEY = 'AIzaSyABBr3dtnI6vkHnyzMjztupIDjhxNXCmng';
@@ -21,10 +15,7 @@ const MapComponent = (props) => {
         const bounds = new window.google.maps.LatLngBounds(center);
         map1.fitBounds(bounds);
         props.loadMarkers(props.DataVuzix, map1, props.mapDetailsData, "mapReference");
-    }, [])
-
-    //Data Loading
-    const [selected, setSelected] = React.useState(null);
+    }, [center, props])
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
@@ -36,7 +27,7 @@ const MapComponent = (props) => {
                 data.map((mapVuzix, index) =>
                     <Marker
                         onMouseOver={() => hoverMarker(mapVuzix, props)}
-                        // onMouseOut={() => hoverMarker(null, props)}
+                        onMouseOut={() => hoverMarker(null, props)}
                         key={index}
                         animation={mapVuzix.animated ? window.google.maps.Animation.BOUNCE : null}
                         position={{ lat: mapVuzix.lat, lng: mapVuzix.long }}
@@ -50,7 +41,12 @@ const MapComponent = (props) => {
             return (<div></div>);
     }
 
-    const logBounds = () => props.loadMarkers(props.DataVuzix, mapObject, props.mapDetailsData, "markers");
+    const logBounds = () => {
+        const bounds = mapObject.getBounds()
+        const markers = props.DataVuzix.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
+        props.loadMarkers(markers, null, props.mapDetailsData, "markers");
+        props.activateLoader(false);
+    }
 
     const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 19, gridSize: 60, ignoreHidden: true };
     return (
@@ -61,26 +57,27 @@ const MapComponent = (props) => {
             options={mapOptions}
             onLoad={onLoad}
             onIdle={() => logBounds()}
-        // onDragEnd={() => {
-        //     props.changeCenter(mapR);
-        // }}
-        // onZoomChanged={() => {
-        //     if (mapR) {
-        //         const zoomLevel = mapObject.getZoom();
-        //         if (zoomLevel < 21 && zoomLevel % 2 === 0) {
-        //             props.activateLoader(true);
-        //         }
-        //     }
-        // }}
+            onDragEnd={() => {
+                props.activateLoader(true);
+                props.changeMapCenter(props.mapDetailsData)
+            }}
+            onZoomChanged={() => {
+                if (mapObject) {
+                    const zoomLevel = mapObject.getZoom();
+                    if (zoomLevel < 21 && zoomLevel % 2 === 0) {
+                        props.activateLoader(true);
+                    }
+                }
+            }}
         >
-            {<MarkerClusterer options={clusterOptions}>
+            <MarkerClusterer options={clusterOptions}>
                 {clusterer => MarkerData(mapMarkers, clusterer)}
-            </MarkerClusterer>}
+            </MarkerClusterer>
             {props.infoWindow.infoWindow ? customInfoWindow(props, center) : null}
             {!mapMarkers.length && <Button
                 value="Pan to Closest Marker"
                 color="info"
-                onClick={() => props.findClosestMarker()}
+                onClick={() => props.findClosestMarker(props.DataVuzix, props.mapDetailsData)}
                 className="panToMarkerButton"
             >
                 <CardText>Pan to Closest Marker</CardText>
@@ -99,14 +96,14 @@ function iconImage(mapVuzix) {
 }
 
 function hoverMarker(mapVuzix, props) {
-    mapVuzix.address = props.address.get(`${mapVuzix.lat.toFixed(3)}:${mapVuzix.long.toFixed(3)}`);
-    console.log(mapVuzix.address)
+    if (mapVuzix) { mapVuzix.address = props.address.get(`${mapVuzix.lat.toFixed(3)}:${mapVuzix.long.toFixed(3)}`); }
     props.infoWindowMarker(mapVuzix);
 }
 
 function customInfoWindow(props, center) {
+    let sw = props.mapDetailsData.mapObject.getBounds().getSouthWest(), lat = (center.lat + sw.lat()) / 2;
     return <InfoWindow
-        position={{ lat: center.lat, lng: center.lng }}
+        position={{ lat: lat, lng: center.lng }}
         onCloseClick={() => props.infoWindowMarker(null)}
         onMouseOut={() => props.infoWindowMarker(null)}
     >

@@ -61,20 +61,23 @@ export const fetchMapFilter = (data) => (dispatch) => {
 };
 
 export const editMapFilter = (type, newValue, filter) => (dispatch) => {
+    console.log(type, newValue, filter)
     let newFilter = filter;
     if (type.includes("isSpeech")) {
         newFilter.isSpeech = newValue;
-    } else if (type.includes("personNames")) {
+    }
+    if (type.includes("personNames")) {
         newFilter.personNames = newValue;
-    } else if (type.includes("dateValues")) {
+    }
+    if (type.includes("dateValues")) {
         newFilter.dateValues = newValue;
         let updated = newValue, domain = newValue, values = newValue;
         newFilter.mapDateRange = { updated, domain, values, data: newFilter.mapDateRange.data }
-    } else if (type.includes("mapDateRange")) {
+    }
+    if (type.includes("mapDateRange")) {
         const type = newValue.type;
         if (type.includes("update")) {
             newFilter.mapDateRange.updated = newValue.value;
-            newFilter.dateValues = newValue.value;
         } else if (type.includes("onChange")) {
             newFilter.mapDateRange.values = newValue.value;
         } else if (type.includes("domain")) {
@@ -88,7 +91,11 @@ export const editMapFilter = (type, newValue, filter) => (dispatch) => {
     dispatch(loadEditedFilter(newFilter));
 };
 
-export const initMapDetails = () => dispatch => {
+// export const editMapFilter = (filter) => (dispatch) => {
+//     dispatch(loadMapFilter(filter));
+// };
+
+export const initMapDetails = () => (dispatch) => {
     let mapReference = {
         center: { lat: 40.74918, lng: -74.156204 },
         detail: false,
@@ -97,6 +104,77 @@ export const initMapDetails = () => dispatch => {
         mapObject: null
     }
     dispatch(loadMapMarkerData(mapReference));
+}
+
+export const updateMapAddressOnExpiry = (data) => (dispatch) => {
+    let address = new Map(), addressValue;
+    dispatch(addressValueLoading(true));
+    data.forEach(m => {
+        let temp = loadMarkerAddresses(m, address)              //Load Address Values
+        if (temp !== undefined) {
+            addressValue = temp;
+        }
+    });
+    dispatch(loadAddressValue(addressValue));
+}
+
+export const loadMarkers = (data, mapObj, mapReference, type) => (dispatch) => {
+    // dispatch(mapMarkersDataLoading(true));
+    if (type.includes("mapReference")) {
+        mapReference.mapObject = mapObj;
+    }
+    if (type.includes("markers")) {
+        mapReference.mapMarkers = data;
+    }
+    if (type.includes("displayDetails")) {
+        mapReference.detail = !mapReference.detail;
+    }
+    dispatch(loadMapMarkerData(mapReference));
+}
+
+//Toggle Animation of map markers
+export const animateMapMarker = (data, marker) => (dispatch) => {
+    let newMarker = {}
+    if (marker === null) {
+        newMarker = data.mapMarkers.filter((d) => { if (d.animated === true) { d.animated = false; } })
+    } else {
+        newMarker = data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true } })
+    }
+    dispatch(loadMapMarkerData(newMarker));
+}
+
+export const changeMapCenter = (data) => (dispatch) => {
+    data.center = { lat: data.mapObject.getCenter().lat(), lng: data.mapObject.getCenter().lng() };
+    dispatch(loadMapMarkerData(data));
+}
+
+export const findClosestMarker = (data, mapObject) => (dispatch) => {
+    let latLng = mapObject.center;
+    let R = 6371; // radius of earth in km
+    let distances = [];
+    let closest = -1;
+    for (let i = 0; i < data.length; i++) {
+        let mlatLng = { lat: data[i].lat, lng: data[i].long };
+        let dLat = rad(mlatLng.lat - latLng.lat);
+        let dLong = rad(mlatLng.lng - latLng.lng);
+        let a = sinSquare(dLat / 2) + cosSquare(rad(latLng.lat)) * sinSquare(dLong / 2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = R * c;
+        distances[i] = d;
+        if (closest === -1 || d < distances[closest]) {
+            closest = i;
+        }
+    }
+    mapObject.center = { lat: data[closest].lat, lng: data[closest].long };
+    dispatch(loadMapMarkerData(mapObject));
+}
+
+export const infoWindowMarker = (data) => (dispatch) => {
+    if (data === undefined) {
+        dispatch(infoWindowFailed("Data is not defined"));
+    } else {
+        dispatch(loadInfoWindow(data));
+    }
 }
 
 // The method converts the Date isoStringValue to time in milliseconds.
@@ -152,45 +230,7 @@ const loadMarkerAddresses = (m, address) => {
     }
 };
 
-export const updateMapAddressOnExpiry = (data) => dispatch => {
-    let address = new Map(), addressValue;
-    dispatch(addressValueLoading(true));
-    data.forEach(m => {
-        let temp = loadMarkerAddresses(m, address)              //Load Address Values
-        if (temp !== undefined) {
-            addressValue = temp;
-        }
-    });
-    dispatch(loadAddressValue(addressValue));
-}
-
-export const loadMarkers = (data, mapObj, mapReference, type) => (dispatch) => {
-    dispatch(mapMarkersDataLoading(true));
-    if (type.includes("mapReference")) {
-        mapReference.mapObject = mapObj;
-    } else if (type.includes("markers")) {
-        mapReference.mapMarkers = data.filter(m => mapReference.mapObject.getBounds().contains(new window.google.maps.LatLng(m.lat, m.long)))
-    } else if (type.includes("displayDetails")) {
-        mapReference.detail = !mapReference.detail;
-    } else if (type.includes("infoWindow")) {
-        console.log(data);
-        mapReference.displayInfoOnHover = data;
-    }
-    dispatch(loadMapMarkerData(mapReference));
-}
-
-//Toggle Animation of map markers
-export const animateMapMarker = (data, marker) => (dispatch) => {
-    if (marker === null) {
-        data.mapMarkers.filter((d) => { if (d.animated === true) { d.animated = false } })
-    } else {
-        data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true } })
-    }
-    dispatch(loadMapMarkerData(data));
-}
-
-export const infoWindowMarker = (data) => dispatch => {
-    dispatch(infoWindowLoading(true));
-    console.log(data)
-    dispatch(loadInfoWindow(data));
-}
+// Pan to the Closest Marker if current Bounds contains zero markers
+const rad = (x) => x * Math.PI / 180;
+const sinSquare = (x) => Math.pow(Math.sin(x), 2);
+const cosSquare = (x) => Math.pow(Math.cos(x), 2);

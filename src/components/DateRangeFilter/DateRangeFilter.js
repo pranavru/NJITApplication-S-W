@@ -7,10 +7,6 @@ import "./DateRangeFilter.css";
 const multipleHours = 3, hours = 1000 * 60 * 30 * 2 * multipleHours;
 class DateRangeFilter extends React.Component {
 
-    constructor(props) {
-        super(props);
-    }
-
     handleChangeDate(event) {
         let startDate = this.props.mapFilter.dateValues[0];
         let endDate = this.props.mapFilter.dateValues[1];
@@ -18,8 +14,6 @@ class DateRangeFilter extends React.Component {
         endDate = new Date(event[1]).getTime();
         this.props.handleDateChange(startDate, endDate)
     }
-
-    componentDidMount = () => { }
 
     dateValuesData = (start, end) => {
         let data = [];
@@ -48,8 +42,6 @@ class DateRangeFilter extends React.Component {
     onChange = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "onChange", value: [ms, ms1] }, this.props.mapFilter)
 
     onUpdate = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "update", value: [ms, ms1] }, this.props.mapFilter)
-
-    onUpdateData = dateData => this.setState({ dateData: dateData });
 
     updateDomain = (event) => this.handleChangeDate(event);
 

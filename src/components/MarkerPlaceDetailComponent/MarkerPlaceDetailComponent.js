@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardText, CardSubtitle, CardImg, Button } from 'reactstrap';
+import { Card, CardText, CardImg } from 'reactstrap';
 import './MarkerPlaceDetailComponent.css';
 import '../../App.css';
 
@@ -15,14 +15,14 @@ function MarkerPLaceDetailComponent(props) {
         <>
             {props.data.length <= 0 ?
                 <div className="emptyDivDisplayInfo">
-                    <img src="/mapImage.png" width="85%" height="17.5%" className="emptyDivImage" />
+                    <img src="/mapImage.png" alt={""} width="85%" height="17.5%" className="emptyDivImage" />
                     <p className="emptyDivText">NO EVENTS TO DISPLAY !!!</p>
                     <p className="emptyDivText">PLEASE PAN TO DIFFERENT AREA</p>
                 </div> :
                 props.data.map((p) =>
                     <Card
                         className="container"
-                        style={{ width: '20vw', marginTop: '2%' }} key={p.id}
+                        style={{ width: '21vw', marginTop: '2%' }} key={p.id}
                         onMouseOver={() => props.animateMapMarker(props.mapReference, p)}
                         onMouseOut={() => props.animateMapMarker(props.mapReference, null)}
                     >
