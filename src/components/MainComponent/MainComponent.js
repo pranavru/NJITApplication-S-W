@@ -47,7 +47,7 @@ class MainComponent extends Component {
         super(props);
 
         this.baseURL = "http://18.191.247.248";
-        this.state = { isActive: false }
+        this.state = { isActive: true }
     }
 
     //Load the initial Data

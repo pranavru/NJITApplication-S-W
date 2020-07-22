@@ -64,7 +64,7 @@ const MapComponent = (props) => {
             onZoomChanged={() => {
                 if (mapObject) {
                     const zoomLevel = mapObject.getZoom();
-                    if (zoomLevel < 21 && zoomLevel % 2 === 0) {
+                    if (zoomLevel < 20) {
                         props.activateLoader(true);
                     }
                 }
@@ -76,7 +76,7 @@ const MapComponent = (props) => {
             {props.infoWindow.infoWindow ? customInfoWindow(props, center) : null}
             {!mapMarkers.length && <Button
                 value="Pan to Closest Marker"
-                color="info"
+                // color="#2C4870"
                 onClick={() => props.findClosestMarker(props.DataVuzix, props.mapDetailsData)}
                 className="panToMarkerButton"
             >
@@ -106,6 +106,7 @@ function customInfoWindow(props, center) {
         position={{ lat: lat, lng: center.lng }}
         onCloseClick={() => props.infoWindowMarker(null)}
         onMouseOut={() => props.infoWindowMarker(null)}
+        options={{ disableAutoPan: true }}
     >
         <MapInfoWindow point={props.infoWindow.infoWindow} baseURL={props.baseURL} />
     </InfoWindow >;
