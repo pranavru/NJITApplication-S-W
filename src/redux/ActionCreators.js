@@ -118,29 +118,30 @@ export const updateMapAddressOnExpiry = (data) => (dispatch) => {
     dispatch(loadAddressValue(addressValue));
 }
 
-export const loadMarkers = (data, mapObj, mapReference, type) => (dispatch) => {
-    // dispatch(mapMarkersDataLoading(true));
-    if (type.includes("mapReference")) {
-        mapReference.mapObject = mapObj;
-    }
-    if (type.includes("markers")) {
-        mapReference.mapMarkers = data;
-    }
-    if (type.includes("displayDetails")) {
-        mapReference.detail = !mapReference.detail;
-    }
+export const loadMap = (mapObj, mapReference) => dispatch => {
+    dispatch(mapMarkersDataLoading(true));
+    mapReference.mapObject = mapObj;
+    dispatch(loadMapMarkerData(mapReference));
+}
+
+export const displayDetails = (data, mapReference) => dispatch => {
+    mapReference.detail = data;
+    dispatch(loadMapMarkerData(mapReference));
+}
+
+export const loadMarkers = (data, mapReference) => (dispatch) => {
+    mapReference.mapMarkers = data;
     dispatch(loadMapMarkerData(mapReference));
 }
 
 //Toggle Animation of map markers
 export const animateMapMarker = (data, marker) => (dispatch) => {
-    let newMarker = {}
     if (marker === null) {
-        newMarker = data.mapMarkers.filter((d) => { if (d.animated === true) { d.animated = false; } })
+        data.mapMarkers.filter((d) => { if (d.animated) { d.animated = false } })
     } else {
-        newMarker = data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true } })
+        data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true } })
     }
-    dispatch(loadMapMarkerData(newMarker));
+    dispatch(loadMapMarkerData(data));
 }
 
 export const changeMapCenter = (data) => (dispatch) => {

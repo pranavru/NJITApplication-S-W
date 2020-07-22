@@ -16,7 +16,7 @@ export const ConfigureStore = () => {
             addresses: AddressValue,
             infoWindow: InfoWindow
         }),
-        applyMiddleware(thunk)
+        applyMiddleware(thunk, logger)
 
     );
     return store;

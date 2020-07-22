@@ -10,7 +10,7 @@ import MapComponent from '../MapComponent/MapComponent';
 import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
 
 import { connect } from 'react-redux';
-import { fetchDataVuzix, fetchMapFilter, editMapFilter, updateMapAddressOnExpiry, initMapDetails, animateMapMarker, loadMarkers, infoWindowMarker, changeMapCenter, findClosestMarker, } from '../../redux/ActionCreators'
+import { fetchDataVuzix, fetchMapFilter, editMapFilter, updateMapAddressOnExpiry, initMapDetails, animateMapMarker, loadMarkers, infoWindowMarker, changeMapCenter, findClosestMarker, loadMap, displayDetails } from '../../redux/ActionCreators'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -35,6 +35,8 @@ const mapDispatchToProps = (dispatch) => ({
     infoWindowMarker: (data) => dispatch(infoWindowMarker(data)),
     changeMapCenter: (data) => dispatch(changeMapCenter(data)),
     findClosestMarker: (data, mapRef) => dispatch(findClosestMarker(data, mapRef)),
+    loadMap: (data, refObj) => dispatch(loadMap(data, refObj)),
+    displayDetails: (data, refObj) => dispatch(displayDetails(data, refObj))
 })
 
 
@@ -71,7 +73,7 @@ class MainComponent extends Component {
                         {!this.props.MapMarkersData.mapMarkersData.isLoading && this.animatedDetailComponent()}
 
                         {/** Loading Map Div */}
-                        {this.props.MapMarkersData.mapMarkersData !== {} && this.loadMap()}
+                        {this.props.MapMarkersData.mapMarkersData !== {} && this.loadMapComponent()}
                     </LoadingOverlay>
                 </div>
             )
@@ -111,7 +113,7 @@ class MainComponent extends Component {
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
 
-    loadMap() {
+    loadMapComponent() {
         return (
             <MapComponent
                 DataVuzix={this.props.DataVuzix.dataVuzix.vuzixMap}
@@ -124,6 +126,7 @@ class MainComponent extends Component {
                 findClosestMarker={this.props.findClosestMarker}
                 loadMarkers={this.props.loadMarkers}
                 infoWindowMarker={this.props.infoWindowMarker}
+                loadMap={this.props.loadMap}
             />
         );
     }
@@ -132,7 +135,7 @@ class MainComponent extends Component {
         return <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={this.props.MapMarkersData.mapMarkersData.detail}
             style={{ zIndex: 1, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid #e6e6e6" }}>
 
-            {this.ToggleDetailDivButton("<<", "23vw")}
+            {this.ToggleDetailDivButton("<<", "22.5vw")}
             <div style={{ overflowY: 'scroll', height: "99.2vh", width: '22.5vw' }}>
                 <MarkerPLaceDetailComponent
                     baseURL={this.baseURL}
@@ -161,10 +164,9 @@ class MainComponent extends Component {
         </div>
     }
 
-    ToggleDetailDivButton = (displayValue, leftValue) => <Button onClick={() => this.props.loadMarkers([], null, this.props.MapMarkersData.mapMarkersData, "displayDetails")}
+    ToggleDetailDivButton = (displayValue, leftValue) => <Button onClick={() => this.props.displayDetails(!this.props.MapMarkersData.mapMarkersData.detail, this.props.MapMarkersData.mapMarkersData)}
         style={{ zIndex: 4, position: 'absolute', top: 12, left: leftValue, backgroundColor: '#2C4870' }}>
         {displayValue}</Button>
-
 }
 
 // export default MainComponent;

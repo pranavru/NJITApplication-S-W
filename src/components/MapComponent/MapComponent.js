@@ -14,7 +14,7 @@ const MapComponent = (props) => {
     const onLoad = React.useCallback(function callback(map1) {
         const bounds = new window.google.maps.LatLngBounds(center);
         map1.fitBounds(bounds);
-        props.loadMarkers(props.DataVuzix, map1, props.mapDetailsData, "mapReference");
+        props.loadMap(map1, props.mapDetailsData);
     }, [center, props])
 
     if (loadError) return "Error";
@@ -44,7 +44,7 @@ const MapComponent = (props) => {
     const logBounds = () => {
         const bounds = mapObject.getBounds()
         const markers = props.DataVuzix.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
-        props.loadMarkers(markers, null, props.mapDetailsData, "markers");
+        props.loadMarkers(markers, props.mapDetailsData);
         props.activateLoader(false);
     }
 
