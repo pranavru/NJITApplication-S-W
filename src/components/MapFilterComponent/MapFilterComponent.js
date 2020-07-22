@@ -3,7 +3,6 @@ import { Form, FormGroup, Label, Input, Card, InputGroup, Button, CardText } fro
 import './MapFilterComponent.css'
 import DateRangeFilter from '../DateRangeFilter/DateRangeFilter';
 import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponent';
-// import { baseURL } from "../../shared/baseUrl";
 
 class MapFilterComponent extends Component {
 
@@ -18,7 +17,7 @@ class MapFilterComponent extends Component {
 
     componentDidMount = () => this.props.fetchMapFilter(this.props.DataVuzix);
 
-    handleDateChange = (startDate, endDate) => this.props.editMapFilter("dateValues", [startDate, endDate], this.props.MapFilter.mapFilter);
+    handleDateChange = (startDate, endDate) => this.props.editMapFilter("dateValues", [startDate, endDate], this.props.MapFilter);
 
     handleChangeCheck(event) {
         if (event.target.name === 'addressValue') {
@@ -26,14 +25,14 @@ class MapFilterComponent extends Component {
             this.setState({ [name]: value })
         } else {
             const { name, checked } = event.target;
-            this.props.editMapFilter(name, checked, this.props.MapFilter.mapFilter);
+            this.props.editMapFilter(name, checked, this.props.MapFilter);
         }
     }
 
     changePersonAsSelected(event) {
         let persons = this.props.MapFilter.mapFilter.personNames;
         persons.forEach(person => person.name === event.target.name ? person.checked = event.target.checked : null)
-        this.props.editMapFilter("personNames", persons, this.props.MapFilter.mapFilter);
+        this.props.editMapFilter("personNames", persons, this.props.MapFilter);
     }
 
     // addImages = (video) => {
@@ -51,7 +50,7 @@ class MapFilterComponent extends Component {
     // }
 
     submitObjectValues() {
-        const { isSpeech, startDate, endDate, video, dateValues, personNames, isLoading } = this.props.MapFilter.mapFilter;
+        const { isSpeech, personNames, mapDateRange } = this.props.MapFilter.mapFilter;
         let people = [];
         personNames.forEach(p => (p.checked === true) ? people.push(p.name) : null)
         let json_body = {
@@ -60,8 +59,8 @@ class MapFilterComponent extends Component {
             // location: this.state.addressValue,
             lat: "0.0",
             long: "0.0",
-            start_date: new Date(dateValues[0]).toISOString(),
-            end_date: new Date(dateValues[1]).toISOString(),
+            start_date: new Date(mapDateRange.updated[0]).toISOString(),
+            end_date: new Date(mapDateRange.updated[1]).toISOString(),
             vid: "123456789"
         }
         console.log(json_body)
@@ -71,12 +70,12 @@ class MapFilterComponent extends Component {
     handleSubmit(event) {
         event.preventDefault();
         // this.props.changeVideoProps();
-        this.submitObjectValues()
-        // this.props.loadDataJson('/query/', this.submitObjectValues())
+        this.props.activateLoader(true);
+        this.props.editDataVuzix(this.submitObjectValues(), this.props)
     }
 
     render() {
-        const { isSpeech, video, personNames, isLoading, mapDateRange } = this.props.MapFilter.mapFilter;
+        const { isSpeech, personNames, isLoading, mapDateRange } = this.props.MapFilter.mapFilter;
         if (!isLoading) {
             return (
                 <div style={{ height: '98vh', marginLeft: "2%" }}>
@@ -112,7 +111,7 @@ class MapFilterComponent extends Component {
                                     {mapDateRange && <DateRangeFilter
                                         handleDateChange={this.handleDateChange.bind(this)}
                                         DataVuzix={this.props.DataVuzix}
-                                        mapFilter={this.props.MapFilter.mapFilter}
+                                        mapFilter={this.props.MapFilter}
                                         editMapFilter={this.props.editMapFilter}
                                     />}
                                 </FormGroup>

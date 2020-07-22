@@ -8,7 +8,7 @@ const MapComponent = (props) => {
     const { center, detail, mapMarkers, mapObject } = props.mapDetailsData;
     const mapContainerStyle = { height: window.innerHeight, width: detail ? "55vw" : "77.5vw", left: detail ? "45vw" : "22.5vw" };
     const mapOptions = { disableDefaultUI: true, zoomControl: true };
-    const GOOGLE_API_KEY = 'AIzaSyABBr3dtnI6vkHnyzMjztupIDjhxNXCmng';
+    const GOOGLE_API_KEY = 'AIzaSyAFHPjPBHcDOhJIn3HP6pbqVLZhCrORnbs';
 
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
     const onLoad = React.useCallback(function callback(map1) {
@@ -42,9 +42,7 @@ const MapComponent = (props) => {
     }
 
     const logBounds = () => {
-        const bounds = mapObject.getBounds()
-        const markers = props.DataVuzix.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
-        props.loadMarkers(markers, props.mapDetailsData);
+        props.loadMarkers(props.DataVuzix, props.mapDetailsData);
         props.activateLoader(false);
     }
 
@@ -62,6 +60,7 @@ const MapComponent = (props) => {
                 props.changeMapCenter(props.mapDetailsData)
             }}
             onZoomChanged={() => {
+                props.changeMapCenter(props.mapDetailsData)
                 if (mapObject) {
                     const zoomLevel = mapObject.getZoom();
                     if (zoomLevel < 20) {
@@ -69,20 +68,24 @@ const MapComponent = (props) => {
                     }
                 }
             }}
+            onResize={() => props.activateLoader(true)}
         >
             <MarkerClusterer options={clusterOptions}>
                 {clusterer => MarkerData(mapMarkers, clusterer)}
             </MarkerClusterer>
             {props.infoWindow.infoWindow ? customInfoWindow(props, center) : null}
             {!mapMarkers.length && <Button
-                value="Pan to Closest Marker"
-                // color="#2C4870"
-                onClick={() => props.findClosestMarker(props.DataVuzix, props.mapDetailsData)}
+                value="Pan to Marker"
+                onClick={() => {
+                    props.activateLoader(true)
+                    props.findClosestMarker(props.DataVuzix, props.mapDetailsData)
+                }}
                 className="panToMarkerButton"
+                style={{ backgroundColor: '#2C4870' }}
             >
-                <CardText>Pan to Closest Marker</CardText>
+                <CardText>Pan to Marker</CardText>
             </Button>}
-        </GoogleMap>
+        </GoogleMap >
     );
 }
 

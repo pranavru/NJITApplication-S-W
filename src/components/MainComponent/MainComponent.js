@@ -10,7 +10,7 @@ import MapComponent from '../MapComponent/MapComponent';
 import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
 
 import { connect } from 'react-redux';
-import { fetchDataVuzix, fetchMapFilter, editMapFilter, updateMapAddressOnExpiry, initMapDetails, animateMapMarker, loadMarkers, infoWindowMarker, changeMapCenter, findClosestMarker, loadMap, displayDetails } from '../../redux/ActionCreators'
+import { fetchDataVuzix, fetchMapFilter, editMapFilter, updateMapAddressOnExpiry, initMapDetails, animateMapMarker, loadMarkers, infoWindowMarker, changeMapCenter, findClosestMarker, loadMap, displayDetails, editDataVuzix } from '../../redux/ActionCreators'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -26,6 +26,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     fetchDataVuzix: () => dispatch(fetchDataVuzix),
+    editDataVuzix: (obj, loader) => dispatch(editDataVuzix(obj, loader)),
     fetchMapFilter: (data, dateMap) => dispatch(fetchMapFilter(data, dateMap)),
     initMapDetails: () => dispatch(initMapDetails()),
     loadMarkers: (data, mapObj, mapReference, type) => dispatch(loadMarkers(data, mapObj, mapReference, type)),
@@ -154,7 +155,10 @@ class MainComponent extends Component {
                 DataVuzix={this.props.DataVuzix.dataVuzix}
                 MapFilter={this.props.MapFilter}
                 fetchMapFilter={this.props.fetchMapFilter}
+                mapDetailsData={this.props.MapMarkersData.mapMarkersData}
                 editMapFilter={this.props.editMapFilter}
+                editDataVuzix={this.props.editDataVuzix}
+                activateLoader={this.activateLoader.bind(this)}
             // changeVideoProps={this.changeVideoProps.bind(this)}
             />
 

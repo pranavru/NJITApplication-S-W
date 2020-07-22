@@ -1,4 +1,5 @@
 import * as ActionTypes from './ActionTypes';
+import axios from 'axios';
 // import { baseUrl } from "../shared/baseUrl";
 
 const baseUrl = "http://18.191.247.248";
@@ -40,6 +41,29 @@ export const fetchDataVuzix = (dispatch) => {
         .catch(error => dispatch(dataVuzixFailed(error.message)));
 };
 
+export const editDataVuzix = (parameter, props) => (dispatch) => {
+    console.log(parameter, props)
+    return axios.post(baseUrl + '/query/', parameter)
+        .then(response => {
+            if (!(response.data.vuzixMap.length > 0)) {
+                alert("No data with search query")
+            } else {
+                console.log(response.data)
+                return response
+            }
+        })
+        .then(response => response.data)
+        .then(response => {
+            console.log(props, response)
+            dispatch(loadDataVuzix(response))
+            console.log(props.DataVuzix, props.mapDetailsData)
+            dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.mapDetailsData))
+            dispatch(changeMapCenter(props.mapDetailsData))
+            props.activateLoader(false);
+        })
+        .catch(err => dispatch(dataVuzixFailed(err.message)))
+}
+
 export const fetchMapFilter = (data) => (dispatch) => {
     dispatch(mapFilterLoading(true));
     const { range, dateMap, personObject, addressValue } = initializeMapFilter(data);
@@ -60,9 +84,8 @@ export const fetchMapFilter = (data) => (dispatch) => {
     }));
 };
 
-export const editMapFilter = (type, newValue, filter) => (dispatch) => {
-    console.log(type, newValue, filter)
-    let newFilter = filter;
+export const editMapFilter = (type, newValue, props) => (dispatch) => {
+    let newFilter = props.mapFilter;
     if (type.includes("isSpeech")) {
         newFilter.isSpeech = newValue;
     }
@@ -77,6 +100,7 @@ export const editMapFilter = (type, newValue, filter) => (dispatch) => {
     if (type.includes("mapDateRange")) {
         const type = newValue.type;
         if (type.includes("update")) {
+            console.log( newFilter.mapDateRange.updated)
             newFilter.mapDateRange.updated = newValue.value;
         } else if (type.includes("onChange")) {
             newFilter.mapDateRange.values = newValue.value;
@@ -89,6 +113,7 @@ export const editMapFilter = (type, newValue, filter) => (dispatch) => {
         };
     };
     dispatch(loadEditedFilter(newFilter));
+    // dispatch(editDataVuzix(props.MapFilter.mapFilter, props))
 };
 
 // export const editMapFilter = (filter) => (dispatch) => {
@@ -130,7 +155,9 @@ export const displayDetails = (data, mapReference) => dispatch => {
 }
 
 export const loadMarkers = (data, mapReference) => (dispatch) => {
-    mapReference.mapMarkers = data;
+    const bounds = mapReference.mapObject.getBounds();
+    const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
+    mapReference.mapMarkers = markers;
     dispatch(loadMapMarkerData(mapReference));
 }
 

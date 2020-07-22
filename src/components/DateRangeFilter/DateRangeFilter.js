@@ -46,7 +46,7 @@ class DateRangeFilter extends React.Component {
     updateDomain = (event) => this.handleChangeDate(event);
 
     render() {
-        const { startDate, endDate, mapDateRange } = this.props.mapFilter;
+        const { startDate, endDate, mapDateRange } = this.props.mapFilter.mapFilter;
         return (
             <Card className="dateRangeCard">
                 <div className="dateRange">
@@ -66,7 +66,7 @@ class DateRangeFilter extends React.Component {
                         DataVuzix={this.props.DataVuzix}
                         multipleHours={multipleHours}
                         hours={hours}
-                        mapFilter={this.props.mapFilter}
+                        mapFilter={this.props.mapFilter.mapFilter}
                         onChange={this.onChange.bind(this)}
                         onUpdate={this.onUpdate.bind(this)}
                     />
