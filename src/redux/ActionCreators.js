@@ -42,7 +42,6 @@ export const fetchDataVuzix = (dispatch) => {
 };
 
 export const editDataVuzix = (parameter, props) => (dispatch) => {
-    console.log(parameter, props)
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
@@ -54,9 +53,7 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         })
         .then(response => response.data)
         .then(response => {
-            console.log(props, response)
             dispatch(loadDataVuzix(response))
-            console.log(props.DataVuzix, props.mapDetailsData)
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.mapDetailsData))
             dispatch(changeMapCenter(props.mapDetailsData))
             props.activateLoader(false);
@@ -100,7 +97,6 @@ export const editMapFilter = (type, newValue, props) => (dispatch) => {
     if (type.includes("mapDateRange")) {
         const type = newValue.type;
         if (type.includes("update")) {
-            console.log( newFilter.mapDateRange.updated)
             newFilter.mapDateRange.updated = newValue.value;
         } else if (type.includes("onChange")) {
             newFilter.mapDateRange.values = newValue.value;
@@ -168,7 +164,7 @@ export const animateMapMarker = (data, marker) => (dispatch) => {
     } else {
         data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true } })
     }
-    dispatch(loadMapMarkerData(data));
+    dispatch(loadMarkers(data.mapMarkers, data));
 }
 
 export const changeMapCenter = (data) => (dispatch) => {

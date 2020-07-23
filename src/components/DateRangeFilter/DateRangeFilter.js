@@ -7,43 +7,15 @@ import "./DateRangeFilter.css";
 const multipleHours = 3, hours = 1000 * 60 * 30 * 2 * multipleHours;
 class DateRangeFilter extends React.Component {
 
-    handleChangeDate(event) {
-        let startDate = this.props.mapFilter.dateValues[0];
-        let endDate = this.props.mapFilter.dateValues[1];
-        startDate = new Date(event[0]).getTime();
-        endDate = new Date(event[1]).getTime();
+    handleChangeDate = (event) => {
+        let startDate = new Date(event[0]).getTime();
+        let endDate = new Date(event[1]).getTime();
         this.props.handleDateChange(startDate, endDate)
     }
-
-    dateValuesData = (start, end) => {
-        let data = [];
-        this.props.DataVuzix.vuzixMap.map(m => {
-            const date = this.setDateValueinMilliSeconds(m.created);
-            if (start.getTime() <= date && date <= end.getTime()) {
-                data.push(date);
-            }
-            return null;
-        })
-        data.sort();
-        this.onUpdateData(data);
-    }
-
-    setDateValueinMilliSeconds = (dateValue) => {
-        let dateVal = new Date(dateValue);
-        const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
-        let [{ value: month }, , { value: day }, , { value: year }, , { value: hours }] = dateTimeFormat.formatToParts(dateVal);
-        hours -= hours % 3 === 1 ? 1 : hours % 3 === 2 ? 2 : 0;
-
-        return new Date(`${month} ${day}, ${year} ${hours}:00:00`).getTime();
-    }
-
-    getDateFromMilliSeconds = (ms) => new Date(ms);
 
     onChange = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "onChange", value: [ms, ms1] }, this.props.mapFilter)
 
     onUpdate = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "update", value: [ms, ms1] }, this.props.mapFilter)
-
-    updateDomain = (event) => this.handleChangeDate(event);
 
     render() {
         const { startDate, endDate, mapDateRange } = this.props.mapFilter.mapFilter;
@@ -51,7 +23,7 @@ class DateRangeFilter extends React.Component {
             <Card className="dateRangeCard">
                 <div className="dateRange">
                     <DateRangePicker
-                        onChange={this.updateDomain}
+                        onChange={this.handleChangeDate}
                         value={mapDateRange.values.map(m => new Date(m))}
                         name="dateValue"
                         minDate={new Date(startDate)}

@@ -6,16 +6,12 @@ import { MuiRail, MuiHandle, MuiTrack, MuiTick } from "./components";
 import './RangeSlider.css';
 import { Card } from 'reactstrap';
 import { format } from "date-fns";
-import { scaleTime } from "d3-scale";
+import { scaleTime, scaleLinear } from "d3-scale";
 
 const sliderStyle = {
     position: "relative",
     width: "100%"
 };
-
-function formatTick(ms) {
-    return format(new Date(ms), "MMM dd");
-}
 
 class RangeSlider extends React.Component {
 
@@ -30,13 +26,12 @@ class RangeSlider extends React.Component {
         const { updated, values, domain, data } = this.props.mapFilter.mapDateRange;
         const { displayChart } = this.state
 
-        const dateTicks = scaleTime()
-            .domain(domain)
-            .ticks(4)
-            .map(d => +d);
+        const dateTicks = scaleLinear().domain(domain).ticks(4).map(d => +d);
+        console.log(dateTicks)
+        const formatTick = (ms) => ((domain[1] - domain[0]) < new Date("Jan 02, 1970")) ? format(new Date(ms), "HH:ss") : format(new Date(ms), "MMM dd");
 
         return (
-            <Grid container className="rangeSliderGrid" style={{ width: "85%"}} >
+            <Grid container className="rangeSliderGrid" style={{ width: "85%" }} >
                 <Grid item xs={12}>
                     <Card>
                         <div
