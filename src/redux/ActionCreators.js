@@ -112,10 +112,6 @@ export const editMapFilter = (type, newValue, props) => (dispatch) => {
     // dispatch(editDataVuzix(props.MapFilter.mapFilter, props))
 };
 
-// export const editMapFilter = (filter) => (dispatch) => {
-//     dispatch(loadMapFilter(filter));
-// };
-
 export const initMapDetails = () => (dispatch) => {
     let mapReference = {
         center: { lat: 40.74918, lng: -74.156204 },
@@ -159,10 +155,11 @@ export const loadMarkers = (data, mapReference) => (dispatch) => {
 
 //Toggle Animation of map markers
 export const animateMapMarker = (data, marker) => (dispatch) => {
+    console.log("Marker Animation", data.mapMarkers, marker, data.center)
     if (marker === null) {
         data.mapMarkers.filter((d) => { if (d.animated) { d.animated = false } })
     } else {
-        data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true } })
+        data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true; } })
     }
     dispatch(loadMarkers(data.mapMarkers, data));
 }
@@ -191,6 +188,16 @@ export const findClosestMarker = (data, mapObject) => (dispatch) => {
     }
     mapObject.center = { lat: data[closest].lat, lng: data[closest].long };
     dispatch(loadMapMarkerData(mapObject));
+}
+
+export const findRecentMarker = (data, mapObject) => (dispatch) => {
+    let mostRecent = data ? data[0] : null;;
+    data.forEach(d => mostRecent = new Date(d.created).getTime() > new Date(mostRecent.created).getTime() ? d : mostRecent)
+    mapObject.center = { lat: mostRecent.lat, lng: mostRecent.long };
+    mapObject.mapMarkers.push(mostRecent);
+    dispatch(loadMapMarkerData(mapObject));
+    dispatch(animateMapMarker(mapObject, mostRecent));
+    window.setTimeout(dispatch(animateMapMarker(mapObject, null), 5000));
 }
 
 export const infoWindowMarker = (data) => (dispatch) => {

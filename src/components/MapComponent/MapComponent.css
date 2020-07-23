@@ -1,7 +1,19 @@
 .panToMarkerButton {
   position: absolute;
   right: 3%;
+  padding: 3%;
   top: 3%;
   font: 0.9em monospace;
-  color: '#ffffff'
+  color: "#ffffff";
+}
+
+.panToRecentMarker {
+  position: absolute;
+  /* right: 30%; */
+  left: 3%;
+  bottom: 2%;
+  padding: 3%;
+  /* top: 3%; */
+  font: 0.9em monospace;
+  color: "#ffffff";
 }

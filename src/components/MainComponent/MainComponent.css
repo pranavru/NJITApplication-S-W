@@ -4,3 +4,19 @@
   top: 12px;
   background-color: "#2C4870";
 }
+
+.panToMarkerButton {
+  position: absolute;
+  right: 3%;
+  top: 3%;
+  padding: 3%;
+  font: 0.9em monospace;
+  color: "#ffffff";
+}
+
+.panToRecentMarker {
+  position: absolute;
+  bottom: 2%;
+  font: 0.9em monospace;
+  color: "#ffffff";
+}

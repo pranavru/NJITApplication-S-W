@@ -74,17 +74,6 @@ const MapComponent = (props) => {
                 {clusterer => MarkerData(mapMarkers, clusterer)}
             </MarkerClusterer>
             {props.infoWindow.infoWindow ? customInfoWindow(props, center) : null}
-            {!mapMarkers.length && <Button
-                value="Pan to Marker"
-                onClick={() => {
-                    props.activateLoader(true)
-                    props.findClosestMarker(props.DataVuzix, props.mapDetailsData)
-                }}
-                className="panToMarkerButton"
-                style={{ backgroundColor: '#2C4870' }}
-            >
-                <CardText>Pan to Marker</CardText>
-            </Button>}
         </GoogleMap >
     );
 }
