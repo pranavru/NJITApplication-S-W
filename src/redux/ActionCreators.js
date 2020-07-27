@@ -45,7 +45,9 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
-                alert("No data with search query")
+                alert("No data with search query");
+                dispatch(loadMarkers([], props.mapDetailsData))
+                props.activateLoader(false);
             } else {
                 console.log(response.data)
                 return response
