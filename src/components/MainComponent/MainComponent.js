@@ -69,7 +69,7 @@ class MainComponent extends Component {
                         text='Loading...'
                     >
                         {/** Filter Component */}
-                        {this.props.MapFilter.mapFilter !== {} && <div style={{ zIndex: 2, backgroundColor: 'white', width: '22.2vw', position: 'absolute' }}>
+                        {this.props.MapFilter.mapFilter !== {} && <div style={{ backgroundColor: 'white', width: '22.2vw', position: 'absolute' }}>
                             <MapFilterComponent
                                 DataVuzix={this.props.DataVuzix.dataVuzix}
                                 MapFilter={this.props.MapFilter}
