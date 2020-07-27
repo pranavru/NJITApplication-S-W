@@ -1,5 +1,4 @@
 import React from "react";
-import { Button, CardText } from 'reactstrap';
 import { GoogleMap, useLoadScript, Marker, InfoWindow, MarkerClusterer } from "@react-google-maps/api";
 import MapInfoWindow from '../MapInfoWindow/MapInfoWindow';
 import "../MapComponent/MapComponent.css"
@@ -27,7 +26,11 @@ const MapComponent = (props) => {
                 data.map((mapVuzix, index) =>
                     <Marker
                         onMouseOver={() => hoverMarker(mapVuzix, props)}
-                        onMouseOut={() => hoverMarker(null, props)}
+                        onMouseOut={() => !mapVuzix.keepAlive ? hoverMarker(null, props) : null}
+                        onClick={() => {
+                            mapVuzix.keepAlive = true;
+                            hoverMarker(mapVuzix, props);
+                        }}
                         key={index}
                         animation={mapVuzix.animated ? window.google.maps.Animation.BOUNCE : null}
                         position={{ lat: mapVuzix.lat, lng: mapVuzix.long }}
@@ -96,7 +99,10 @@ function customInfoWindow(props, center) {
     let sw = props.mapDetailsData.mapObject.getBounds().getSouthWest(), lat = (center.lat + sw.lat()) / 2;
     return <InfoWindow
         position={{ lat: lat, lng: center.lng }}
-        onCloseClick={() => props.infoWindowMarker(null)}
+        onCloseClick={() => {
+            props.DataVuzix.filter(m => { if (m.keepAlive) { m.keepAlive = false } })
+            props.infoWindowMarker(null)
+        }}
         onMouseOut={() => props.infoWindowMarker(null)}
         options={{ disableAutoPan: true }}
     >
