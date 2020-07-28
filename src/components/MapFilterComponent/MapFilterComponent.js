@@ -98,48 +98,43 @@ class MapFilterComponent extends Component {
                 <div style={{ height: '98vh', marginLeft: "2%" }}>
                     <Card className="filterCard">
                         <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
-                        <div>
-                            <Form
-                                onSubmit={event => event.preventDefault()}
+                        <Form onSubmit={event => event.preventDefault()} >
+                            {/* * Speech Form * */}
+                            <FormGroup>
+                                <InputGroup className="inputGroupValue">
+                                    <Input addon type="checkbox" name="isSpeech" value={isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
+                                    <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
+                                </InputGroup>
+                            </FormGroup>
 
-                            // onChange={this.handleSubmit}
-                            >
-                                {/* * Speech Form * */}
-                                <FormGroup>
-                                    <InputGroup className="inputGroupValue">
-                                        <Input addon type="checkbox" name="isSpeech" value={isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
-                                        <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
-                                    </InputGroup>
-                                </FormGroup>
+                            {/* * Persons Form * */}
+                            <CardText className="filterCategoryLabel filterFont">PEOPLE</CardText>
+                            {personNames && <FormGroup>
+                                <InputGroup className="inputGroupValue">
+                                    {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
+                                    {personNames.map(v =>
+                                        <InputGroup key={v.name}>
+                                            <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
+                                            <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</CardText>
+                                        </InputGroup>
+                                    )}
+                                </InputGroup>
+                            </FormGroup>}
 
-                                {/* * Persons Form * */}
-                                <CardText className="filterCategoryLabel filterFont">PEOPLE</CardText>
-                                {personNames && <FormGroup>
-                                    <InputGroup className="inputGroupValue">
-                                        {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
-                                        {personNames.map(v =>
-                                            <InputGroup key={v.name}>
-                                                <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
-                                                <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</CardText>
-                                            </InputGroup>
-                                        )}
-                                    </InputGroup>
-                                </FormGroup>}
+                            {/* * Date Value Form * */}
+                            <FormGroup>
+                                <CardText className="filterCategoryLabel filterFont">DATE</CardText>
+                                {mapDateRange && <DateRangeFilter
+                                    handleDateChange={this.handleDateChange.bind(this)}
+                                    DataVuzix={this.props.DataVuzix}
+                                    mapFilter={this.props.MapFilter}
+                                    editMapFilter={this.props.editMapFilter}
+                                    handleSubmit={this.handleSubmit.bind(this)}
+                                />}
+                            </FormGroup>
 
-                                {/* * Date Value Form * */}
-                                <FormGroup>
-                                    <CardText className="filterCategoryLabel filterFont">DATE</CardText>
-                                    {mapDateRange && <DateRangeFilter
-                                        handleDateChange={this.handleDateChange.bind(this)}
-                                        DataVuzix={this.props.DataVuzix}
-                                        mapFilter={this.props.MapFilter}
-                                        editMapFilter={this.props.editMapFilter}
-                                    />}
-                                </FormGroup>
-
-                                {/* <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button> */}
-                            </Form>
-                        </div>
+                            {/* <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button> */}
+                        </Form>
                     </Card>
                     {false && <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />}
                 </div >

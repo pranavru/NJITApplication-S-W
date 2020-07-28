@@ -13,14 +13,17 @@ class DateRangeFilter extends React.Component {
         this.props.handleDateChange(startDate, endDate)
     }
 
-    onChange = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "onChange", value: [ms, ms1] }, this.props.mapFilter)
+    onChange = ([ms, ms1]) => {
+        this.props.editMapFilter("mapDateRange", { type: "onChange", value: [ms, ms1] }, this.props.mapFilter);
+        this.props.handleSubmit();
+    }
 
     onUpdate = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "update", value: [ms, ms1] }, this.props.mapFilter)
 
     render() {
         const { startDate, endDate, mapDateRange } = this.props.mapFilter.mapFilter;
         return (
-            <Card className="dateRangeCard">
+            <Card className="dateRangeCard" style={{ border: '0px' }}>
                 <div className="dateRange">
                     <DateRangePicker
                         onChange={this.handleChangeDate}
