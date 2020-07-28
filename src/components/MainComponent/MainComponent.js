@@ -24,14 +24,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => ({
     fetchDataVuzix: () => dispatch(fetchDataVuzix),
     initMapDetails: () => dispatch(initMapDetails()),
-    loadMap: (data, refObj) => dispatch(loadMap(data, refObj)),
-    changeMapCenter: (data) => dispatch(changeMapCenter(data)),
-    loadMarkers: (data, mapObj, mapReference, type) => dispatch(loadMarkers(data, mapObj, mapReference, type)),
-    animateMapMarker: (data, marker) => dispatch(animateMapMarker(data, marker)),
-    infoWindowMarker: (data) => dispatch(infoWindowMarker(data)),
     findClosestMarker: (data, mapRef) => dispatch(findClosestMarker(data, mapRef)),
     findRecentMarker: (data, mapRef) => dispatch(findRecentMarker(data, mapRef)),
-    updateMapAddressOnExpiry: () => dispatch(updateMapAddressOnExpiry()),
     displayDetails: (data, refObj) => dispatch(displayDetails(data, refObj))
 })
 

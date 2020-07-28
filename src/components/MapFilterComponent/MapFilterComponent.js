@@ -9,7 +9,7 @@ import './MapFilterComponent.css'
 import { connect } from 'react-redux';
 import { fetchMapFilter, editMapFilter, editDataVuzix } from '../../redux/ActionCreators'
 
-const mapStateToProps = (state) => { return { MapFilter: state.mapFilter } }
+const mapStateToProps = (state) => { return { MapFilter: state.mapFilter, MapMarkersData: state.mapMarkersData } }
 
 const mapDispatchToProps = (dispatch) => ({
     fetchMapFilter: (data, dateMap) => dispatch(fetchMapFilter(data, dateMap)),
@@ -30,7 +30,10 @@ class MapFilterComponent extends Component {
 
     componentDidMount = () => this.props.fetchMapFilter(this.props.DataVuzix);
 
-    handleDateChange = (startDate, endDate) => this.props.editMapFilter("dateValues", [startDate, endDate], this.props.MapFilter);
+    handleDateChange = (startDate, endDate) => {
+        this.props.editMapFilter("dateValues", [startDate, endDate], this.props.MapFilter)
+        this.handleSubmit();
+    };
 
     handleChangeCheck(event) {
         if (event.target.name === 'addressValue') {
@@ -39,6 +42,7 @@ class MapFilterComponent extends Component {
         } else {
             const { name, checked } = event.target;
             this.props.editMapFilter(name, checked, this.props.MapFilter);
+            this.handleSubmit()
         }
     }
 
@@ -46,6 +50,7 @@ class MapFilterComponent extends Component {
         let persons = this.props.MapFilter.mapFilter.personNames;
         persons.forEach(person => person.name === event.target.name ? person.checked = event.target.checked : null)
         this.props.editMapFilter("personNames", persons, this.props.MapFilter);
+        this.handleSubmit()
     }
 
     // addImages = (video) => {
@@ -81,7 +86,6 @@ class MapFilterComponent extends Component {
     }
 
     handleSubmit(event) {
-        event.preventDefault();
         // this.props.changeVideoProps();
         this.props.activateLoader(true);
         this.props.editDataVuzix(this.submitObjectValues(), this.props)
@@ -96,7 +100,9 @@ class MapFilterComponent extends Component {
                         <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
                         <div>
                             <Form
-                                onSubmit={this.handleSubmit}
+                                onSubmit={event => event.preventDefault()}
+
+                            // onChange={this.handleSubmit}
                             >
                                 {/* * Speech Form * */}
                                 <FormGroup>
@@ -131,12 +137,12 @@ class MapFilterComponent extends Component {
                                     />}
                                 </FormGroup>
 
-                                <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button>
+                                {/* <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button> */}
                             </Form>
                         </div>
                     </Card>
                     {false && <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />}
-                </div>
+                </div >
             );
         }
     }

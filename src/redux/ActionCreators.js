@@ -42,11 +42,12 @@ export const fetchDataVuzix = (dispatch) => {
 };
 
 export const editDataVuzix = (parameter, props) => (dispatch) => {
+    console.log(props)
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
                 alert("No data with search query");
-                dispatch(loadMarkers([], props.mapDetailsData))
+                dispatch(loadMarkers([], props.MapMarkersData.mapMarkersData))
                 props.activateLoader(false);
             } else {
                 console.log(response.data)
@@ -56,8 +57,8 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         .then(response => response.data)
         .then(response => {
             dispatch(loadDataVuzix(response))
-            dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.mapDetailsData))
-            dispatch(changeMapCenter(props.mapDetailsData))
+            dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
+            dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
             props.activateLoader(false);
         })
         .catch(err => dispatch(dataVuzixFailed(err.message)))
@@ -84,6 +85,7 @@ export const fetchMapFilter = (data) => (dispatch) => {
 };
 
 export const editMapFilter = (type, newValue, props) => (dispatch) => {
+    dispatch(mapFilterLoading(true))
     let newFilter = props.mapFilter;
     if (type.includes("isSpeech")) {
         newFilter.isSpeech = newValue;
@@ -149,6 +151,7 @@ export const displayDetails = (data, mapReference) => dispatch => {
 }
 
 export const loadMarkers = (data, mapReference) => (dispatch) => {
+    console.log(data, mapReference)
     const bounds = mapReference.mapObject.getBounds();
     const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
     mapReference.mapMarkers = markers;
