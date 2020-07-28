@@ -24,7 +24,7 @@
   border-top-right-radius: 0px;
   width: 20vw;
   height: 15vh;
-  margin-left: -30%;
+  margin-left: -15%;
 }
 
 .dateFieldCard {
@@ -92,4 +92,11 @@
   font-size: 2%;
   font-family: monospace;
   color: #00e6e6;
+}
+
+.endOfList {
+  text-align: center;
+  font: 12px monospace;
+  font-weight: bold;
+  color: #2c4870;
 }

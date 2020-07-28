@@ -1,10 +1,25 @@
 import React from "react";
 import { GoogleMap, useLoadScript, Marker, InfoWindow, MarkerClusterer } from "@react-google-maps/api";
+
 import MapInfoWindow from '../MapInfoWindow/MapInfoWindow';
+
 import "../MapComponent/MapComponent.css"
 
+import { connect } from 'react-redux';
+import { updateMapAddressOnExpiry, loadMarkers, infoWindowMarker, changeMapCenter, loadMap } from '../../redux/ActionCreators'
+
+const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMarkersData: state.mapMarkersData, Addresses: state.addresses, InfoWindow: state.infoWindow } }
+
+const mapDispatchToProps = (dispatch) => ({
+    loadMap: (data, refObj) => dispatch(loadMap(data, refObj)),
+    changeMapCenter: (data) => dispatch(changeMapCenter(data)),
+    loadMarkers: (data, mapObj, mapReference, type) => dispatch(loadMarkers(data, mapObj, mapReference, type)),
+    infoWindowMarker: (data) => dispatch(infoWindowMarker(data)),
+    updateMapAddressOnExpiry: () => dispatch(updateMapAddressOnExpiry()),
+})
+
 const MapComponent = (props) => {
-    const { center, detail, mapMarkers, mapObject } = props.mapDetailsData;
+    const { center, detail, mapMarkers, mapObject } = props.MapMarkersData.mapMarkersData;
     const mapContainerStyle = { height: window.innerHeight, width: detail ? "55vw" : "77.5vw", left: detail ? "45vw" : "22.5vw" };
     const mapOptions = { disableDefaultUI: true, zoomControl: true };
     const GOOGLE_API_KEY = 'AIzaSyAFHPjPBHcDOhJIn3HP6pbqVLZhCrORnbs';
@@ -13,7 +28,7 @@ const MapComponent = (props) => {
     const onLoad = React.useCallback(function callback(map1) {
         const bounds = new window.google.maps.LatLngBounds(center);
         map1.fitBounds(bounds);
-        props.loadMap(map1, props.mapDetailsData);
+        props.loadMap(map1, props.MapMarkersData.mapMarkersData);
     }, [center, props])
 
     if (loadError) return "Error";
@@ -45,7 +60,7 @@ const MapComponent = (props) => {
     }
 
     const logBounds = () => {
-        props.loadMarkers(props.DataVuzix, props.mapDetailsData);
+        props.loadMarkers(props.DataVuzix.dataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData);
         props.activateLoader(false);
     }
 
@@ -60,10 +75,10 @@ const MapComponent = (props) => {
             onIdle={() => logBounds()}
             onDragEnd={() => {
                 props.activateLoader(true);
-                props.changeMapCenter(props.mapDetailsData)
+                props.changeMapCenter(props.MapMarkersData.mapMarkersData)
             }}
             onZoomChanged={() => {
-                props.changeMapCenter(props.mapDetailsData)
+                props.changeMapCenter(props.MapMarkersData.mapMarkersData)
                 if (mapObject) {
                     const zoomLevel = mapObject.getZoom();
                     if (zoomLevel < 20) {
@@ -76,36 +91,36 @@ const MapComponent = (props) => {
             <MarkerClusterer options={clusterOptions}>
                 {clusterer => MarkerData(mapMarkers, clusterer)}
             </MarkerClusterer>
-            {props.infoWindow.infoWindow ? customInfoWindow(props, center) : null}
+            {props.InfoWindow.infoWindow ? customInfoWindow(props, center) : null}
         </GoogleMap >
     );
 }
 
-export default MapComponent;
+export default connect(mapStateToProps, mapDispatchToProps)(MapComponent);
 
-function iconImage(mapVuzix) {
+const iconImage = (mapVuzix) => {
     return mapVuzix.speech.length > 0 && mapVuzix.person_names.length <= 0 ? "/markerSpeech.svg" :
         mapVuzix.speech.length <= 0 && mapVuzix.person_names.length > 0 ? "/markerPerson.svg" :
             !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerN.svg" :
                 (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : "/markerN.svg";
 }
 
-function hoverMarker(mapVuzix, props) {
+const hoverMarker = (mapVuzix, props) => {
     if (mapVuzix) { mapVuzix.address = props.address.get(`${mapVuzix.lat.toFixed(3)}:${mapVuzix.long.toFixed(3)}`); }
     props.infoWindowMarker(mapVuzix);
 }
 
-function customInfoWindow(props, center) {
-    let sw = props.mapDetailsData.mapObject.getBounds().getSouthWest(), lat = (center.lat + sw.lat()) / 2;
+const customInfoWindow = (props, center) => {
+    let sw = props.MapMarkersData.mapMarkersData.mapObject.getBounds().getSouthWest(), lat = (center.lat + sw.lat()) / 2;
     return <InfoWindow
         position={{ lat: lat, lng: center.lng }}
         onCloseClick={() => {
-            props.DataVuzix.filter(m => { if (m.keepAlive) { m.keepAlive = false } })
+            props.DataVuzix.dataVuzix.vuzixMap.filter(m => { if (m.keepAlive) { m.keepAlive = false } })
             props.infoWindowMarker(null)
         }}
         onMouseOut={() => props.infoWindowMarker(null)}
         options={{ disableAutoPan: true }}
     >
-        <MapInfoWindow point={props.infoWindow.infoWindow} baseURL={props.baseURL} />
+        <MapInfoWindow point={props.InfoWindow.infoWindow} baseURL={props.baseURL} />
     </InfoWindow >;
 }

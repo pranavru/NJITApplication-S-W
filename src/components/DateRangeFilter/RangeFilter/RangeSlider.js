@@ -27,7 +27,6 @@ class RangeSlider extends React.Component {
         const { displayChart } = this.state
 
         const dateTicks = scaleLinear().domain(domain).ticks(4).map(d => +d);
-        console.log(dateTicks)
         const formatTick = (ms) => ((domain[1] - domain[0]) < new Date("Jan 02, 1970")) ? format(new Date(ms), "HH:ss") : format(new Date(ms), "MMM dd");
 
         return (

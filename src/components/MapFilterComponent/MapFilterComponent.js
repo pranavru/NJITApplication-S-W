@@ -1,8 +1,21 @@
 import React, { Component } from 'react';
 import { Form, FormGroup, Label, Input, Card, InputGroup, Button, CardText } from 'reactstrap';
-import './MapFilterComponent.css'
+
 import DateRangeFilter from '../DateRangeFilter/DateRangeFilter';
 import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponent';
+
+import './MapFilterComponent.css'
+
+import { connect } from 'react-redux';
+import { fetchMapFilter, editMapFilter, editDataVuzix } from '../../redux/ActionCreators'
+
+const mapStateToProps = (state) => { return { MapFilter: state.mapFilter } }
+
+const mapDispatchToProps = (dispatch) => ({
+    fetchMapFilter: (data, dateMap) => dispatch(fetchMapFilter(data, dateMap)),
+    editMapFilter: (type, newValue, props) => dispatch(editMapFilter(type, newValue, props)),
+    editDataVuzix: (obj, loader) => dispatch(editDataVuzix(obj, loader)),
+})
 
 class MapFilterComponent extends Component {
 
@@ -82,7 +95,9 @@ class MapFilterComponent extends Component {
                     <Card className="filterCard">
                         <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
                         <div>
-                            <Form onSubmit={this.handleSubmit}>
+                            <Form
+                                onSubmit={this.handleSubmit}
+                            >
                                 {/* * Speech Form * */}
                                 <FormGroup>
                                     <InputGroup className="inputGroupValue">
@@ -127,7 +142,7 @@ class MapFilterComponent extends Component {
     }
 }
 
-export default MapFilterComponent;
+export default connect(mapStateToProps, mapDispatchToProps)(MapFilterComponent);
 
 {/* <FormGroup style={{ marginLeft: '1%' }}>
     <Label style={{ width: '14vw', fontWeight: 'bold' }}>Location</Label>

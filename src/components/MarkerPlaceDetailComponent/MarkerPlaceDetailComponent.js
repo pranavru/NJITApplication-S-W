@@ -1,7 +1,10 @@
 import React from 'react';
 import { Card, CardText, CardImg } from 'reactstrap';
+
 import './MarkerPlaceDetailComponent.css';
-import '../../App.css';
+
+import { connect } from 'react-redux';
+import { updateMapAddressOnExpiry, animateMapMarker } from '../../redux/ActionCreators'
 
 const dateStringVal = (p) => {
     const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
@@ -10,8 +13,16 @@ const dateStringVal = (p) => {
     return `${month} ${day}, ${year} ${hour}:${minute}:${second}`;
 }
 
+const mapStateToProps = (state) => { return { MapMarkersData: state.mapMarkersData } }
+
+const mapDispatchToProps = (dispatch) => ({
+    animateMapMarker: (data, marker) => dispatch(animateMapMarker(data, marker)),
+    updateMapAddressOnExpiry: () => dispatch(updateMapAddressOnExpiry())
+})
+
+
 function MarkerPLaceDetailComponent(props) {
-    const { mapMarkers } = props.mapReference;
+    const { mapMarkers } = props.MapMarkersData.mapMarkersData;
     return (
         <>
             {mapMarkers.length <= 0 ?
@@ -24,8 +35,8 @@ function MarkerPLaceDetailComponent(props) {
                     <Card
                         className="container"
                         style={{ width: '21vw', marginTop: '2%' }} key={p.id}
-                        onMouseOver={() => props.animateMapMarker(props.mapReference, p)}
-                        onMouseOut={() => props.animateMapMarker(props.mapReference, null)}
+                        onMouseOver={() => props.animateMapMarker(props.MapMarkersData.mapMarkersData, p)}
+                        onMouseOut={() => props.animateMapMarker(props.MapMarkersData.mapMarkersData, null)}
                     >
 
                         <div className="row">
@@ -63,11 +74,12 @@ function MarkerPLaceDetailComponent(props) {
                     </Card>
                 )
             }
+            <div><p className="endOfList">End of List</p></div>
         </>
     );
 }
 
-export default MarkerPLaceDetailComponent;
+export default connect(mapStateToProps, mapDispatchToProps)(MarkerPLaceDetailComponent);
 
 
 // <table>
