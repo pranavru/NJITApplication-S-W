@@ -9,13 +9,14 @@
   position: absolute;
   right: 3%;
   top: 3%;
-  padding: 3%;
+  /* padding: 3%; */
   font: 0.9em monospace;
   color: "#ffffff";
 }
 
 .panToRecentMarker {
   position: absolute;
+  left: 2%;
   bottom: 2%;
   font: 0.9em monospace;
   color: "#ffffff";

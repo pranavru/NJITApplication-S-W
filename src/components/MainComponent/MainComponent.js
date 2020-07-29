@@ -92,8 +92,14 @@ class MainComponent extends Component {
                 this.activateLoader(true);
                 this.props.findRecentMarker(this.props.DataVuzix.dataVuzix.vuzixMap, this.props.MapMarkersData.mapMarkersData);
             }}
-            className="panToRecentMarker"
-            style={{ backgroundColor: '#2C4870' }}
+            // className="panToRecentMarker"
+            style={{
+                backgroundColor: '#2C4870', position: "absolute",
+                left: "3%",
+                bottom: "3%",
+                font: "1em monospace",
+                color: "#ffffff",
+            }}
         >
             <CardText>Pan to Most Recent Event</CardText>
         </Button>;
@@ -107,7 +113,13 @@ class MainComponent extends Component {
                 this.props.findClosestMarker(this.props.DataVuzix.dataVuzix.vuzixMap, this.props.MapMarkersData.mapMarkersData);
             }}
             className="panToMarkerButton"
-            style={{ backgroundColor: '#2C4870' }}
+            style={{
+                backgroundColor: '#2C4870', position: "absolute",
+                right: "3%",
+                top: "3%",
+                font: "1em monospace",
+                color: "#ffffff",
+            }}
         >
             <CardText>Pan to Closest Marker</CardText>
         </Button>;
