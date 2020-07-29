@@ -8,7 +8,7 @@ import MapComponent from '../MapComponent/MapComponent';
 import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
 
 import { connect } from 'react-redux';
-import { fetchDataVuzix, updateMapAddressOnExpiry, initMapDetails, animateMapMarker, loadMarkers, infoWindowMarker, changeMapCenter, findClosestMarker, loadMap, displayDetails, findRecentMarker } from '../../redux/ActionCreators'
+import { fetchDataVuzix, initMapDetails, findClosestMarker, displayDetails, findRecentMarker, videoPlayer } from '../../redux/ActionCreators'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -17,7 +17,8 @@ const mapStateToProps = (state) => {
         DataVuzix: state.dataVuzix,
         MapMarkersData: state.mapMarkersData,
         Addresses: state.addresses,
-        InfoWindow: state.infoWindow
+        InfoWindow: state.infoWindow,
+        video: state.video
     }
 }
 
@@ -55,7 +56,6 @@ class MainComponent extends Component {
                         {/** Filter Component */}
                         <div style={{ backgroundColor: 'white', width: '22.2vw', position: 'absolute' }}>
                             <MapFilterComponent DataVuzix={this.props.DataVuzix.dataVuzix} activateLoader={this.activateLoader.bind(this)} />
-                            {/* changeVideoProps={this.changeVideoProps.bind(this)} */}
                             {!this.props.MapMarkersData.mapMarkersData.detail ? this.ToggleDetailDivButton(">>", "22.4vw") : <></>}
                         </div>
 

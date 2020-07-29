@@ -6,6 +6,7 @@ import { MapFilter } from './MapFilter';
 import { MapMarkerData } from './MapMarkerData';
 import { AddressValue } from './AddressValue';
 import { InfoWindow } from './InfoWindow';
+import { VideoPlayer } from './VideoPlayer';
 
 export const ConfigureStore = () => {
     const store = createStore(
@@ -14,7 +15,8 @@ export const ConfigureStore = () => {
             mapFilter: MapFilter,
             mapMarkersData: MapMarkerData,
             addresses: AddressValue,
-            infoWindow: InfoWindow
+            infoWindow: InfoWindow,
+            video: VideoPlayer
         }),
         applyMiddleware(thunk, logger)
 

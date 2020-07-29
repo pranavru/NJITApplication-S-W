@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import axios from 'axios';
+import ReactPlayer from 'react-player';
 // import { baseUrl } from "../shared/baseUrl";
 
 const baseUrl = "http://18.191.247.248";
@@ -8,12 +9,14 @@ export const mapFilterLoading = () => ({ type: ActionTypes.MAPFILTER_LOADING });
 export const addressValueLoading = () => ({ type: ActionTypes.ADDRESSVALUE_LOADING });
 export const mapMarkersDataLoading = () => ({ type: ActionTypes.MAPMARKERSDATA_LOADING });
 export const infoWindowLoading = () => ({ type: ActionTypes.INFOWINDOW_LOADING });
+export const videoDataLoading = () => ({ type: ActionTypes.VIDEODATA_LOADING });
 
 export const dataVuzixFailed = (errmess) => ({ type: ActionTypes.DATAVUZIX_FALIED, payload: errmess })
 export const mapFilterFailed = (errmess) => ({ type: ActionTypes.MAPFILTER_FAILED, payload: errmess })
 export const addressValueFailed = (errmess) => ({ type: ActionTypes.ADDRESSVALUE_FAILED, payload: errmess });
 export const mapMarkersDataFailed = (errmess) => ({ type: ActionTypes.MAPMARKERSDATA_FAILED, payload: errmess });
 export const infoWindowFailed = (errmess) => ({ type: ActionTypes.INFOWINDOW_FAILED, payload: errmess });
+export const videoFailed = (errmess) => ({ type: ActionTypes.VIDEODATA_FAILED, payload: errmess });
 
 export const loadDataVuzix = (data) => ({ type: ActionTypes.ADD_DATAVUZIX, payload: data });
 export const loadMapFilter = (data) => ({ type: ActionTypes.ADD_INIT_MAPFILTER, payload: data });
@@ -21,6 +24,7 @@ export const loadEditedFilter = (data) => ({ type: ActionTypes.EDIT_MAPFILTER, p
 export const loadAddressValue = (data) => ({ type: ActionTypes.ADD_ADDRESSVALUE, payload: data });
 export const loadMapMarkerData = (data) => ({ type: ActionTypes.ADD_MAPMARKERSDATA, payload: data });
 export const loadInfoWindow = (data) => ({ type: ActionTypes.INIT_INFOWINDOW, payload: data });
+export const loadVideoData = (data) => ({ type: ActionTypes.ADD_VIDEODATA, payload: data });
 
 export const fetchDataVuzix = (dispatch) => {
     dispatch(dataVuzixLoading(true));
@@ -42,7 +46,6 @@ export const fetchDataVuzix = (dispatch) => {
 };
 
 export const editDataVuzix = (parameter, props) => (dispatch) => {
-    console.log(props)
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
@@ -57,6 +60,7 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         .then(response => response.data)
         .then(response => {
             dispatch(loadDataVuzix(response))
+            dispatch(videoPlayer(response.video))
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
             dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
             props.activateLoader(false);
@@ -86,6 +90,7 @@ export const fetchMapFilter = (data) => (dispatch) => {
 
 export const editMapFilter = (type, newValue, props) => (dispatch) => {
     dispatch(mapFilterLoading(true))
+    dispatch(videoDataLoading(true))
     let newFilter = props.mapFilter;
     if (type.includes("isSpeech")) {
         newFilter.isSpeech = newValue;
@@ -151,7 +156,6 @@ export const displayDetails = (data, mapReference) => dispatch => {
 }
 
 export const loadMarkers = (data, mapReference) => (dispatch) => {
-    console.log(data, mapReference)
     const bounds = mapReference.mapObject.getBounds();
     const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
     mapReference.mapMarkers = markers;
@@ -264,6 +268,11 @@ const loadMarkerAddresses = (m, address) => {
         fetchAndLoadMarkerAddresses();
         return { address, expiryDate };
     }
+};
+
+export const videoPlayer = (url) => dispatch => {
+    dispatch(videoDataLoading(true));   
+    dispatch(loadVideoData(baseUrl + url));
 };
 
 // Pan to the Closest Marker if current Bounds contains zero markers

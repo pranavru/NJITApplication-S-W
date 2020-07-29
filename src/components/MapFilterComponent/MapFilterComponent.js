@@ -85,8 +85,7 @@ class MapFilterComponent extends Component {
         return json_body;
     }
 
-    handleSubmit(event) {
-        // this.props.changeVideoProps();
+    handleSubmit() {
         this.props.activateLoader(true);
         this.props.editDataVuzix(this.submitObjectValues(), this.props)
     }
@@ -136,7 +135,7 @@ class MapFilterComponent extends Component {
                             {/* <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button> */}
                         </Form>
                     </Card>
-                    {false && <DisplayVideoComponent videoSrc={this.props.video} disPlayVideo={this.state.disPlayVideo} />}
+                    <DisplayVideoComponent />
                 </div >
             );
         }
