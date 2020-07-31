@@ -106,7 +106,7 @@ const iconImage = (mapVuzix) => {
 }
 
 const hoverMarker = (mapVuzix, props) => {
-    if (mapVuzix) { mapVuzix.address = props.address.get(`${mapVuzix.lat.toFixed(3)}:${mapVuzix.long.toFixed(3)}`); }
+    if (mapVuzix) { mapVuzix.address = props.Addresses.addresses.address.get(`${mapVuzix.lat.toFixed(3)}:${mapVuzix.long.toFixed(3)}`); }
     props.infoWindowMarker(mapVuzix);
 }
 
@@ -121,6 +121,6 @@ const customInfoWindow = (props, center) => {
         onMouseOut={() => props.infoWindowMarker(null)}
         options={{ disableAutoPan: true }}
     >
-        <MapInfoWindow point={props.InfoWindow.infoWindow} baseURL={props.baseURL} />
+        <MapInfoWindow point={props.InfoWindow.infoWindow} />
     </InfoWindow >;
 }

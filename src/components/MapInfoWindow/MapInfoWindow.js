@@ -1,6 +1,8 @@
 import React from 'react';
 import { Card, CardText, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
+
 import "./MapInfoWindow.css";
+import { baseUrl } from "../../shared/baseUrl";
 
 function displayWindowHeader(props) {
     const d = new Date(props.point.created);
@@ -11,7 +13,7 @@ function displayWindowHeader(props) {
                 <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
             </CardHeader>
             <div id="containerImg">
-                <img src={props.baseURL + props.point.imageFile} alt={props.point.id} id="theImage" />
+                <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
             </div>
         </>)
 

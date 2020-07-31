@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, CardText, CardImg } from 'reactstrap';
 
 import './MarkerPlaceDetailComponent.css';
+import { baseUrl } from "../../shared/baseUrl";
 
 import { connect } from 'react-redux';
 import { updateMapAddressOnExpiry, animateMapMarker } from '../../redux/ActionCreators'
@@ -13,7 +14,7 @@ const dateStringVal = (p) => {
     return `${month} ${day}, ${year} ${hour}:${minute}:${second}`;
 }
 
-const mapStateToProps = (state) => { return { MapMarkersData: state.mapMarkersData } }
+const mapStateToProps = (state) => { return { MapMarkersData: state.mapMarkersData, Addresses: state.addresses } }
 
 const mapDispatchToProps = (dispatch) => ({
     animateMapMarker: (data, marker) => dispatch(animateMapMarker(data, marker)),
@@ -23,6 +24,7 @@ const mapDispatchToProps = (dispatch) => ({
 
 function MarkerPLaceDetailComponent(props) {
     const { mapMarkers } = props.MapMarkersData.mapMarkersData;
+    const { address } = props.Addresses.addresses;
     return (
         <>
             {mapMarkers.length <= 0 ?
@@ -42,14 +44,14 @@ function MarkerPLaceDetailComponent(props) {
                         <div className="row">
                             <p className="dateFieldCard">{dateStringVal(new Date(p.created))}</p>
                             <div className="col-sm-5 displayImage">
-                                <CardImg src={props.baseURL + p.imageFile} alt={p.id} className="cardImage" />
+                                <CardImg src={baseUrl + p.imageFile} alt={p.id} className="cardImage" />
                             </div>
                             <div className="col-sm-7 displayText">
                                 <table>
                                     <thead>
                                         <tr>
                                             <td>
-                                                <CardText className="locationText">{props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`).length === 0 ? `Location Unavailable` : props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`)} </CardText>
+                                                <CardText className="locationText">{address.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`).length === 0 ? `Location Unavailable` : address.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`)} </CardText>
                                             </td>
                                         </tr>
                                     </thead>
@@ -80,40 +82,3 @@ function MarkerPLaceDetailComponent(props) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MarkerPLaceDetailComponent);
-
-
-// <table>
-// <tbody>
-//     <tr>
-//         <td>
-//             <CardImg src={props.baseURL + p.imageFile} alt={p.id} className="cardImage" />
-//         </td>
-//         <td>
-//             <p className="dateFieldCard">{dateStringVal(new Date(p.created))}</p>
-//             <table>
-//                 <thead>
-//                     <tr>
-//                         <td>
-//                             <CardText className="locationText">{props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`).length === 0 ? `Location Unavailable` : props.mapAddress.get(`${p.lat.toFixed(3)}:${p.long.toFixed(3)}`)} </CardText>
-//                         </td>
-//                     </tr>
-//                 </thead>
-//                 <tbody>
-//                     {p.speech !== "" ?
-//                         <tr>
-//                             <td style={{ margin: '2%' }}><CardText className="speechText"><q>{p.speech}</q></CardText></td>
-//                         </tr> : <></>
-//                     }
-//                     {p.person_names.length > 0 ?
-//                         <tr>
-//                             <td>
-//                                 <CardText className="speechTextPerson"><img src="iconmonstr-user-1.svg" className="iconImg" alt="Person" />{p.person_names.map(pn => pn.person_name.toUpperCase())} </CardText>
-//                             </td>
-//                         </tr> : <></>
-//                     }
-//                 </tbody>
-//             </table>
-//         </td>
-//     </tr>
-// </tbody>
-// </table>

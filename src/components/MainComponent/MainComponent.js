@@ -8,19 +8,12 @@ import MapComponent from '../MapComponent/MapComponent';
 import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
 
 import { connect } from 'react-redux';
-import { fetchDataVuzix, initMapDetails, findClosestMarker, displayDetails, findRecentMarker, videoPlayer } from '../../redux/ActionCreators'
+import { fetchDataVuzix, initMapDetails, findClosestMarker, displayDetails, findRecentMarker } from '../../redux/ActionCreators'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../MainComponent/MainComponent.css';
 
-const mapStateToProps = (state) => {
-    return {
-        DataVuzix: state.dataVuzix,
-        MapMarkersData: state.mapMarkersData,
-        Addresses: state.addresses,
-        InfoWindow: state.infoWindow,
-        video: state.video
-    }
-}
+const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMarkersData: state.mapMarkersData, Addresses: state.addresses } }
 
 const mapDispatchToProps = (dispatch) => ({
     fetchDataVuzix: () => dispatch(fetchDataVuzix),
@@ -36,8 +29,6 @@ class MainComponent extends Component {
     //State props
     constructor(props) {
         super(props);
-
-        this.baseURL = "http://18.191.247.248";
         this.state = { isActive: true }
     }
 
@@ -54,27 +45,23 @@ class MainComponent extends Component {
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
                     <LoadingOverlay active={this.state.isActive} spinner text='Loading...'>
                         {/** Filter Component */}
-                        <div style={{ backgroundColor: 'white', width: '22.2vw', position: 'absolute' }}>
+                        <div className="filterStyle">
                             <MapFilterComponent DataVuzix={this.props.DataVuzix.dataVuzix} activateLoader={this.activateLoader.bind(this)} />
                             {!this.props.MapMarkersData.mapMarkersData.detail ? this.ToggleDetailDivButton(">>", "22.4vw") : <></>}
                         </div>
 
                         {/** Card Detail Div */}
-                        {!this.props.MapMarkersData.mapMarkersData.isLoading && <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={this.props.MapMarkersData.mapMarkersData.detail}
-                            style={{ zIndex: 1, position: 'absolute', left: '23vw', backgroundColor: 'white', borderLeft: "0.5px solid #e6e6e6" }}>
-
+                        {!this.props.MapMarkersData.mapMarkersData.isLoading && <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={this.props.MapMarkersData.mapMarkersData.detail} className="detailsAnimatedStyle">
                             {this.ToggleDetailDivButton("<<", "22.5vw")}
-                            <div style={{ overflowY: 'scroll', height: "99.2vh", width: '22.5vw' }}>
-                                <MarkerPLaceDetailComponent baseURL={this.baseURL} mapAddress={this.props.Addresses.addresses.address} />
+                            <div className="detailsStyle">
+                                <MarkerPLaceDetailComponent />
                             </div>
                         </Animated>}
 
                         {/** Loading Map Div */}
-                        {this.props.MapMarkersData.mapMarkersData !== {} && <MapComponent
-                            address={this.props.Addresses.addresses.address}
-                            baseURL={this.baseURL}
-                            activateLoader={this.activateLoader.bind(this)}
-                        />}
+                        {this.props.MapMarkersData.mapMarkersData && <MapComponent activateLoader={this.activateLoader.bind(this)} />}
+
+                        {/* Load Buttons for Recent and Nearest Markers */}
                         {!this.props.MapMarkersData.mapMarkersData.mapMarkers.length && this.findClosestMarkerMethod()}
                         {this.findMostRecentMarkerMethod()}
                     </LoadingOverlay>
@@ -92,14 +79,7 @@ class MainComponent extends Component {
                 this.activateLoader(true);
                 this.props.findRecentMarker(this.props.DataVuzix.dataVuzix.vuzixMap, this.props.MapMarkersData.mapMarkersData);
             }}
-            // className="panToRecentMarker"
-            style={{
-                backgroundColor: '#2C4870', position: "absolute",
-                left: "3%",
-                bottom: "3%",
-                font: "1em monospace",
-                color: "#ffffff",
-            }}
+            className="panToRecentMarker"
         >
             <CardText>Pan to Most Recent Event</CardText>
         </Button>;
@@ -113,25 +93,16 @@ class MainComponent extends Component {
                 this.props.findClosestMarker(this.props.DataVuzix.dataVuzix.vuzixMap, this.props.MapMarkersData.mapMarkersData);
             }}
             className="panToMarkerButton"
-            style={{
-                backgroundColor: '#2C4870', position: "absolute",
-                right: "3%",
-                top: "3%",
-                font: "1em monospace",
-                color: "#ffffff",
-            }}
         >
             <CardText>Pan to Closest Marker</CardText>
         </Button>;
     }
 
-    changeVideoProps = () => this.setState({ video: "", DataVuzix: { vuzixMap: [] } })
-
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
 
     ToggleDetailDivButton = (displayValue, leftValue) => <Button onClick={() => this.props.displayDetails(!this.props.MapMarkersData.mapMarkersData.detail, this.props.MapMarkersData.mapMarkersData)}
-        style={{ zIndex: 4, position: 'absolute', top: "3%", left: leftValue, backgroundColor: '#2C4870' }}>
+        style={{ left: leftValue }} className="toggleDivButton">
         {displayValue}</Button>
 }
 

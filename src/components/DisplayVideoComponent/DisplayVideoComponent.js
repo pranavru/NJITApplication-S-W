@@ -12,7 +12,6 @@ const mapStateToProps = (state) => {
 }
 const DisplayVideoComponent = (props) => {
     const [playVideo, setToPlay] = React.useState(false);
-    console.log(props);
     return (
         <div style={{ marginTop: '5%' }}>
             {!props.Video.isLoading ?
@@ -22,7 +21,7 @@ const DisplayVideoComponent = (props) => {
                         <ReactPlayer wait={3000}
                             url={props.Video.video} controls={playVideo} width="100%"
                             height="30vh" playing={playVideo} autoPlay muted
-                            onReady={() => setToPlay(true)} onStart={() => console.log("Video is playing? ", playVideo)}
+                            onReady={() => setToPlay(true)}
                             onError={(err) => alert("Unable to Load Video ", err.message)}
                         />
                         {/* <iframe src="https://localhost:3443/index.html" className="videoDisplay" /> */}

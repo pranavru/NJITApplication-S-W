@@ -1,23 +1,44 @@
+.filterStyle {
+  background-color: #ffffff;
+  width: 22.2vw;
+  position: absolute;
+}
+
+.detailsAnimatedStyle {
+  z-index: 1;
+  position: absolute;
+  left: 23vw;
+  background-color: #ffffff;
+  border-left: 0.5px solid #e6e6e6;
+}
+
+.detailsStyle {
+  overflow-y: scroll;
+  height: 99.2vh;
+  width: 22.5vw;
+}
+
 .toggleDivButton {
   z-index: 4;
-  position: "absolute";
-  top: 12px;
-  background-color: "#2C4870";
+  position: absolute;
+  top: 3%;
+  background-color: #2C4870;
 }
 
 .panToMarkerButton {
   position: absolute;
   right: 3%;
   top: 3%;
-  /* padding: 3%; */
   font: 0.9em monospace;
+  background-color: #2c4870;
   color: "#ffffff";
 }
 
 .panToRecentMarker {
   position: absolute;
-  left: 2%;
-  bottom: 2%;
-  font: 0.9em monospace;
-  color: "#ffffff";
+  left: 3%;
+  bottom: 3%;
+  font: 1em monospace;
+  color: #ffffff;
+  background-color: #2c4870;
 }

@@ -111,13 +111,3 @@ class RangeSlider extends React.Component {
 }
 
 export default RangeSlider;
-
-// const dateArrayTest = [];
-// const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
-// let [{ value: month }, , { value: day }, , { value: year }, , { value: hour }] = dateTimeFormat.formatToParts(this.startDateAT);
-// this.startDateAT = new Date(`${month} ${day}, ${year} ${hour}:00`)
-// console.log(this.startDateAT, this.startDateAT.getTime(), this.endDateAT.getTime())
-// while (this.startDateAT.getTime() <= this.endDateAT.getTime()) {
-//     dateArrayTest.push(new Date(`${month} ${day}, ${year}`)
-// }
-// this.testData = Array.from(props.dateValuesData());

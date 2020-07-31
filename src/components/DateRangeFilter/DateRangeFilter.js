@@ -1,7 +1,9 @@
 import React from 'react';
-import DateRangePicker from '@wojtekmaj/react-daterange-picker';
 import { Card } from 'reactstrap';
+import DateRangePicker from '@wojtekmaj/react-daterange-picker';
+
 import RangeSlider from './RangeFilter/RangeSlider';
+
 import "./DateRangeFilter.css";
 
 const multipleHours = 3, hours = 1000 * 60 * 30 * 2 * multipleHours;
@@ -18,7 +20,7 @@ class DateRangeFilter extends React.Component {
         this.props.handleSubmit();
     }
 
-    onUpdate = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "update", value: [ms, ms1] }, this.props.mapFilter)
+    onUpdate = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "update", value: [ms, ms1] }, this.props.mapFilter);
 
     render() {
         const { startDate, endDate, mapDateRange } = this.props.mapFilter.mapFilter;
@@ -52,12 +54,3 @@ class DateRangeFilter extends React.Component {
 }
 
 export default DateRangeFilter;
-
-// if (this.props.multipleHours === 6) {
-        //     hours -= hours % 6 === 1 ? 1 : hours % 6 === 2 ? 2 : hours % 6 === 3 ? 3 : hours % 6 === 4 ? 4 : hours % 6 === 5 ? 5 : 0;
-        // } else if (this.props.multipleHours === 4) {
-        //     hours -= hours % 4 === 1 ? 1 : hours % 4 === 2 ? 2 : hours % 4 === 3 ? 3 : 0;
-        // } else if (this.props.multipleHours === 3) {
-        // } else if (this.props.multipleHours === 2) {
-        //     hours -= hours % 2 === 1 ? 1 : 0;
-        // }

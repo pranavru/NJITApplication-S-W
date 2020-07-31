@@ -1,9 +1,7 @@
 import * as ActionTypes from './ActionTypes';
 import axios from 'axios';
-import ReactPlayer from 'react-player';
-// import { baseUrl } from "../shared/baseUrl";
+import { baseUrl } from "../shared/baseUrl";
 
-const baseUrl = "http://18.191.247.248";
 export const dataVuzixLoading = () => ({ type: ActionTypes.DATAVUZIX_LOADING });
 export const mapFilterLoading = () => ({ type: ActionTypes.MAPFILTER_LOADING });
 export const addressValueLoading = () => ({ type: ActionTypes.ADDRESSVALUE_LOADING });
@@ -118,7 +116,6 @@ export const editMapFilter = (type, newValue, props) => (dispatch) => {
         };
     };
     dispatch(loadEditedFilter(newFilter));
-    // dispatch(editDataVuzix(props.MapFilter.mapFilter, props))
 };
 
 export const initMapDetails = () => (dispatch) => {
@@ -164,7 +161,6 @@ export const loadMarkers = (data, mapReference) => (dispatch) => {
 
 //Toggle Animation of map markers
 export const animateMapMarker = (data, marker) => (dispatch) => {
-    console.log("Marker Animation", data.mapMarkers, marker, data.center)
     if (marker === null) {
         data.mapMarkers.filter((d) => { if (d.animated) { d.animated = false } })
     } else {

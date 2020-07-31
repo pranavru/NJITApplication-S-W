@@ -7,9 +7,7 @@ class BarChart extends React.Component {
   render() {
     const { data, highlight, domain, multipleHours } = this.props;
     // calculate frequency of data
-
     var counts = {};
-    // let dateMap = new Map();
     for (var i = 0; i < data.length; i++) {
       counts[data[i]] = counts[data[i]] + 1 || 1;
     }

@@ -36,14 +36,9 @@ class MapFilterComponent extends Component {
     };
 
     handleChangeCheck(event) {
-        if (event.target.name === 'addressValue') {
-            const { name, value } = event.target;
-            this.setState({ [name]: value })
-        } else {
-            const { name, checked } = event.target;
-            this.props.editMapFilter(name, checked, this.props.MapFilter);
-            this.handleSubmit()
-        }
+        const { name, checked } = event.target;
+        this.props.editMapFilter(name, checked, this.props.MapFilter);
+        this.handleSubmit()
     }
 
     changePersonAsSelected(event) {
@@ -107,10 +102,9 @@ class MapFilterComponent extends Component {
                             </FormGroup>
 
                             {/* * Persons Form * */}
-                            <CardText className="filterCategoryLabel filterFont">PEOPLE</CardText>
                             {personNames && <FormGroup>
+                                <CardText className="filterCategoryLabel filterFont">PEOPLE</CardText>
                                 <InputGroup className="inputGroupValue">
-                                    {/* <InputGroupAddon addonType="append"></InputGroupAddon> */}
                                     {personNames.map(v =>
                                         <InputGroup key={v.name}>
                                             <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
@@ -131,8 +125,6 @@ class MapFilterComponent extends Component {
                                     handleSubmit={this.handleSubmit.bind(this)}
                                 />}
                             </FormGroup>
-
-                            {/* <Button outline color="secondary" size="lg" type="submit" className="submitButton filterFont">SUBMIT</Button> */}
                         </Form>
                     </Card>
                     <DisplayVideoComponent />
@@ -143,14 +135,3 @@ class MapFilterComponent extends Component {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(MapFilterComponent);
-
-{/* <FormGroup style={{ marginLeft: '1%' }}>
-    <Label style={{ width: '14vw', fontWeight: 'bold' }}>Location</Label>
-    <select value={this.state.addressValue} name="addressValue" onChange={this.handleChangeCheck} style={{ width: "26.2vw", height: "3vw", marginLeft: '1%' }}>
-        {this.locations.address.map(m => {
-            if(m.value !== "") {
-                return <option key={m.key} value={m.value}>{m.value}</option>
-            }
-        })}
-    </select>
-</FormGroup> */}
