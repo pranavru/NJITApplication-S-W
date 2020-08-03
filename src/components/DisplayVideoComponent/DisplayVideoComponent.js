@@ -18,8 +18,7 @@ const DisplayVideoComponent = (props) => {
                 <Card style={{ padding: '4px' }}>
                     <Animated animationIn='fadeInUp' animationOut='fadeOut'>
                         {/* <UncontrolledCarousel items={items} controls={false} interval={500} slide={false} /> */}
-                        <ReactPlayer wait={3000}
-                            url={props.Video.video} controls={playVideo} width="100%"
+                        <ReactPlayer url={props.Video.video} controls={playVideo} width="100%"
                             height="30vh" playing={playVideo} autoPlay muted
                             onReady={() => setToPlay(true)}
                             onError={(err) => alert("Unable to Load Video ", err.message)}

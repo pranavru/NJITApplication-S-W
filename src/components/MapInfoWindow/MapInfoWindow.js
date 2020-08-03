@@ -42,7 +42,7 @@ function MapInfoWindow(props) {
     return (
         <Card style={{ width: "30vw" }}>
             {displayWindowHeader(props)}
-            <CardFooter className="footer">
+            <CardFooter className="footer" style={{ margin: '0px'}}>
                 {displayBody(props)}
                 {displayFooter(props)}
             </CardFooter>
