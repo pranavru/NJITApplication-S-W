@@ -106,7 +106,10 @@ const iconImage = (mapVuzix) => {
 }
 
 const hoverMarker = (mapVuzix, props) => {
-    if (mapVuzix) { mapVuzix.address = props.Addresses.addresses.address.get(`${mapVuzix.lat.toFixed(3)}:${mapVuzix.long.toFixed(3)}`); }
+    if (mapVuzix) {
+        mapVuzix.address = props.Addresses.addresses.address.get(`${mapVuzix.lat.toFixed(3)}:${mapVuzix.long.toFixed(3)}`);
+        mapVuzix.animated = false;
+    }
     props.infoWindowMarker(mapVuzix);
 }
 

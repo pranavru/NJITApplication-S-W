@@ -58,9 +58,9 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         .then(response => response.data)
         .then(response => {
             dispatch(loadDataVuzix(response))
-            dispatch(videoPlayer(response.video))
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
             dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
+            dispatch(videoPlayer(response.video))
             props.activateLoader(false);
         })
         .catch(err => dispatch(dataVuzixFailed(err.message)))
