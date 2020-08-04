@@ -1,20 +1,39 @@
 import React from 'react';
 import { Card, CardText, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
+import ReactPlayer from 'react-player'
+import Gallery from 'react-grid-gallery';
 
 import "./MapInfoWindow.css";
 import { baseUrl } from "../../shared/baseUrl";
 
-function displayWindowHeader(props) {
+function displayWindowHeader(props, playVideo, setToPlay) {
     const d = new Date(props.point.created);
+    const styleImg = { width: '800px', height: '800px' }
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return (
         <>
             <CardHeader>
-                <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
+                <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "clip", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
             </CardHeader>
-            <div id="containerImg">
-                <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
-            </div>
+            {!props.point.keepAlive ?
+                <div id="containerImg">
+                    <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
+                </div> :
+                // <ReactPlayer url={props.point.video} controls={playVideo} width="100%"
+                //     height="37vh" playing={playVideo} autoPlay muted
+                //     onReady={() => setToPlay(true)}
+                //     onError={(err) => alert("Unable to Load Video ", err)}
+                // />                
+                <Gallery
+                    images={props.point.video}
+                    enableImageSelection={false}
+                    rowHeight={95}
+                    maxRows={3}
+                    backdropClosesModal={true}
+                    showCloseButton={false}
+                    lightBoxProps={styleImg}
+                />
+            }
         </>)
 
 }
@@ -39,10 +58,12 @@ function displayFooter(props) {
 }
 
 function MapInfoWindow(props) {
+    const [playVideo, setToPlay] = React.useState(false);
+
     return (
         <Card style={{ width: "30vw" }}>
-            {displayWindowHeader(props)}
-            <CardFooter className="footer" style={{ margin: '0px'}}>
+            {displayWindowHeader(props, playVideo, setToPlay)}
+            <CardFooter className="footer" style={{ margin: '0px' }}>
                 {displayBody(props)}
                 {displayFooter(props)}
             </CardFooter>
