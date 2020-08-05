@@ -8,22 +8,18 @@ import { baseUrl } from "../../shared/baseUrl";
 
 function displayWindowHeader(props, playVideo, setToPlay) {
     const d = new Date(props.point.created);
-    const styleImg = { width: '800px', height: '800px' }
+    const styleImg = { width: '800px', height: '800px' };
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return (
         <>
             <CardHeader>
                 <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "clip", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
             </CardHeader>
-            {!props.point.keepAlive ?
+            {
+            !props.point.keepAlive ?
                 <div id="containerImg">
                     <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
                 </div> :
-                // <ReactPlayer url={props.point.video} controls={playVideo} width="100%"
-                //     height="37vh" playing={playVideo} autoPlay muted
-                //     onReady={() => setToPlay(true)}
-                //     onError={(err) => alert("Unable to Load Video ", err)}
-                // />                
                 <Gallery
                     images={props.point.video}
                     enableImageSelection={false}
@@ -32,6 +28,8 @@ function displayWindowHeader(props, playVideo, setToPlay) {
                     backdropClosesModal={true}
                     showCloseButton={false}
                     lightBoxProps={styleImg}
+                    showImageCount={false}
+                    preloadNextImage={true}
                 />
             }
         </>)
@@ -73,8 +71,16 @@ function MapInfoWindow(props) {
 
 export default MapInfoWindow;
 
-/* <CardHeader>
-            <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>Vizux ID: {props.point.id} </CardTitle>
-            <CardSubtitle style={{ fontWeight: 'bold', fontSize: 12 }}>Country Location: {props.point.country}</CardSubtitle>
-            <CardImg top src={'/images (1).jpeg'} alt={props.point.id} style={{ width: 50, height: 50, borderRadius: 30, position: 'absolute', left: 300, top: 8 }} />
-        </CardHeader>; */
+/* 
+    <CardHeader>
+        <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>Vizux ID: {props.point.id} </CardTitle>
+        <CardSubtitle style={{ fontWeight: 'bold', fontSize: 12 }}>Country Location: {props.point.country}</CardSubtitle>
+        <CardImg top src={'/images (1).jpeg'} alt={props.point.id} style={{ width: 50, height: 50, borderRadius: 30, position: 'absolute', left: 300, top: 8 }} />
+    </CardHeader>;
+
+    // <ReactPlayer url={props.point.video} controls={playVideo} width="100%"
+    //     height="37vh" playing={playVideo} autoPlay muted
+    //     onReady={() => setToPlay(true)}
+    //     onError={(err) => alert("Unable to Load Video ", err)}
+    // />
+*/

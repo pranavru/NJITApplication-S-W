@@ -40,7 +40,10 @@ const MapComponent = (props) => {
             return (
                 data.map((mapVuzix, index) =>
                     <Marker
-                        onMouseOver={() => hoverMarker(mapVuzix, props)}
+                        onMouseOver={() => {
+                            props.DataVuzix.dataVuzix.vuzixMap.filter(m => m.keepAlive = m.keepAlive ? false : null)
+                            window.setTimeout(hoverMarker(mapVuzix, props), 5000);
+                        }}
                         onMouseOut={() => !mapVuzix.keepAlive ? hoverMarker(null, props) : null}
                         onClick={() => {
                             mapVuzix.keepAlive = true;
@@ -115,6 +118,7 @@ const hoverMarker = (mapVuzix, props) => {
                 thumbnail: '/Unknown.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 106,
+                tags: [{ value: "Mountains", title: "Mountains" }, { value: "Knights", title: "Knights" }],
             }, {
                 src: '/Unknown1.jpg',
                 thumbnail: '/Unknown1.jpg',
@@ -125,6 +129,7 @@ const hoverMarker = (mapVuzix, props) => {
                 thumbnail: '/Unknown2.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 106,
+                tags: [{ value: "Sunset", title: "Sunset" }, { value: "Lake", title: "Lake" }],
             }, {
                 src: '/Unknown3.jpg',
                 thumbnail: '/Unknown3.jpg',
@@ -135,8 +140,9 @@ const hoverMarker = (mapVuzix, props) => {
                 thumbnail: '/Unknown4.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 106,
+                tags: [{ value: "Sunrise", title: "Sunrise" }, { value: "Sunrise", title: "Sunrise" }],
             }, {
-                src: '/Unknown1.jpg',
+                src: '/Unknown3.png',
                 thumbnail: '/Unknown1.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 106,
@@ -156,7 +162,7 @@ const hoverMarker = (mapVuzix, props) => {
                 thumbnailWidth: 160,
                 thumbnailHeight: 106,
             }, {
-                src: '/Unknown3.jpg',
+                src: '/Unknown3.png',
                 thumbnail: '/Unknown3.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 106,
