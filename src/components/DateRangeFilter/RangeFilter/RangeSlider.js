@@ -6,7 +6,7 @@ import { MuiRail, MuiHandle, MuiTrack, MuiTick } from "./components";
 import './RangeSlider.css';
 import { Card } from 'reactstrap';
 import { format } from "date-fns";
-import { scaleTime, scaleLinear } from "d3-scale";
+import { scaleLinear } from "d3-scale";
 
 const sliderStyle = {
     position: "relative",

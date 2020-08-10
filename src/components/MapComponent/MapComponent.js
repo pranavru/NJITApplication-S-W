@@ -114,38 +114,10 @@ const hoverMarker = (mapVuzix, props) => {
         mapVuzix.animated = false;
         mapVuzix.video = [
             {
-                src: '/Unknown.jpg',
-                thumbnail: '/Unknown.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-                tags: [{ value: "Mountains", title: "Mountains" }, { value: "Knights", title: "Knights" }],
-            }, {
-                src: '/Unknown1.jpg',
-                thumbnail: '/Unknown1.jpg',
-                thumbnailWidth: 320,
-                thumbnailHeight: 212,
-            }, {
-                src: '/Unknown2.jpg',
-                thumbnail: '/Unknown2.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-                tags: [{ value: "Sunset", title: "Sunset" }, { value: "Lake", title: "Lake" }],
-            }, {
                 src: '/Unknown3.jpg',
                 thumbnail: '/Unknown3.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 212,
-            }, {
-                src: '/Unknown4.jpg',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-                tags: [{ value: "Sunrise", title: "Sunrise" }, { value: "Sunrise", title: "Sunrise" }],
-            }, {
-                src: '/Unknown3.png',
-                thumbnail: '/Unknown1.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
             }, {
                 src: '/Unknown2.jpg',
                 thumbnail: '/Unknown2.jpg',
@@ -164,41 +136,6 @@ const hoverMarker = (mapVuzix, props) => {
             }, {
                 src: '/Unknown3.png',
                 thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-            }, {
-                src: '/Unknown4.jpg',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 120,
-                thumbnailHeight: 86,
-            }, {
-                src: '/Unknown3.jpg',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-            }, {
-                src: '/Unknown4.jpg',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-            }, {
-                src: '/Unknown3.jpg',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 260,
-                thumbnailHeight: 106,
-            }, {
-                src: '/Unknown4.jpg',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 60,
-                thumbnailHeight: 20,
-            }, {
-                src: '/Unknown3.jpg',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-            }, {
-                src: '/Unknown4.jpg',
-                thumbnail: '/Unknown4.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 106,
             }]
@@ -212,7 +149,7 @@ const customInfoWindow = (props, center) => {
     return <InfoWindow
         position={{ lat: lat, lng: center.lng }}
         onCloseClick={() => {
-            props.DataVuzix.dataVuzix.vuzixMap.filter(m => { if (m.keepAlive) { m.keepAlive = false } })
+            props.DataVuzix.dataVuzix.vuzixMap.filter(m => { if (m.keepAlive) { m.keepAlive = false } return null; })
             props.infoWindowMarker(null)
         }}
         onMouseOut={() => props.infoWindowMarker(null)}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, CardText } from 'reactstrap'
+import { Button, CardText, Spinner } from 'reactstrap'
 import { Animated } from 'react-animated-css';
 import LoadingOverlay from 'react-loading-overlay';
 
@@ -68,7 +68,7 @@ class MainComponent extends Component {
                 </div>
             )
         } else {
-            return <div className="loader"></div>
+            return <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}> <Spinner /> </div>
         }
     }
 

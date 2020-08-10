@@ -16,7 +16,7 @@ export const ConfigureStore = () => {
             mapMarkersData: MapMarkerData,
             addresses: AddressValue,
             infoWindow: InfoWindow,
-            video: VideoPlayer
+            videoDetails: VideoPlayer
         }),
         applyMiddleware(thunk, logger)
 

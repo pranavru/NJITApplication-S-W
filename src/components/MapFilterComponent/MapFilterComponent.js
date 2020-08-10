@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, FormGroup, Label, Input, Card, InputGroup, Button, CardText } from 'reactstrap';
+import { Form, FormGroup, Label, Input, Card, InputGroup, CardText } from 'reactstrap';
 
 import DateRangeFilter from '../DateRangeFilter/DateRangeFilter';
 import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponent';
@@ -7,7 +7,7 @@ import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponen
 import './MapFilterComponent.css'
 
 import { connect } from 'react-redux';
-import { fetchMapFilter, editMapFilter, editDataVuzix } from '../../redux/ActionCreators'
+import { fetchMapFilter, editMapFilter, editDataVuzix, videoPlayer, editVideo } from '../../redux/ActionCreators'
 
 const mapStateToProps = (state) => { return { MapFilter: state.mapFilter, MapMarkersData: state.mapMarkersData } }
 
@@ -15,6 +15,8 @@ const mapDispatchToProps = (dispatch) => ({
     fetchMapFilter: (data, dateMap) => dispatch(fetchMapFilter(data, dateMap)),
     editMapFilter: (type, newValue, props) => dispatch(editMapFilter(type, newValue, props)),
     editDataVuzix: (obj, loader) => dispatch(editDataVuzix(obj, loader)),
+    videoPlayer: (data) => dispatch(videoPlayer(data)),
+    editVideo: (obj, loader) => dispatch(editVideo(obj, loader)),
 })
 
 class MapFilterComponent extends Component {
@@ -62,7 +64,7 @@ class MapFilterComponent extends Component {
     //     return items_array;
     // }
 
-    submitObjectValues() {
+    submitObjectValues(videoParam) {
         const { isSpeech, personNames, mapDateRange } = this.props.MapFilter.mapFilter;
         let people = [];
         personNames.forEach(p => (p.checked === true) ? people.push(p.name) : null)
@@ -74,7 +76,7 @@ class MapFilterComponent extends Component {
             long: "0.0",
             start_date: new Date(mapDateRange.updated[0]).toISOString(),
             end_date: new Date(mapDateRange.updated[1]).toISOString(),
-            vid: "123456789"
+            vid: "123456789",
         }
         console.log(json_body)
         return json_body;
@@ -83,6 +85,7 @@ class MapFilterComponent extends Component {
     handleSubmit() {
         this.props.activateLoader(true);
         this.props.editDataVuzix(this.submitObjectValues(), this.props)
+        this.props.editVideo(this.submitObjectValues(), this.props);
     }
 
     render() {

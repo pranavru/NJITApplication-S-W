@@ -44,6 +44,7 @@ export const fetchDataVuzix = (dispatch) => {
 };
 
 export const editDataVuzix = (parameter, props) => (dispatch) => {
+    parameter.videoRequired = "false";
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
@@ -60,10 +61,25 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
             dispatch(loadDataVuzix(response))
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
             dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
-            dispatch(videoPlayer(response.video))
             props.activateLoader(false);
         })
         .catch(err => dispatch(dataVuzixFailed(err.message)))
+}
+
+export const editVideo = (parameter, props) => (dispatch) => {
+    parameter.videoRequired = "true";
+    return axios.post(baseUrl + '/query/', parameter)
+        .then(response => {
+            if (!response) {
+                alert("No video found with search query");
+            } else {
+                console.log(response.data)
+                let videoRef = { video: baseUrl + response.data.video, thumbnail: baseUrl + response.data.thumbnail }
+                return videoRef;
+            }
+        })
+        .then(r => dispatch(videoPlayer(r)))
+        .catch(err => dispatch(videoFailed(err.message)))
 }
 
 export const fetchMapFilter = (data) => (dispatch) => {
@@ -77,12 +93,13 @@ export const fetchMapFilter = (data) => (dispatch) => {
         endDate: data.endDate,
         personNames: personObject,
         dateValues: [new Date(data.startDate), new Date(data.endDate)],
+        videoRequired: "false",
         mapDateRange: {
             updated: range,
             values: range,
             domain: range,
             data: dateMap
-        }
+        },
     }));
 };
 
@@ -162,9 +179,9 @@ export const loadMarkers = (data, mapReference) => (dispatch) => {
 //Toggle Animation of map markers
 export const animateMapMarker = (data, marker) => (dispatch) => {
     if (marker === null) {
-        data.mapMarkers.filter((d) => { if (d.animated) { d.animated = false } })
+        data.mapMarkers.filter((d) => { if (d.animated) { d.animated = false } return null; })
     } else {
-        data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true; } })
+        data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true; } return null; })
     }
     dispatch(loadMarkers(data.mapMarkers, data));
 }
@@ -266,9 +283,9 @@ const loadMarkerAddresses = (m, address) => {
     }
 };
 
-export const videoPlayer = (url) => dispatch => {
-    dispatch(videoDataLoading(true));   
-    dispatch(loadVideoData(baseUrl + url));
+export const videoPlayer = (url) => (dispatch) => {
+    dispatch(videoDataLoading(true));
+    dispatch(loadVideoData(url));
 };
 
 // Pan to the Closest Marker if current Bounds contains zero markers
