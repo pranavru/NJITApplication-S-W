@@ -6,7 +6,7 @@ import MapInfoWindow from '../MapInfoWindow/MapInfoWindow';
 import "../MapComponent/MapComponent.css"
 
 import { connect } from 'react-redux';
-import { updateMapAddressOnExpiry, loadMarkers, infoWindowMarker, changeMapCenter, loadMap } from '../../redux/ActionCreators'
+import { updateMapAddressOnExpiry, loadMarkers, infoWindowMarker, changeMapCenter, loadMap, videoPlayer } from '../../redux/ActionCreators'
 
 const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMarkersData: state.mapMarkersData, Addresses: state.addresses, InfoWindow: state.infoWindow } }
 
@@ -16,6 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
     loadMarkers: (data, mapObj, mapReference, type) => dispatch(loadMarkers(data, mapObj, mapReference, type)),
     infoWindowMarker: (data) => dispatch(infoWindowMarker(data)),
     updateMapAddressOnExpiry: () => dispatch(updateMapAddressOnExpiry()),
+    videoPlayer: data => dispatch(videoPlayer(data))
 })
 
 const MapComponent = (props) => {
@@ -114,30 +115,57 @@ const hoverMarker = (mapVuzix, props) => {
         mapVuzix.animated = false;
         mapVuzix.video = [
             {
-                src: '/Unknown3.jpg',
+                url: 'http://18.191.247.248/media/videos/videoNew.mp4',
                 thumbnail: '/Unknown3.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 212,
             }, {
-                src: '/Unknown2.jpg',
+                url: 'http://18.191.247.248/media/videos/videoNew.mp4',
                 thumbnail: '/Unknown2.jpg',
                 thumbnailWidth: 160,
+                thumbnailHeight: 56,
+            }, {
+                url: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                thumbnail: '/Unknown3.jpg',
+                thumbnailWidth: 160,
                 thumbnailHeight: 106,
+            }, {
+                url: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                thumbnail: '/Unknown4.jpg',
+                thumbnailWidth: 160,
+                thumbnailHeight: 212,
+            }];
+        mapVuzix.images = [
+            {
+                src: '/Unknown3.jpg',
+                thumbnail: '/Unknown3.jpg',
+                thumbnailWidth: 110,
+                thumbnailHeight: 150,
+            }, {
+                src: '/Unknown2.jpg',
+                thumbnail: '/Unknown2.jpg',
+                thumbnailWidth: 210,
+                thumbnailHeight: 150,
             }, {
                 src: '/Unknown3.jpg',
                 thumbnail: '/Unknown3.jpg',
                 thumbnailWidth: 160,
-                thumbnailHeight: 106,
+                thumbnailHeight: 150,
             }, {
                 src: '/Unknown4.jpg',
                 thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
+                thumbnailWidth: 80,
+                thumbnailHeight: 150,
             }, {
                 src: '/Unknown3.png',
-                thumbnail: '/Unknown3.jpg',
+                thumbnail: '/Unknown3.png',
                 thumbnailWidth: 160,
-                thumbnailHeight: 106,
+                thumbnailHeight: 150,
+            }, {
+                src: '/Unknown4.jpg',
+                thumbnail: '/Unknown4.jpg',
+                thumbnailWidth: 240,
+                thumbnailHeight: 150,
             }]
         // 'http://18.191.247.248/media/videos/videoNew.mp4';
     }
@@ -155,6 +183,6 @@ const customInfoWindow = (props, center) => {
         onMouseOut={() => props.infoWindowMarker(null)}
         options={{ disableAutoPan: true }}
     >
-        <MapInfoWindow point={props.InfoWindow.infoWindow} />
+        <MapInfoWindow point={props.InfoWindow.infoWindow} v={props.videoPlayer} />
     </InfoWindow >;
 }

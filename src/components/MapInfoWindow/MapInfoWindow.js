@@ -4,35 +4,25 @@ import ReactPlayer from 'react-player'
 import Gallery from 'react-grid-gallery';
 
 import "./MapInfoWindow.css";
-import { baseUrl } from "../../shared/baseUrl";
 
-function displayWindowHeader(props, playVideo, setToPlay) {
+import { baseUrl } from "../../shared/baseUrl";
+import { videoPlayer } from '../../redux/ActionCreators';
+import { connect } from 'react-redux';
+
+function displayWindowHeader(props, displayVideo, setToVideo) {
     const d = new Date(props.point.created);
-    const styleImg = { width: '800px', height: '800px' };
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    return (
-        <>
-            <CardHeader>
-                <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "clip", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
-            </CardHeader>
-            {
-            !props.point.keepAlive ?
-                <div id="containerImg">
-                    <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
-                </div> :
-                <Gallery
-                    images={props.point.video}
-                    enableImageSelection={false}
-                    rowHeight={95}
-                    maxRows={3}
-                    backdropClosesModal={true}
-                    showCloseButton={false}
-                    lightBoxProps={styleImg}
-                    showImageCount={false}
-                    preloadNextImage={true}
-                />
-            }
-        </>)
+    return (<>
+        <CardHeader>
+            <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "clip", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
+        </CardHeader>
+        {props.point.keepAlive ? <div className="toggleVideoButton">
+            <label class="switch" alt="Images/Videos">
+                <input type="checkbox" onClick={() => setToVideo(!displayVideo)} />
+                <span class="slider"></span>
+            </label>
+        </div> : <></>}
+    </>)
 
 }
 function displayBody(props) {
@@ -56,11 +46,34 @@ function displayFooter(props) {
 }
 
 function MapInfoWindow(props) {
-    const [playVideo, setToPlay] = React.useState(false);
+    const [displayVideo, setToVideo] = React.useState(false);
 
     return (
         <Card style={{ width: "30vw" }}>
-            {displayWindowHeader(props, playVideo, setToPlay)}
+            {displayWindowHeader(props, displayVideo, setToVideo)}
+            {
+                !props.point.keepAlive ?
+                    <div id="containerImg">
+                        <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
+                    </div> :
+                    !displayVideo ?
+                        < Gallery
+                            images={props.point.images}
+                            enableImageSelection={false}
+                            rowHeight={120}
+                            maxRows={3}
+                            backdropClosesModal={true}
+                            showCloseButton={false}
+                            showImageCount={false}
+                            preloadNextImage={true}
+                        /> :
+                        <div className="row videoDiv">
+                            {props.point.video.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
+                                <img src="/mediaControl.svg" className="cardButton" />
+                                <img src={m.thumbnail} width={"185px"} height={"150px"} />
+                            </div>)}
+                        </div>
+            }
             <CardFooter className="footer" style={{ margin: '0px' }}>
                 {displayBody(props)}
                 {displayFooter(props)}
@@ -71,7 +84,7 @@ function MapInfoWindow(props) {
 
 export default MapInfoWindow;
 
-/* 
+/*
     <CardHeader>
         <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>Vizux ID: {props.point.id} </CardTitle>
         <CardSubtitle style={{ fontWeight: 'bold', fontSize: 12 }}>Country Location: {props.point.country}</CardSubtitle>
