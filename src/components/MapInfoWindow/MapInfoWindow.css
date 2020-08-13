@@ -40,6 +40,7 @@
   align-items: flex-end; 
   justify-content: flex-end;
   width: 31vw;
+  height: 44vh;
 }
 .cardButton {
   opacity: 0.4;
@@ -57,7 +58,7 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 70px;
+  width: 46px;
   height: 22px;
 }
 
@@ -75,26 +76,25 @@
   right: 0;
   bottom: 0;
   text-align: center;
-  justify-content: center;
-  font: 10px monospace;
-  background-color: #ccc;
+  font: 9px monospace;
+  font-weight: bold;
+  background-color: #e6e6e6;
   -webkit-transition: .4s;
   transition: .4s;
   border-radius: 14px;
-  vertical-align: middle;
 }
 
 .slider:before {
   position: absolute;
-  content: "IMAGE";
-  height: 14px;
-  width: 35px;
-  left: 4px;
-  bottom: 4px;
+  content: "IMG";
+  height: 16px;
+  width: 27px;
+  left: 3px;
+  bottom: 3px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
-  border-radius: 6px;
+  border-radius: 14px;
 }
 
 input:checked + .slider {
@@ -106,10 +106,10 @@ input:focus + .slider {
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-  content: "VIDEO";
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+  content: "VID";
 }
 
 .toggleVideoButton {

@@ -1,13 +1,10 @@
 import React from 'react';
 import { Card, CardText, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
-import ReactPlayer from 'react-player'
 import Gallery from 'react-grid-gallery';
 
 import "./MapInfoWindow.css";
 
 import { baseUrl } from "../../shared/baseUrl";
-import { videoPlayer } from '../../redux/ActionCreators';
-import { connect } from 'react-redux';
 
 function displayWindowHeader(props, displayVideo, setToVideo) {
     const d = new Date(props.point.created);
@@ -69,8 +66,8 @@ function MapInfoWindow(props) {
                         /> :
                         <div className="row videoDiv">
                             {props.point.video.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
-                                <img src="/mediaControl.svg" className="cardButton" />
-                                <img src={m.thumbnail} width={"185px"} height={"150px"} />
+                                <img src="/mediaControl.svg" className="cardButton" alt="" />
+                                <img src={m.thumbnail} width={"185px"} height={"150px"} alt="" />
                             </div>)}
                         </div>
             }

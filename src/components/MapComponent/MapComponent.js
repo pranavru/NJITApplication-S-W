@@ -115,22 +115,52 @@ const hoverMarker = (mapVuzix, props) => {
         mapVuzix.animated = false;
         mapVuzix.video = [
             {
-                url: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
                 thumbnail: '/Unknown3.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 212,
             }, {
-                url: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
                 thumbnail: '/Unknown2.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 56,
             }, {
-                url: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
                 thumbnail: '/Unknown3.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 106,
             }, {
-                url: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                thumbnail: '/Unknown4.jpg',
+                thumbnailWidth: 160,
+                thumbnailHeight: 212,
+            }, {
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                thumbnail: '/Unknown2.jpg',
+                thumbnailWidth: 160,
+                thumbnailHeight: 56,
+            }, {
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                thumbnail: '/Unknown3.jpg',
+                thumbnailWidth: 160,
+                thumbnailHeight: 106,
+            }, {
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                thumbnail: '/Unknown4.jpg',
+                thumbnailWidth: 160,
+                thumbnailHeight: 212,
+            }, {
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                thumbnail: '/Unknown2.jpg',
+                thumbnailWidth: 160,
+                thumbnailHeight: 56,
+            }, {
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
+                thumbnail: '/Unknown3.jpg',
+                thumbnailWidth: 160,
+                thumbnailHeight: 106,
+            }, {
+                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
                 thumbnail: '/Unknown4.jpg',
                 thumbnailWidth: 160,
                 thumbnailHeight: 212,
