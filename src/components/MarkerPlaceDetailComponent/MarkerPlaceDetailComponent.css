@@ -1,17 +1,14 @@
-/* .markerCard {
-  width: 100%;
-  margin-top: 1%;
-  height: auto
-} */
+.containerDiv {
+  margin: 2px;
+  overflow: hidden;
+}
 
 .displayText {
-  /* background-color: red; */
   padding: 0px;
-  left: -5%;
+  right: 2%;
 }
 
 .displayImage {
-  /* background-color: yellow; */
   margin-top: 1%;
   margin-bottom: 1%;
 }
@@ -22,7 +19,6 @@
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 0px;
   border-top-right-radius: 0px;
-  /* width: 20vw; */
   height: 15vh;
   margin-left: -15%;
 }
@@ -47,7 +43,6 @@
   display: inline-block;
   overflow: hidden;
   clear: both;
-  /* text-overflow: ellipsis; */
   white-space: nowrap;
 }
 
@@ -65,7 +60,6 @@
 }
 
 .speechTextPerson {
-  /* font-weight: bold; */
   font-size: 10px;
   font-family: monospace;
   margin-top: 3%;

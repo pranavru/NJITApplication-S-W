@@ -34,7 +34,9 @@ function displayFooter(props) {
             <CardText>
                 <div className="row">
                     {props.point.person_names.map(person =>
-                        <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} ><p>{'\u2022'} {person.person_name.toUpperCase()}</p> </div>
+                        <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} >
+                            <p>{'\u2022'} {person.person_name.toUpperCase()}</p>
+                        </div>
                     )}
                 </div>
             </CardText>
@@ -46,7 +48,7 @@ function MapInfoWindow(props) {
     const [displayVideo, setToVideo] = React.useState(false);
 
     return (
-        <Card style={{ width: "30vw" }}>
+        <Card style={{ width: "30vw", overflow: 'hidden' }}>
             {displayWindowHeader(props, displayVideo, setToVideo)}
             {
                 !props.point.keepAlive ?
@@ -66,8 +68,8 @@ function MapInfoWindow(props) {
                         /> :
                         <div className="row videoDiv">
                             {props.point.video.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
+                                <img src={m.thumbnail} className="cardThumb" alt="" />
                                 <img src="/mediaControl.svg" className="cardButton" alt="" />
-                                <img src={m.thumbnail} width={"185px"} height={"150px"} alt="" />
                             </div>)}
                         </div>
             }
