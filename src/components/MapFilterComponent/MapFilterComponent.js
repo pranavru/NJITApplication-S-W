@@ -64,7 +64,7 @@ class MapFilterComponent extends Component {
     //     return items_array;
     // }
 
-    submitObjectValues(videoParam) {
+    submitObjectValues() {
         const { isSpeech, personNames, mapDateRange } = this.props.MapFilter.mapFilter;
         let people = [];
         personNames.forEach(p => (p.checked === true) ? people.push(p.name) : null)

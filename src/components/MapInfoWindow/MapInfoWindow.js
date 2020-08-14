@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, CardText, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
 import Gallery from 'react-grid-gallery';
+import SimpleReactLightbox from "simple-react-lightbox";
 
 import "./MapInfoWindow.css";
 
@@ -48,36 +49,38 @@ function MapInfoWindow(props) {
     const [displayVideo, setToVideo] = React.useState(false);
 
     return (
-        <Card style={{ width: "30vw", overflow: 'hidden' }}>
-            {displayWindowHeader(props, displayVideo, setToVideo)}
-            {
-                !props.point.keepAlive ?
-                    <div id="containerImg">
-                        <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
-                    </div> :
-                    !displayVideo ?
-                        < Gallery
-                            images={props.point.images}
-                            enableImageSelection={false}
-                            rowHeight={120}
-                            maxRows={3}
-                            backdropClosesModal={true}
-                            showCloseButton={false}
-                            showImageCount={false}
-                            preloadNextImage={true}
-                        /> :
-                        <div className="row videoDiv">
-                            {props.point.video.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
-                                <img src={m.thumbnail} className="cardThumb" alt="" />
-                                <img src="/mediaControl.svg" className="cardButton" alt="" />
-                            </div>)}
-                        </div>
-            }
-            <CardFooter className="footer" style={{ margin: '0px' }}>
-                {displayBody(props)}
-                {displayFooter(props)}
-            </CardFooter>
-        </Card>
+        <SimpleReactLightbox >
+            <Card style={{ width: "30vw", overflow: 'hidden' }}>
+                {displayWindowHeader(props, displayVideo, setToVideo)}
+                {
+                    !props.point.keepAlive ?
+                        <div id="containerImg">
+                            <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
+                        </div> :
+                        !displayVideo ?
+                            < Gallery
+                                images={props.point.images}
+                                enableImageSelection={false}
+                                rowHeight={135}
+                                maxRows={3}
+                                backdropClosesModal={true}
+                                showCloseButton={false}
+                                showImageCount={false}
+                                preloadNextImage={true}
+                            /> :
+                            <div className="row videoDiv">
+                                {props.point.video.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
+                                    <img src={m.thumbnail} className="cardThumb" alt="" />
+                                    <img src="/mediaControl.svg" className="cardButton" alt="" />
+                                </div>)}
+                            </div>
+                }
+                <CardFooter className="footer" style={{ margin: '0px' }}>
+                    {displayBody(props)}
+                    {displayFooter(props)}
+                </CardFooter>
+            </Card>
+        </SimpleReactLightbox>
     )
 }
 
