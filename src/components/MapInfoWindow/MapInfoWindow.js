@@ -1,7 +1,6 @@
 import React from 'react';
-import { Card, CardText, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
+import { Card, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstrap';
 import Gallery from 'react-grid-gallery';
-import SimpleReactLightbox from "simple-react-lightbox";
 
 import "./MapInfoWindow.css";
 
@@ -12,7 +11,7 @@ function displayWindowHeader(props, displayVideo, setToVideo) {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return (<>
         <CardHeader>
-            <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "clip", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address} <br /> {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
+            <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address}<br />{months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
         </CardHeader>
         {props.point.keepAlive ? <div className="toggleVideoButton">
             <label class="switch" alt="Images/Videos">
@@ -23,25 +22,21 @@ function displayWindowHeader(props, displayVideo, setToVideo) {
     </>)
 
 }
-function displayBody(props) {
-    return props.point.speech !== "" ?
-        <CardSubtitle style={{ font: "1em monospace", fontWeight: 'bold' }}><q>{props.point.speech}</q></CardSubtitle>
-        : <div></div>
+function displaySpeech(props) {
+    return props.point.all_speech.length > 0 ?
+        <CardSubtitle style={{ font: "1em monospace", fontWeight: 'bold', maxHeight: '45px', marginBlockEnd: '4px' }}><q>{props.point.all_speech[0].speech}</q></CardSubtitle>
+        : <></>
 };
 
-function displayFooter(props) {
-    return props.point.person_names.length !== 0 ?
-        <>
-            <CardText>
-                <div className="row">
-                    {props.point.person_names.map(person =>
-                        <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} >
-                            <p>{'\u2022'} {person.person_name.toUpperCase()}</p>
-                        </div>
-                    )}
+function displayPersonNames(props) {
+    return props.point.person_names.length > 0 ?
+        <div className="row">
+            {props.point.person_names.map((person, key) =>
+                <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} key={key}>
+                    <p>{'\u2022'} {person.person_name.toUpperCase()}</p>
                 </div>
-            </CardText>
-        </> : <div></div>
+            )}
+        </div> : <></>
 
 }
 
@@ -49,43 +44,48 @@ function MapInfoWindow(props) {
     const [displayVideo, setToVideo] = React.useState(false);
 
     return (
-        <SimpleReactLightbox >
-            <Card style={{ width: "30vw", overflow: 'hidden' }}>
-                {displayWindowHeader(props, displayVideo, setToVideo)}
-                {
-                    !props.point.keepAlive ?
-                        <div id="containerImg">
-                            <img src={baseUrl + props.point.imageFile} alt={props.point.id} id="theImage" />
-                        </div> :
-                        !displayVideo ?
-                            < Gallery
-                                images={props.point.images}
-                                enableImageSelection={false}
-                                rowHeight={135}
-                                maxRows={3}
-                                backdropClosesModal={true}
-                                showCloseButton={false}
-                                showImageCount={false}
-                                preloadNextImage={true}
-                            /> :
-                            <div className="row videoDiv">
-                                {props.point.video.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
-                                    <img src={m.thumbnail} className="cardThumb" alt="" />
-                                    <img src="/mediaControl.svg" className="cardButton" alt="" />
-                                </div>)}
-                            </div>
-                }
-                <CardFooter className="footer" style={{ margin: '0px' }}>
-                    {displayBody(props)}
-                    {displayFooter(props)}
-                </CardFooter>
-            </Card>
-        </SimpleReactLightbox>
+        <Card style={{ width: "28.5vw", overflow: 'hidden' }}>
+            {displayWindowHeader(props, displayVideo, setToVideo)}
+            {displayBody(props, displayVideo)}
+            {displayFooter(props)}
+        </Card>
     )
 }
 
 export default MapInfoWindow;
 
+
+function displayBody(props, displayVideo) {
+    const p = props.point;
+    return !p.keepAlive ?
+        <div id="containerImg">
+            <img src={baseUrl + (p.image !== "" ? p.image : p.thumbnail)} alt={p.id} id="theImage" />
+        </div> :
+        !displayVideo ?
+            !p.images.length > 0 ? <></> :
+                <Gallery
+                    images={p.images}
+                    enableImageSelection={false}
+                    rowHeight={135}
+                    maxRows={3}
+                    backdropClosesModal={true}
+                    showCloseButton={false}
+                    showImageCount={false}
+                    preloadNextImage={true} /> :
+            <div className="row videoDiv">
+                {p.videos.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
+                    <img src={m.thumbnail} className="cardThumb" alt="" />
+                    <img src="/mediaControl.svg" className="cardButton" alt="" />
+                </div>)}
+            </div>;
+}
+
+function displayFooter(props) {
+    return <CardFooter className="footer" style={{ margin: '0px' }}>
+        {displaySpeech(props)}
+        {displayPersonNames(props)}
+    </CardFooter>;
+}
 /*
     <CardHeader>
         <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>Vizux ID: {props.point.id} </CardTitle>

@@ -26,7 +26,7 @@ export const loadVideoData = (data) => ({ type: ActionTypes.ADD_VIDEODATA, paylo
 
 export const fetchDataVuzix = (dispatch) => {
     dispatch(dataVuzixLoading(true));
-    return fetch(baseUrl + '/info')
+    return fetch(baseUrl + '/signal')
         .then(response => {
             if (response.ok) {
                 return response;

@@ -50,20 +50,6 @@ class MapFilterComponent extends Component {
         this.handleSubmit()
     }
 
-    // addImages = (video) => {
-    //     let items_array = video !== undefined ? video : []
-    //     if (items_array.length > 0) {
-    //         items_array.map(m => {
-    //             if (!m.src.includes('http://18.191.247.248/media')) {
-    //                 let url = baseURL + m.src;
-    //                 m.src = url;
-    //             }
-    //             return null;
-    //         })
-    //     }
-    //     return items_array;
-    // }
-
     submitObjectValues() {
         const { isSpeech, personNames, mapDateRange } = this.props.MapFilter.mapFilter;
         let people = [];
@@ -85,7 +71,6 @@ class MapFilterComponent extends Component {
     handleSubmit() {
         this.props.activateLoader(true);
         this.props.editDataVuzix(this.submitObjectValues(), this.props)
-        this.props.editVideo(this.submitObjectValues(), this.props);
     }
 
     render() {

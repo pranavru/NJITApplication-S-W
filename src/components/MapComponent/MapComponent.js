@@ -48,7 +48,9 @@ const MapComponent = (props) => {
                         onMouseOut={() => !mapVuzix.keepAlive ? hoverMarker(null, props) : null}
                         onClick={() => {
                             mapVuzix.keepAlive = true;
-                            hoverMarker(mapVuzix, props);
+                            if (mapVuzix.images || mapVuzix.videos) {
+                                hoverMarker(mapVuzix, props);
+                            }
                         }}
                         key={index}
                         animation={mapVuzix.animated ? window.google.maps.Animation.BOUNCE : null}
@@ -103,101 +105,16 @@ const MapComponent = (props) => {
 export default connect(mapStateToProps, mapDispatchToProps)(MapComponent);
 
 const iconImage = (mapVuzix) => {
-    return mapVuzix.speech.length > 0 && mapVuzix.person_names.length <= 0 ? "/markerSpeech.svg" :
-        mapVuzix.speech.length <= 0 && mapVuzix.person_names.length > 0 ? "/markerPerson.svg" :
-            !(mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerN.svg" :
-                (mapVuzix.speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : "/markerN.svg";
+    return mapVuzix.all_speech.length > 0 && mapVuzix.person_names.length <= 0 ? "/markerSpeech.svg" :
+        mapVuzix.all_speech.length <= 0 && mapVuzix.person_names.length > 0 ? "/markerPerson.svg" :
+            !(mapVuzix.all_speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerN.svg" :
+                (mapVuzix.all_speech.length > 0 && mapVuzix.person_names.length > 0) ? "/markerSP.svg" : "/markerN.svg";
 }
 
 const hoverMarker = (mapVuzix, props) => {
     if (mapVuzix) {
         mapVuzix.address = props.Addresses.addresses.address.get(`${mapVuzix.lat.toFixed(3)}:${mapVuzix.long.toFixed(3)}`);
         mapVuzix.animated = false;
-        mapVuzix.video = [
-            {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 212,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown2.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 56,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 212,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown2.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 56,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 212,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown2.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 56,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 106,
-            }, {
-                video: 'http://18.191.247.248/media/videos/videoNew.mp4',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 212,
-            }];
-        mapVuzix.images = [
-            {
-                src: '/Unknown3.jpg',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 110,
-                thumbnailHeight: 150,
-            }, {
-                src: '/Unknown2.jpg',
-                thumbnail: '/Unknown2.jpg',
-                thumbnailWidth: 210,
-                thumbnailHeight: 150,
-            }, {
-                src: '/Unknown3.jpg',
-                thumbnail: '/Unknown3.jpg',
-                thumbnailWidth: 160,
-                thumbnailHeight: 150,
-            }, {
-                src: '/Unknown4.jpg',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 80,
-                thumbnailHeight: 150,
-            }, {
-                src: '/Unknown3.png',
-                thumbnail: '/Unknown3.png',
-                thumbnailWidth: 160,
-                thumbnailHeight: 150,
-            }, {
-                src: '/Unknown4.jpg',
-                thumbnail: '/Unknown4.jpg',
-                thumbnailWidth: 240,
-                thumbnailHeight: 150,
-            }]
-        // 'http://18.191.247.248/media/videos/videoNew.mp4';
     }
     props.infoWindowMarker(mapVuzix);
 }
