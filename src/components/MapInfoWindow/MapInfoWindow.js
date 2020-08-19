@@ -3,7 +3,6 @@ import { Card, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstra
 import Gallery from 'react-grid-gallery';
 
 import "./MapInfoWindow.css";
-
 import { baseUrl } from "../../shared/baseUrl";
 
 function displayWindowHeader(props, displayVideo, setToVideo) {
@@ -40,21 +39,6 @@ function displayPersonNames(props) {
 
 }
 
-function MapInfoWindow(props) {
-    const [displayVideo, setToVideo] = React.useState(false);
-
-    return (
-        <Card style={{ width: "28.5vw", overflow: 'hidden' }}>
-            {displayWindowHeader(props, displayVideo, setToVideo)}
-            {displayBody(props, displayVideo)}
-            {displayFooter(props)}
-        </Card>
-    )
-}
-
-export default MapInfoWindow;
-
-
 function displayBody(props, displayVideo) {
     const p = props.point;
     return !p.keepAlive ?
@@ -86,6 +70,20 @@ function displayFooter(props) {
         {displayPersonNames(props)}
     </CardFooter>;
 }
+
+function MapInfoWindow(props) {
+    const [displayVideo, setToVideo] = React.useState(false);
+
+    return (
+        <Card style={{ width: "28.5vw", overflow: 'hidden' }}>
+            {displayWindowHeader(props, displayVideo, setToVideo)}
+            {displayBody(props, displayVideo)}
+            {displayFooter(props)}
+        </Card>
+    )
+}
+
+export default MapInfoWindow;
 /*
     <CardHeader>
         <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>Vizux ID: {props.point.id} </CardTitle>

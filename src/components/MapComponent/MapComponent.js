@@ -62,7 +62,7 @@ const MapComponent = (props) => {
             );
         }
         else
-            return (<div></div>);
+            return (<></>);
     }
 
     const logBounds = () => {
