@@ -12,7 +12,7 @@ function displayWindowHeader(props, displayVideo, setToVideo) {
         <CardHeader>
             <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{props.point.address}<br />{months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
         </CardHeader>
-        {props.point.keepAlive ? <div className="toggleVideoButton">
+        {(props.point.keepAlive && props.point.videos) ? <div className="toggleVideoButton">
             <label class="switch" alt="Images/Videos">
                 <input type="checkbox" onClick={() => setToVideo(!displayVideo)} />
                 <span class="slider"></span>
