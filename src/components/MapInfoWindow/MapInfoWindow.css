@@ -32,7 +32,7 @@
 .videoDiv {
   display: flex;
   width: 31vw;
-  height: 45vh;
+  max-height: 45vh;
   padding-right: 5%;
   overflow-y: scroll;
   box-sizing: content-box;
@@ -131,6 +131,6 @@ input:checked + .slider:before {
 
 .toggleVideoButton {
   position: absolute;
-  right: 1%;
-  top: 11%;
+  right: 2%;
+  top: 10%;
 }

@@ -39,7 +39,10 @@ export const fetchDataVuzix = (dispatch) => {
             throw error;
         })
         .then(response => response.json())
-        .then(response => dispatch(loadDataVuzix(response)))
+        .then(response => {
+            response.gps_lists = new Map(Object.entries(response.gps_lists));
+            dispatch(loadDataVuzix(response))
+        })
         .catch(error => dispatch(dataVuzixFailed(error.message)));
 };
 

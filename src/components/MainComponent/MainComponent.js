@@ -39,6 +39,8 @@ class MainComponent extends Component {
     }
 
     render() {
+        const data = this.props.DataVuzix.dataVuzix;
+        const markerData = this.props.MapMarkersData.mapMarkersData;
         if (this.props.DataVuzix.dataVuzix.vuzixMap !== undefined) {
             return (
                 <div>
@@ -46,12 +48,12 @@ class MainComponent extends Component {
                     <LoadingOverlay active={this.state.isActive} spinner text='Loading...'>
                         {/** Filter Component */}
                         <div className="filterStyle">
-                            <MapFilterComponent DataVuzix={this.props.DataVuzix.dataVuzix} activateLoader={this.activateLoader.bind(this)} />
-                            {!this.props.MapMarkersData.mapMarkersData.detail ? this.ToggleDetailDivButton(">>", "22.4vw") : <></>}
+                            <MapFilterComponent DataVuzix={data} activateLoader={this.activateLoader.bind(this)} />
+                            {!markerData.detail ? this.ToggleDetailDivButton(">>", "22.4vw") : <></>}
                         </div>
 
                         {/** Card Detail Div */}
-                        {!this.props.MapMarkersData.mapMarkersData.isLoading && <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={this.props.MapMarkersData.mapMarkersData.detail} className="detailsAnimatedStyle">
+                        {!markerData.isLoading && <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={markerData.detail} className="detailsAnimatedStyle">
                             {this.ToggleDetailDivButton("<<", "22.5vw")}
                             <div className="detailsStyle">
                                 <MarkerPLaceDetailComponent />
@@ -59,10 +61,10 @@ class MainComponent extends Component {
                         </Animated>}
 
                         {/** Loading Map Div */}
-                        {this.props.MapMarkersData.mapMarkersData && <MapComponent activateLoader={this.activateLoader.bind(this)} />}
+                        {markerData && <MapComponent activateLoader={this.activateLoader.bind(this)} />}
 
                         {/* Load Buttons for Recent and Nearest Markers */}
-                        {!this.props.MapMarkersData.mapMarkersData.mapMarkers.length && this.findClosestMarkerMethod()}
+                        {!markerData.mapMarkers.length && this.findClosestMarkerMethod()}
                         {this.findMostRecentMarkerMethod()}
                     </LoadingOverlay>
                 </div>
@@ -73,11 +75,13 @@ class MainComponent extends Component {
     }
 
     findMostRecentMarkerMethod() {
+        const data = this.props.DataVuzix.dataVuzix;
+        const markerData = this.props.MapMarkersData.mapMarkersData;
         return <Button
             value="Pan to Most Recent Event"
             onClick={() => {
                 this.activateLoader(true);
-                this.props.findRecentMarker(this.props.DataVuzix.dataVuzix.vuzixMap, this.props.MapMarkersData.mapMarkersData);
+                this.props.findRecentMarker(data.vuzixMap, markerData);
             }}
             className="panToRecentMarker"
         >
@@ -86,11 +90,14 @@ class MainComponent extends Component {
     }
 
     findClosestMarkerMethod() {
+        const data = this.props.DataVuzix.dataVuzix;
+        const markerData = this.props.MapMarkersData.mapMarkersData;
+
         return <Button
             value="Pan to Closest Marker"
             onClick={() => {
                 this.activateLoader(true);
-                this.props.findClosestMarker(this.props.DataVuzix.dataVuzix.vuzixMap, this.props.MapMarkersData.mapMarkersData);
+                this.props.findClosestMarker(data.vuzixMap, markerData);
             }}
             className="panToMarkerButton"
         >
@@ -101,9 +108,12 @@ class MainComponent extends Component {
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
 
-    ToggleDetailDivButton = (displayValue, leftValue) => <Button onClick={() => this.props.displayDetails(!this.props.MapMarkersData.mapMarkersData.detail, this.props.MapMarkersData.mapMarkersData)}
-        style={{ left: leftValue }} className="toggleDivButton">
-        {displayValue}</Button>
+    ToggleDetailDivButton = (displayValue, leftValue) => {
+        const markerData = this.props.MapMarkersData.mapMarkersData;
+        return <Button onClick={() => this.props.displayDetails(!markerData.detail, markerData)}
+            style={{ left: leftValue }} className="toggleDivButton">
+            {displayValue}</Button>
+    }
 }
 
 // export default MainComponent;
