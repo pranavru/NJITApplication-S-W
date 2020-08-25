@@ -71,6 +71,7 @@ function displayBody(props, displayImagesVideo) {
                 {p.videos.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
                     <img src={baseUrl + m.thumbnail} className="cardThumb" alt="" />
                     <img src="/mediaControl.svg" className="cardButton" alt="" />
+                    <p className="cardDate">{m.created}</p>
                 </div>)}
             </div>);
 }

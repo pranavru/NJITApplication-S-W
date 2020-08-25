@@ -53,6 +53,18 @@
   transform: scale(1.04);
 }
 
+.cardDate {
+  position: absolute;
+  bottom: -7.5%;
+  left: 11.5%;
+  color: #ffff1a;
+  background-color: #404040;
+  padding: 4px;
+  border-radius: 3px;
+  font: 8px monospace;
+  font-weight: bold;
+}
+
 .cardThumb {
   width: 180px;
   height: 150px;
