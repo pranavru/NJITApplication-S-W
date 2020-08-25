@@ -1,3 +1,0 @@
-curl -F speech="no" -F lat="0.0" -F long="0.0" -F vid="123456789" -F start_date="2020-05-19T15:57:35.421342-05:00" -F end_date="2020-05-19T15:57:39.315163-05:00" -F person="[\"kajal\"]"  http://18.191.247.248/query/
-
-curl -F speech=true -F lat="0.0" -F long="0.0" -F vid="123456789" -F start_date="2020-05-12T01:02:51.691Z" -F end_date="2020-05-24T01:02:51.691Z" -F person="[\"kajal\"]"  http://18.191.247.248/query/

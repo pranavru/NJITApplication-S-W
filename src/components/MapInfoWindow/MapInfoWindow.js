@@ -14,9 +14,9 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
             <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{p.address}<br />{months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
         </CardHeader>
         {(p.keepAlive && p.videos) ? <div className="toggleVideoButton">
-            <label class="switch" alt="Images/Videos">
+            <label className="switch" alt="Images/Videos">
                 <input type="checkbox" onClick={() => setToDisplay(!displayImagesVideo)} />
-                <span class="slider"></span>
+                <span className="slider"></span>
             </label>
         </div> : <></>}
     </>)
@@ -57,11 +57,11 @@ function displayBody(props, displayImagesVideo) {
                     <Gallery
                         images={p.images}
                         enableImageSelection={false}
-                        rowHeight={135}
-                        maxRows={2}
+                        rowHeight={115}
+                        maxRows={3}
                         backdropClosesModal={true}
                         showCloseButton={false}
-                        showImageCount={false}
+                        showImageCount={true}
                         preloadNextImage={true}
                     /> :
                     <div id="containerImg">
@@ -84,7 +84,7 @@ function displayFooter(props) {
 
 function MapInfoWindow(props) {
     const [displayImagesVideo, setToDisplay] = React.useState(false);
-
+    console.log(displayImagesVideo)
     return (
         <Card style={{ width: "30vw", overflow: 'hidden' }}>
             {displayWindowHeader(props, displayImagesVideo, setToDisplay)}

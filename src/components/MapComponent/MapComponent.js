@@ -20,6 +20,13 @@ const mapDispatchToProps = (dispatch) => ({
     videoPlayer: data => dispatch(videoPlayer(data))
 })
 
+const dateStringVal = (p) => {
+    const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
+    const [{ value: month }, , { value: day }, , { value: year }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(new Date(p))
+
+    return `${month} ${day}, ${year} ${hour}:${minute}:${second}`;
+}
+
 const iconImage = (mapVuzix) => {
     const s = mapVuzix.all_speech.length;
     const p = mapVuzix.person_names.lenght;
@@ -34,12 +41,14 @@ const hoverMarker = (mark, props) => {
         mark.address = addr.get(`${mark.lat.toFixed(3)}:${mark.long.toFixed(3)}`);
         mark.animated = false;
         if (data.gps_lists) {
-            let keyValues = data.gps_lists.get(`${mark.lat},${mark.long}`)
-            mark.videos = keyValues.filter(m => m.video)
+            let keyValues = data.gps_lists.get(`${mark.lat},${mark.long}`).map(m => data.vuzixMap.filter(v => v.id === m.id)[0])
+            mark.videos = keyValues.filter(m => m.video).map(m => {
+                return { video: m.video, thumbnail: m.thumbnail, created: dateStringVal(m.created) };
+            })
             mark.images = keyValues.filter(m => m.image).map(m => {
-                m.src = baseUrl + m.image; m.thumbnail = baseUrl + m.image; m.thumbnailWidth = 160; m.thumbnailHeight = 110;
-                return m;
+                return { src: baseUrl + m.image, thumbnail: baseUrl + m.image, thumbnailWidth: 160, thumbnailHeight: 110, tags: [{ value: dateStringVal(m.created), title: dateStringVal(m.created) }], caption: "Yo lo, How are you doing???" }
             });
+            console.log(keyValues, mark)
         }
     }
     props.infoWindowMarker(mark);
@@ -54,8 +63,8 @@ const customInfoWindow = (props, center) => {
     return <InfoWindow
         position={{ lat: lat, lng: center.lng }}
         onCloseClick={() => {
-            data.vuzixMap.filter(m => { if (m.keepAlive) { m.keepAlive = false } return null; })
-            props.infoWindowMarker(null)
+            data.vuzixMap.filter(m => m.keepAlive).map(m => m.keepAlive = false);
+            props.infoWindowMarker(null);
         }}
         options={{ disableAutoPan: true }}
     >
@@ -69,7 +78,7 @@ const MapComponent = (props) => {
     const infoWindow = props.InfoWindow.infoWindow;
 
     const { center, detail, mapMarkers, mapObject } = markerData;
-    
+
     const mapContainerStyle = { height: window.innerHeight, width: detail ? "55vw" : "77.5vw", left: detail ? "45vw" : "22.5vw" };
     const mapOptions = { disableDefaultUI: true, zoomControl: true };
     const GOOGLE_API_KEY = 'AIzaSyAFHPjPBHcDOhJIn3HP6pbqVLZhCrORnbs';
@@ -91,10 +100,15 @@ const MapComponent = (props) => {
                 markData.map((mapVuzix, index) =>
                     <Marker
                         onMouseOver={() => {
-                            data.vuzixMap.filter(m => m.keepAlive = m.keepAlive ? false : null)
-                            window.setTimeout(hoverMarker(mapVuzix, props), 5000);
+                            hoverMarker(mapVuzix, props)
+                            data.vuzixMap.filter(m => m.keepAlive).map(m => m.keepAlive = false)
+
+                            window.setTimeout(() => {
+                                if (!mapVuzix.keepAlive) {
+                                    hoverMarker(null, props)
+                                }
+                            }, 2000)
                         }}
-                        onMouseOut={() => !mapVuzix.keepAlive ? hoverMarker(null, props) : null}
                         onClick={() => {
                             mapVuzix.keepAlive = true;
                             if (mapVuzix.images || mapVuzix.videos) {
@@ -106,6 +120,7 @@ const MapComponent = (props) => {
                         position={{ lat: mapVuzix.lat, lng: mapVuzix.long }}
                         icon={{ url: iconImage(mapVuzix) }}
                         clusterer={clusterer}
+                        zIndex={mapVuzix.animated ? 1000 : index}
                     />
                 )
             );
@@ -142,11 +157,14 @@ const MapComponent = (props) => {
                 }
             }}
             onResize={() => props.activateLoader(true)}
+            onMouseMove={() => {
+
+            }}
         >
+            {infoWindow ? customInfoWindow(props, center) : null}
             <MarkerClusterer options={clusterOptions}>
                 {clusterer => MarkerData(mapMarkers, clusterer)}
             </MarkerClusterer>
-            {infoWindow ? customInfoWindow(props, center) : null}
         </GoogleMap >
     );
 }
