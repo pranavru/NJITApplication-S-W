@@ -11,7 +11,9 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return (<>
         <CardHeader>
-            <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{p.address}<br />{months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()}</CardTitle>
+            <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{p.address}<br />
+                {/* {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()} */}
+            </CardTitle>
         </CardHeader>
         {(p.keepAlive && p.videos) ? <div className="toggleVideoButton">
             <label className="switch" alt="Images/Videos">
@@ -63,6 +65,7 @@ function displayBody(props, displayImagesVideo) {
                         showCloseButton={false}
                         showImageCount={true}
                         preloadNextImage={true}
+                        tagStyle={{ backgroundColor: "#2C4870", font: "8px monospace", fontWeight: "bold", color: "#ffff1a", padding: '3px', borderRadius: '3px' }}
                     /> :
                     <div id="containerImg">
                         <img src={baseUrl + (p.image !== "" ? p.image : p.thumbnail)} alt={p.id} id="theImage" />
@@ -71,7 +74,7 @@ function displayBody(props, displayImagesVideo) {
                 {p.videos.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
                     <img src={baseUrl + m.thumbnail} className="cardThumb" alt="" />
                     <img src="/mediaControl.svg" className="cardButton" alt="" />
-                    <p className="cardDate">{m.created}</p>
+                    <p className="cardDate tagStyle">{m.created}</p>
                 </div>)}
             </div>);
 }

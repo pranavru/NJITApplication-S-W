@@ -57,8 +57,11 @@
   position: absolute;
   bottom: -7.5%;
   left: 11.5%;
+}
+
+.tagStyle {
   color: #ffff1a;
-  background-color: #404040;
+  background-color: #2C4870;
   padding: 4px;
   border-radius: 3px;
   font: 8px monospace;
@@ -144,5 +147,5 @@ input:checked + .slider:before {
 .toggleVideoButton {
   position: absolute;
   right: 2%;
-  top: 10%;
+  top: 7%;
 }

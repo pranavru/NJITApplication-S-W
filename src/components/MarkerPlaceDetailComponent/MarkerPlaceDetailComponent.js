@@ -38,7 +38,7 @@ function MarkerPLaceDetailComponent(props) {
                         {mapMarkers.map((p) =>
                             <Card
                                 className="container shadow-sm bg-white"
-                                style={{ width: '100%', marginTop: '3%', minHeight: '120px'  }} key={p.id}
+                                style={{ width: '100%', marginTop: '3%', minHeight: '120px' }} key={p.id}
                                 onMouseOver={() => props.animateMapMarker(props.MapMarkersData.mapMarkersData, p)}
                                 onMouseOut={() => props.animateMapMarker(props.MapMarkersData.mapMarkersData, null)}
                             >
@@ -46,6 +46,7 @@ function MarkerPLaceDetailComponent(props) {
                                 <div className="row">
                                     <p className="dateFieldCard">{dateStringVal(new Date(p.created))}</p>
                                     <div className="col-sm-5 displayImage">
+                                        {p.image === '' ? <div className="detailsButton"><img src='/mediaControl.svg' className="detailsPlayButton" /></div> : <></>}
                                         <CardImg src={baseUrl + (p.image !== "" ? p.image : p.thumbnail)} alt={p.id} className="cardImage" />
                                     </div>
                                     <div className="col-sm-7 displayText">
