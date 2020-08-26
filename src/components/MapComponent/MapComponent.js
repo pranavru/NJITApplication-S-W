@@ -46,7 +46,7 @@ const hoverMarker = (mark, props) => {
                 return { video: m.video, thumbnail: m.thumbnail, created: dateStringVal(m.created) };
             })
             mark.images = keyValues.filter(m => m.image).map(m => {
-                return { src: baseUrl + m.image, thumbnail: baseUrl + m.image, thumbnailWidth: 160, thumbnailHeight: 110, tags: [{ value: dateStringVal(m.created), title: dateStringVal(m.created) }], caption: "Yo lo, How are you doing???" }
+                return { src: baseUrl + m.image, thumbnail: baseUrl + m.image, thumbnailWidth: 160, thumbnailHeight: 110, tags: [{ value: dateStringVal(m.created), title: dateStringVal(m.created) }], caption: "" }
             });
         }
     }

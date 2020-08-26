@@ -189,6 +189,7 @@ export const animateMapMarker = (data, marker) => (dispatch) => {
         data.mapMarkers.filter((d) => d.id === marker.id).map(m => {
             m.animated = true;
             m.zIndex = data.zIndex;
+            return m;
         });
     }
     dispatch(loadMarkers(data.mapMarkers, data));

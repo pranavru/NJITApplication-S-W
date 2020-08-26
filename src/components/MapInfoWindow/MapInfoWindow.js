@@ -8,9 +8,10 @@ import { baseUrl } from "../../shared/baseUrl";
 function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
     const p = props.point;
     return (<>
-        <CardHeader>
-            <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{p.address}<br />
+        <CardHeader style={{ marginBottom: '0px' }}>
+            <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", marginBottom: 0 }}>{p.address}
                 {/* {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()} */}
+                <p> Images: {p.images ? p.images.length : 0}, Videos: {p.videos ? p.videos.length : 0}</p>
             </CardTitle>
         </CardHeader>
         {(p.keepAlive && p.videos) ? <div className="toggleVideoButton">
@@ -57,7 +58,7 @@ function displayBody(props, displayImagesVideo) {
                     <Gallery
                         images={p.images}
                         enableImageSelection={false}
-                        rowHeight={115}
+                        rowHeight={110}
                         maxRows={3}
                         backdropClosesModal={true}
                         showCloseButton={false}
