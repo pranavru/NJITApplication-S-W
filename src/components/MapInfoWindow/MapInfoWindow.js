@@ -7,8 +7,6 @@ import { baseUrl } from "../../shared/baseUrl";
 
 function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
     const p = props.point;
-    const d = new Date(p.created);
-    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     return (<>
         <CardHeader>
             <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{p.address}<br />
@@ -88,7 +86,6 @@ function displayFooter(props) {
 
 function MapInfoWindow(props) {
     const [displayImagesVideo, setToDisplay] = React.useState(false);
-    console.log(displayImagesVideo)
     return (
         <Card style={{ width: "30vw", overflow: 'hidden' }}>
             {displayWindowHeader(props, displayImagesVideo, setToDisplay)}

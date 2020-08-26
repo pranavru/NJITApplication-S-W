@@ -116,5 +116,4 @@ class MainComponent extends Component {
     }
 }
 
-// export default MainComponent;
 export default connect(mapStateToProps, mapDispatchToProps)(MainComponent);

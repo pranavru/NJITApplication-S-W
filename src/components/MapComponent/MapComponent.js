@@ -29,7 +29,7 @@ const dateStringVal = (p) => {
 
 const iconImage = (mapVuzix) => {
     const s = mapVuzix.all_speech.length;
-    const p = mapVuzix.person_names.lenght;
+    const p = mapVuzix.person_names.length;
     return s > 0 && p <= 0 ? "/markerSpeech.svg" : s <= 0 && p > 0 ? "/markerPerson.svg" :
         !(s > 0 && p > 0) ? "/markerN.svg" : (s > 0 && p > 0) ? "/markerSP.svg" : "/markerN.svg";
 }
@@ -48,7 +48,6 @@ const hoverMarker = (mark, props) => {
             mark.images = keyValues.filter(m => m.image).map(m => {
                 return { src: baseUrl + m.image, thumbnail: baseUrl + m.image, thumbnailWidth: 160, thumbnailHeight: 110, tags: [{ value: dateStringVal(m.created), title: dateStringVal(m.created) }], caption: "Yo lo, How are you doing???" }
             });
-            console.log(keyValues, mark)
         }
     }
     props.infoWindowMarker(mark);
@@ -82,6 +81,7 @@ const MapComponent = (props) => {
     const mapContainerStyle = { height: window.innerHeight, width: detail ? "55vw" : "77.5vw", left: detail ? "45vw" : "22.5vw" };
     const mapOptions = { disableDefaultUI: true, zoomControl: true };
     const GOOGLE_API_KEY = 'AIzaSyAFHPjPBHcDOhJIn3HP6pbqVLZhCrORnbs';
+    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 19, gridSize: 60, ignoreHidden: true };
 
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
     const onLoad = React.useCallback(function callback(map1) {
@@ -120,7 +120,7 @@ const MapComponent = (props) => {
                         position={{ lat: mapVuzix.lat, lng: mapVuzix.long }}
                         icon={{ url: iconImage(mapVuzix) }}
                         clusterer={clusterer}
-                        zIndex={mapVuzix.animated ? 1000 : index}
+                        zIndex={mapVuzix.zIndex}
                     />
                 )
             );
@@ -134,7 +134,6 @@ const MapComponent = (props) => {
         props.activateLoader(false);
     }
 
-    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 19, gridSize: 60, ignoreHidden: true };
     return (
         <GoogleMap
             mapContainerStyle={mapContainerStyle}

@@ -90,7 +90,7 @@
 .switch {
   position: relative;
   display: inline-block;
-  width: 46px;
+  width: 45px;
   height: 22px;
 }
 
@@ -119,10 +119,10 @@
 .slider:before {
   position: absolute;
   content: "IMG";
-  height: 16px;
-  width: 27px;
-  left: 3px;
-  bottom: 3px;
+  height: 20px;
+  width: 30px;
+  left: 1px;
+  bottom: 1px;
   background-color: white;
   -webkit-transition: 0.4s;
   transition: 0.4s;
@@ -148,4 +148,5 @@ input:checked + .slider:before {
   position: absolute;
   right: 2%;
   top: 7%;
+  height: 25px;
 }

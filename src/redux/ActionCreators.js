@@ -176,15 +176,20 @@ export const loadMarkers = (data, mapReference) => (dispatch) => {
     const bounds = mapReference.mapObject.getBounds();
     const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
     mapReference.mapMarkers = markers;
+    mapReference.zIndex = mapReference.zIndex === undefined ? markers.length + 1 : mapReference.zIndex;
     dispatch(loadMapMarkerData(mapReference));
 }
 
 //Toggle Animation of map markers
 export const animateMapMarker = (data, marker) => (dispatch) => {
+    data.zIndex = data.zIndex + 1;
     if (marker === null) {
-        data.mapMarkers.filter((d) => { if (d.animated) { d.animated = false } return null; })
+        data.mapMarkers.filter((d) => d.animated).map((m) => m.animated = false);
     } else {
-        data.mapMarkers.filter((d) => { if (d.id === marker.id) { d.animated = true; } return null; })
+        data.mapMarkers.filter((d) => d.id === marker.id).map(m => {
+            m.animated = true;
+            m.zIndex = data.zIndex;
+        });
     }
     dispatch(loadMarkers(data.mapMarkers, data));
 }
