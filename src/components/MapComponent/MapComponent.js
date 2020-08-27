@@ -22,9 +22,8 @@ const mapDispatchToProps = (dispatch) => ({
 
 const dateStringVal = (p) => {
     const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
-    const [{ value: month }, , { value: day }, , { value: year }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(new Date(p))
-
-    return `${month} ${day}, ${year} ${hour}:${minute}:${second}`;
+    const [{ value: month }, , { value: day }, , { value: year }, , { value: hour }, , { value: minute }] = dateTimeFormat.formatToParts(new Date(p))
+    return `${month} ${day}, ${year} ${hour}:${minute}`;
 }
 
 const iconImage = (mapVuzix) => {
@@ -41,17 +40,41 @@ const hoverMarker = (mark, props) => {
         mark.address = addr.get(`${mark.lat.toFixed(3)}:${mark.long.toFixed(3)}`);
         mark.animated = false;
         if (data.gps_lists) {
-            let keyValues = data.gps_lists.get(`${mark.lat},${mark.long}`).map(m => data.vuzixMap.filter(v => v.id === m.id)[0])
+            let keyValues = data.gps_lists.has(`${mark.lat},${mark.long}`) ? data.gps_lists.get(`${mark.lat},${mark.long}`).map(m => data.vuzixMap.filter(v => v.id === m.id)[0]) : [];
             mark.videos = keyValues.filter(m => m.video).map(m => {
-                return { video: m.video, thumbnail: m.thumbnail, created: dateStringVal(m.created) };
+                let createdDate = dateStringVal(m.created);
+                let i = { video: m.video, thumbnail: m.thumbnail, tags: [{ value: createdDate, title: createdDate }], caption: m.all_speech };
+                personTags(m, i);
+                return i;
             })
             mark.images = keyValues.filter(m => m.image).map(m => {
-                return { src: baseUrl + m.image, thumbnail: baseUrl + m.image, thumbnailWidth: 160, thumbnailHeight: 110, tags: [{ value: dateStringVal(m.created), title: dateStringVal(m.created) }], caption: "" }
+                let i = { src: baseUrl + m.image, thumbnail: baseUrl + m.image, thumbnailWidth: 160, thumbnailHeight: 110, tags: [{ value: dateStringVal(m.created), title: dateStringVal(m.created) }], caption: m.all_speech[0].speech, customOverlay };
+                personTags(m, i);
+                if (m.all_speech[0].speech || i.tags.length > 1) { i.customOverlay = customOverlay(m, i) }
+                return i;
             });
         }
     }
     props.infoWindowMarker(mark);
 }
+
+function personTags(m, i) {
+    if (m.person_names.length > 0) {
+        m.person_names.map(p => i.tags.push({ value: p.person_name, title: p.person_name }));
+    }
+}
+
+const customOverlay = (m, i) => <div className="captionStyle">
+    <div>{m.all_speech[0].speech}</div>
+    {i.hasOwnProperty('tags') && setCustomTags(i)}
+</div>;
+
+const setCustomTags = (i) => i.tags.map((t, index) =>
+    index !== 0 ? <div
+        key={t.value}
+        className="customTagStyle">
+        {t.title}
+    </div> : <></>);
 
 const customInfoWindow = (props, center) => {
     const data = props.DataVuzix.dataVuzix;

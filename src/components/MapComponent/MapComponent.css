@@ -1,0 +1,26 @@
+.captionStyle {
+  background-color: rgba(0, 0, 0, 0.8);
+  max-height: 240px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  color: white;
+  padding: 2px;
+  font: 10px monospace;
+}
+
+.customTagStyle {
+  word-wrap: break-word;
+  display: inline-block;
+  background-color: #2c4870;
+  height: auto;
+  font: 10px monospace;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0.2em 0.6em 0.3em;
+  border-radius: 0.25em;
+  color: #ffff1a;
+  vertical-align: baseline;
+  margin: 3px;
+}

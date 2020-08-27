@@ -21,29 +21,9 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
             </label>
         </div> : <></>}
     </>)
-
-}
-function displaySpeech(props) {
-    const p = props.point.all_speech;
-    return p.length > 0 ?
-        <CardSubtitle style={{ font: "1em monospace", fontWeight: 'bold', maxHeight: '45px', marginBlockEnd: '4px' }}><q>{p[0].speech}</q></CardSubtitle>
-        : <></>
-};
-
-function displayPersonNames(props) {
-    const p = props.point.person_names;
-    return p.length > 0 ?
-        <div className="row">
-            {p.map((person, key) =>
-                <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} key={key}>
-                    <p>{'\u2022'} {person.person_name.toUpperCase()}</p>
-                </div>
-            )}
-        </div> : <></>
-
 }
 
-function displayBody(props, displayImagesVideo) {
+function displayBody(props, displayImagesVideo, setSpeechValues) {
     const p = props.point;
     return !p.keepAlive ?
         (<div id="containerImg">
@@ -55,31 +35,53 @@ function displayBody(props, displayImagesVideo) {
                     <img src={baseUrl + (p.image !== "" ? p.image : p.thumbnail)} alt={p.id} id="theImage" />
                 </div> :
                 p.images.length > 0 ?
-                    <Gallery
-                        images={p.images}
-                        enableImageSelection={false}
-                        rowHeight={110}
-                        maxRows={3}
-                        backdropClosesModal={true}
-                        showCloseButton={false}
-                        showImageCount={true}
-                        preloadNextImage={true}
-                        tagStyle={{ backgroundColor: "#2C4870", font: "8px monospace", fontWeight: "bold", color: "#ffff1a", padding: '3px', borderRadius: '3px' }}
-                    /> :
+                    <div className="galleryDiv">
+                        <Gallery
+                            images={p.images}
+                            enableImageSelection={false}
+                            rowHeight={130}
+                            maxRows={5}
+                            backdropClosesModal={true}
+                            showCloseButton={false}
+                            showImageCount={true}
+                            preloadNextImage={true}
+                            tagStyle={{ backgroundColor: "#2C4870", font: "8px monospace", fontWeight: "bold", color: "#ffff1a", padding: '3px', borderRadius: '3px' }}
+                        />
+                    </div> :
                     <div id="containerImg">
                         <img src={baseUrl + (p.image !== "" ? p.image : p.thumbnail)} alt={p.id} id="theImage" />
                     </div> :
             <div className="row videoDiv">
-                {p.videos.map(m => <div className="cardDisplay" onClick={() => props.v(m)}>
-                    <img src={baseUrl + m.thumbnail} className="cardThumb" alt="" />
-                    <img src="/mediaControl.svg" className="cardButton" alt="" />
-                    <p className="cardDate tagStyle">{m.created}</p>
+                {p.videos.map(m => <div className="cardDisplay" onClick={() => props.v(m)} onMouseOver={() => setSpeechValues(m)} onMouseOut={() => setSpeechValues(undefined)}>
+                    <img src={baseUrl + m.thumbnail} className="cardThumb" alt="Thumbnail not found" />
+                    <img src="/mediaControl.svg" className="cardButton" alt="Load svg" />
+                    <div className="row cardDate">{m.tags.map(t => <div className="tagStyle">{t.value}</div>)}</div>
+                    {/* {(m.customOverlay && displaySpeechValue) ? m.customOverlay : <></>} */}
                 </div>)}
             </div>);
 }
 
+function displaySpeech(props) {
+    const p = props.caption;
+    return p.length > 0 ?
+        <CardSubtitle style={{ font: "1em monospace", fontWeight: 'bold', maxHeight: '45px', marginBlockEnd: '4px' }}><q>{p[0].speech}</q></CardSubtitle>
+        : <></>
+};
+
+function displayPersonNames(props) {
+    const p = props.tags;
+    return p.length > 0 ?
+        <div className="row">
+            {p.map((person, key) =>
+                key !== 0 ? <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} key={key}>
+                    <p>{'\u2022'} {person.value.toUpperCase()}</p>
+                </div> : <></>
+            )}
+        </div> : <></>
+}
+
 function displayFooter(props) {
-    return <CardFooter className="footer" style={{ margin: '0px' }}>
+    return <CardFooter className="footer" style={{ margin: '0px', minHeight: '40px' }}>
         {displaySpeech(props)}
         {displayPersonNames(props)}
     </CardFooter>;
@@ -87,11 +89,12 @@ function displayFooter(props) {
 
 function MapInfoWindow(props) {
     const [displayImagesVideo, setToDisplay] = React.useState(false);
+    const [displaySpeechValue, setSpeechValues] = React.useState(undefined);
     return (
         <Card style={{ width: "30vw", overflow: 'hidden' }}>
             {displayWindowHeader(props, displayImagesVideo, setToDisplay)}
-            {displayBody(props, displayImagesVideo)}
-            {displayFooter(props)}
+            {displayBody(props, displayImagesVideo, setSpeechValues)}
+            {displayImagesVideo && displaySpeechValue ? displayFooter(displaySpeechValue) : <CardFooter style={{ minHeight: '40px' }}></CardFooter>}
         </Card>
     )
 }

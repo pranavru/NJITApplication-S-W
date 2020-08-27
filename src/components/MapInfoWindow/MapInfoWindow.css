@@ -55,17 +55,21 @@
 
 .cardDate {
   position: absolute;
-  bottom: -7.5%;
-  left: 11.5%;
+  bottom: 0px;
+  left: 19%;
+  max-width: 160px;
+  margin: 5px;
 }
 
 .tagStyle {
   color: #ffff1a;
-  background-color: #2C4870;
+  background-color: #2c4870;
   padding: 4px;
   border-radius: 3px;
   font: 8px monospace;
   font-weight: bold;
+  margin-right: 2px;
+  margin-bottom: 2px;
 }
 
 .cardThumb {
@@ -149,4 +153,12 @@ input:checked + .slider:before {
   right: 2%;
   top: 7%;
   height: 25px;
+}
+
+.galleryDiv {
+  max-height: 46vh;
+  overflow-y: scroll;
+  padding-right: 5%;
+  box-sizing: content-box;
+  width: 31.2vw;
 }

@@ -46,7 +46,7 @@ function MarkerPLaceDetailComponent(props) {
                                 <div className="row">
                                     <p className="dateFieldCard">{dateStringVal(new Date(p.created))}</p>
                                     <div className="col-sm-5 displayImage">
-                                        {p.image === '' ? <div className="detailsButton"><img src='/mediaControl.svg' className="detailsPlayButton" /></div> : <></>}
+                                        {p.image === '' ? <div className="detailsButton"><img src='/mediaControl.svg' className="detailsPlayButton" alt="Load the svg" /></div> : <></>}
                                         <CardImg src={baseUrl + (p.image !== "" ? p.image : p.thumbnail)} alt={p.id} className="cardImage" />
                                     </div>
                                     <div className="col-sm-7 displayText">
