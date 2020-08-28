@@ -18,7 +18,7 @@ export const ConfigureStore = () => {
             infoWindow: InfoWindow,
             videoDetails: VideoPlayer
         }),
-        applyMiddleware(thunk, logger)
+        process.env.NODE_ENV === 'development' | 'test' ? applyMiddleware(thunk, logger) : applyMiddleware(thunk)
 
     );
     return store;

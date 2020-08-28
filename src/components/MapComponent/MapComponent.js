@@ -60,7 +60,7 @@ const hoverMarker = (mark, props) => {
 
 function personTags(m, i) {
     if (m.person_names.length > 0) {
-        m.person_names.map(p => i.tags.push({ value: p.person_name, title: p.person_name }));
+        m.person_names.map(p => i.tags.push({ value: p.person_name.toUpperCase(), title: p.person_name.toUpperCase() }));
     }
 }
 

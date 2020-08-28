@@ -24,6 +24,18 @@
   margin-left: 2%;
 }
 
+.infoWindowSpeech {
+  font: 1em monospace;
+  font-weight: bold;
+  max-height: 70px;
+  line-height: 17px;
+  margin-block-end: 4px;
+  overflow-y: scroll;
+  box-sizing: content-box;
+  padding-right: 1%;
+  width: 105%;
+}
+
 .footer {
   line-height: 1.2em;
   margin-top: 3%;
