@@ -264,6 +264,7 @@ const initializeMapFilter = (data) => {
     return { range, dateMap, personObject, addressValue };
 };
 
+//Loads person names in the Filter list.
 const personsArray = (m, persons) => m.person_names.forEach(element => {
     if (!persons.has(element.person_name)) {
         persons.set(element.person_name);

@@ -74,9 +74,9 @@ function displaySpeech(props) {
                     <p style={{ margin: 'inherit' }}>
                         <q>{s.speech}</q>
                     </p>
-                    <p style={{ margin: 'inherit', alignItems: "flex-end", justifyContent: "flex-end", display: "flex", font: '6px', fontWeight: 250 }}>
-                        {props.tags[1].value}
-                    </p>
+                    {/* {props.tags.map((t, index) => index === 1 ? <p style={{ margin: 'inherit', alignItems: "flex-end", justifyContent: "flex-end", display: "flex", font: '6px', fontWeight: 250 }}>
+                        {'\u2022'} {t.value}
+                    </p> : <></>)} */}
                 </div>
             )
             }
@@ -90,7 +90,7 @@ function displayPersonNames(props) {
         <div className="row">
             {p.map((person, key) =>
                 key !== 0 ? <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} key={key}>
-                    <p style={{ margin: '1px' }}>{'\u2022'} {person[0].value.toUpperCase()}</p>
+                    <p style={{ margin: '1px' }}>{'\u2022'} {person.value.toUpperCase()}</p>
                 </div> : <></>
             )}
         </div> : <></>
@@ -99,7 +99,7 @@ function displayPersonNames(props) {
 function displayFooter(props) {
     return <CardFooter className="footer" style={{ margin: '0px', minHeight: '40px' }}>
         {displaySpeech(props)}
-        {/* {displayPersonNames(props)} */}
+        {displayPersonNames(props)}
     </CardFooter>;
 }
 

@@ -26,14 +26,14 @@
 
 .infoWindowSpeech {
   font: 1em monospace;
-  font-weight: bold;
+  font-weight: 500;
   max-height: 70px;
-  line-height: 17px;
+  line-height: 16px;
   margin-block-end: 4px;
   overflow-y: scroll;
   box-sizing: content-box;
-  padding-right: 1%;
-  width: 105%;
+  padding-right: 6%;
+  width: 100%;
 }
 
 .footer {
@@ -44,7 +44,7 @@
 .videoDiv {
   display: flex;
   width: 31vw;
-  max-height: 45vh;
+  max-height: 40vh;
   padding-right: 5%;
   overflow-y: scroll;
   box-sizing: content-box;
