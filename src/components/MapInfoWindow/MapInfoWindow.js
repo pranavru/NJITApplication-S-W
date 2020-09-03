@@ -11,7 +11,7 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
         <CardHeader style={{ marginBottom: '0px' }}>
             <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", marginBottom: 0 }}>{p.address}
                 {/* {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()} */}
-                <p> Images: {p.images ? p.images.length : 0}, Videos: {p.videos ? p.videos.length : 0}</p>
+                <p> {p.images && p.images.length > 0 ? `Images: ${p.images.length}, ` : ``}{p.videos && p.videos.length > 0 ? `Videos: ${p.videos.length}` : ``}</p>
             </CardTitle>
         </CardHeader>
         {(p.keepAlive && p.videos) ? <div className="toggleVideoButton">
@@ -51,12 +51,11 @@ function displayBody(props, displayImagesVideo, setSpeechValues) {
                     <div id="containerImg">
                         <img src={baseUrl + (p.image !== "" ? p.image : p.thumbnail)} alt={p.id} id="theImage" />
                     </div> :
-            <div className="row videoDiv">
+            <div className="row videoDiv" style={{ margin: '0px' }}>
                 {p.videos.map(m => <div className="cardDisplay" onClick={() => onVideoClicked(props, m, setSpeechValues)}>
                     <img src={baseUrl + m.thumbnail} className="cardThumb" alt="Thumbnail not found" />
                     <img src="/mediaControl.svg" className="cardButton" alt="Load svg" onClick={() => onVideoClicked(props, m, setSpeechValues)} />
                     <div className="row cardDate">{m.tags.map(t => <div className="tagStyle">{t.value}</div>)}</div>
-                    {/* {(m.customOverlay && displaySpeechValue) ? m.customOverlay : <></>} */}
                 </div>)}
             </div>);
 }
@@ -74,32 +73,15 @@ function displaySpeech(props) {
                     <p style={{ margin: 'inherit' }}>
                         <q>{s.speech}</q>
                     </p>
-                    {/* {props.tags.map((t, index) => index === 1 ? <p style={{ margin: 'inherit', alignItems: "flex-end", justifyContent: "flex-end", display: "flex", font: '6px', fontWeight: 250 }}>
-                        {'\u2022'} {t.value}
-                    </p> : <></>)} */}
                 </div>
-            )
-            }
+            )}
         </CardSubtitle >
         : <></>
 };
 
-function displayPersonNames(props) {
-    const p = props.tags;
-    return p.length > 0 ?
-        <div className="row">
-            {p.map((person, key) =>
-                key !== 0 ? <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} key={key}>
-                    <p style={{ margin: '1px' }}>{'\u2022'} {person.value.toUpperCase()}</p>
-                </div> : <></>
-            )}
-        </div> : <></>
-}
-
 function displayFooter(props) {
     return <CardFooter className="footer" style={{ margin: '0px', minHeight: '40px' }}>
         {displaySpeech(props)}
-        {displayPersonNames(props)}
     </CardFooter>;
 }
 
@@ -107,7 +89,7 @@ function MapInfoWindow(props) {
     const [displayImagesVideo, setToDisplay] = React.useState(false);
     const [displaySpeechValue, setSpeechValues] = React.useState(undefined);
     return (
-        <Card style={{ width: "30.2vw", overflow: 'hidden' }}>
+        <Card style={{ width: "30vw", overflow: 'hidden' }}>
             {displayWindowHeader(props, displayImagesVideo, setToDisplay)}
             {displayBody(props, displayImagesVideo, setSpeechValues)}
             {displayImagesVideo && displaySpeechValue ? displayFooter(displaySpeechValue) : <CardFooter style={{ minHeight: '40px' }}></CardFooter>}
@@ -123,4 +105,15 @@ export default MapInfoWindow;
         <CardSubtitle style={{ fontWeight: 'bold', fontSize: 12 }}>Country Location: {props.point.country}</CardSubtitle>
         <CardImg top src={'/images (1).jpeg'} alt={props.point.id} style={{ width: 50, height: 50, borderRadius: 30, position: 'absolute', left: 300, top: 8 }} />
     </CardHeader>;
+    function displayPersonNames(props) {
+        const p = props.tags;
+        return p.length > 0 ?
+            <div className="row">
+                {p.map((person, key) =>
+                    key !== 0 ? <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} key={key}>
+                        <p style={{ margin: '1px' }}>{'\u2022'} {person.value.toUpperCase()}</p>
+                    </div> : <></>
+                )}
+            </div> : <></>
+    }
 */

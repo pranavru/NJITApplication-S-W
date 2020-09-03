@@ -2,6 +2,7 @@ import * as ActionTypes from './ActionTypes';
 import axios from 'axios';
 import { baseUrl } from "../shared/baseUrl";
 
+//Change the isLoading attribute to true when data is updating
 export const dataVuzixLoading = () => ({ type: ActionTypes.DATAVUZIX_LOADING });
 export const mapFilterLoading = () => ({ type: ActionTypes.MAPFILTER_LOADING });
 export const addressValueLoading = () => ({ type: ActionTypes.ADDRESSVALUE_LOADING });
@@ -9,6 +10,7 @@ export const mapMarkersDataLoading = () => ({ type: ActionTypes.MAPMARKERSDATA_L
 export const infoWindowLoading = () => ({ type: ActionTypes.INFOWINDOW_LOADING });
 export const videoDataLoading = () => ({ type: ActionTypes.VIDEODATA_LOADING });
 
+//Send an error response if there is an error in updating the payload
 export const dataVuzixFailed = (errmess) => ({ type: ActionTypes.DATAVUZIX_FALIED, payload: errmess })
 export const mapFilterFailed = (errmess) => ({ type: ActionTypes.MAPFILTER_FAILED, payload: errmess })
 export const addressValueFailed = (errmess) => ({ type: ActionTypes.ADDRESSVALUE_FAILED, payload: errmess });
@@ -16,6 +18,7 @@ export const mapMarkersDataFailed = (errmess) => ({ type: ActionTypes.MAPMARKERS
 export const infoWindowFailed = (errmess) => ({ type: ActionTypes.INFOWINDOW_FAILED, payload: errmess });
 export const videoFailed = (errmess) => ({ type: ActionTypes.VIDEODATA_FAILED, payload: errmess });
 
+//Update the store with the payload to store the data 
 export const loadDataVuzix = (data) => ({ type: ActionTypes.ADD_DATAVUZIX, payload: data });
 export const loadMapFilter = (data) => ({ type: ActionTypes.ADD_INIT_MAPFILTER, payload: data });
 export const loadEditedFilter = (data) => ({ type: ActionTypes.EDIT_MAPFILTER, payload: data });
@@ -24,6 +27,7 @@ export const loadMapMarkerData = (data) => ({ type: ActionTypes.ADD_MAPMARKERSDA
 export const loadInfoWindow = (data) => ({ type: ActionTypes.INIT_INFOWINDOW, payload: data });
 export const loadVideoData = (data) => ({ type: ActionTypes.ADD_VIDEODATA, payload: data });
 
+// Fetches data when initial URL is hit.
 export const fetchDataVuzix = (dispatch) => {
     dispatch(dataVuzixLoading(true));
     return fetch(baseUrl + '/signal')
@@ -40,35 +44,45 @@ export const fetchDataVuzix = (dispatch) => {
         })
         .then(response => response.json())
         .then(response => {
+
+            //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
             dispatch(loadDataVuzix(response))
         })
         .catch(error => dispatch(dataVuzixFailed(error.message)));
 };
 
+// Edit Vuzix Blade data based on the Filter parameters as ```parameter``` excluding video.
 export const editDataVuzix = (parameter, props) => (dispatch) => {
     parameter.videoRequired = "false";
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
                 alert("No data with search query");
-                dispatch(loadMarkers([], props.MapMarkersData.mapMarkersData))
+
+                //If no data is returned, update Markers Array to []
+                dispatch(loadMarkers([], props.MapMarkersData.mapMarkersData));
                 props.activateLoader(false);
             } else {
-                console.log(response.data)
-                return response
+                console.log(response.data);
+                return response;
             }
         })
         .then(response => response.data)
         .then(response => {
+
+            //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
+            response.gps_lists = new Map(Object.entries(response.gps_lists));
+            
             dispatch(loadDataVuzix(response))
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
             dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
-            props.activateLoader(false);
-        })
+            
+        }).then(() => props.activateLoader(false) )
         .catch(err => dispatch(dataVuzixFailed(err.message)))
 }
 
+// Edit Vuzix Blade data based on the Filter parameters as ```parameter``` including video.
 export const editVideo = (parameter, props) => (dispatch) => {
     parameter.videoRequired = "true";
     return axios.post(baseUrl + '/query/', parameter)
@@ -81,31 +95,39 @@ export const editVideo = (parameter, props) => (dispatch) => {
                 return videoRef;
             }
         })
+        //Update videoDetails Object with the video Data.
         .then(r => dispatch(videoPlayer(r)))
         .catch(err => dispatch(videoFailed(err.message)))
 }
 
+// Fetches filter data when initial URL is hit
 export const fetchMapFilter = (data) => (dispatch) => {
     dispatch(mapFilterLoading(true));
+
+    //Fetch Date Range, Date Values in milliseconds, People Names, Address Values for a GPS Co-ordinate.
     const { range, dateMap, personObject, addressValue } = initializeMapFilter(data);
     dispatch(addressValueLoading(true));
     dispatch(loadAddressValue(addressValue));
     dispatch(loadMapFilter({
-        isSpeech: false,
-        startDate: data.startDate,
-        endDate: data.endDate,
-        personNames: personObject,
-        dateValues: [new Date(data.startDate), new Date(data.endDate)],
-        videoRequired: "false",
-        mapDateRange: {
+        isSpeech: false,                                                    // Speech Attribute
+        personNames: personObject,                                          // Person Names
+        startDate: data.startDate,                                          // Start Date - To Limit User's Date Selection
+        endDate: data.endDate,                                              // End Date - To Limit User's Date Selection
+        dateValues: [new Date(data.startDate), new Date(data.endDate)],     // Date Range initialized
+        mapDateRange: {                                                     // Date Range: Histogram Initialization
             updated: range,
             values: range,
             domain: range,
             data: dateMap
         },
+        videoRequired: "false",
     }));
 };
 
+// Edit Map Filter based on User Interaction
+// newValue is an object: 
+// ``` newValue={ type: String, value: String} ``` or 
+// ``` newValue={ type: String, value: { type: String, value: String }} ```
 export const editMapFilter = (type, newValue, props) => (dispatch) => {
     dispatch(mapFilterLoading(true))
     dispatch(videoDataLoading(true))
@@ -138,13 +160,14 @@ export const editMapFilter = (type, newValue, props) => (dispatch) => {
     dispatch(loadEditedFilter(newFilter));
 };
 
+// Fetches initial Map details when initial URL is hit
 export const initMapDetails = () => (dispatch) => {
     let mapReference = {
-        center: { lat: 40.74918, lng: -74.156204 },
+        center: { lat: 40.74918, lng: -74.156204 },         // center: Harrision, Newark, NJ
         detail: false,
-        mapMarkers: [],
+        mapMarkers: [],                                     // Markers to load on Map
         animatedMarkerID: {},
-        mapObject: null
+        mapObject: null                                     // Stores map details - bounds, terrain, etc.
     }
     dispatch(loadMapMarkerData(mapReference));
 }
@@ -161,19 +184,24 @@ export const updateMapAddressOnExpiry = (data) => (dispatch) => {
     dispatch(loadAddressValue(addressValue));
 }
 
+// Load map details in ```mapObject``` on map Load
 export const loadMap = (mapObj, mapReference) => dispatch => {
     dispatch(mapMarkersDataLoading(true));
     mapReference.mapObject = mapObj;
     dispatch(loadMapMarkerData(mapReference));
 }
 
+// Load Details Div 
 export const displayDetails = (data, mapReference) => dispatch => {
     mapReference.detail = data;
     dispatch(loadMapMarkerData(mapReference));
 }
 
+// Load markers available with in bounds of the screen after ```mapObject``` is loaded
 export const loadMarkers = (data, mapReference) => (dispatch) => {
     const bounds = mapReference.mapObject.getBounds();
+
+    //Filter data based on Bounds values and return only those... available with in bounds
     const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
     mapReference.mapMarkers = markers;
     mapReference.zIndex = mapReference.zIndex === undefined ? markers.length + 1 : mapReference.zIndex;
@@ -195,11 +223,13 @@ export const animateMapMarker = (data, marker) => (dispatch) => {
     dispatch(loadMarkers(data.mapMarkers, data));
 }
 
+// Change Center of map based on the Drag / Zoom In / Zoom Out of the map by the User
 export const changeMapCenter = (data) => (dispatch) => {
     data.center = { lat: data.mapObject.getCenter().lat(), lng: data.mapObject.getCenter().lng() };
     dispatch(loadMapMarkerData(data));
 }
 
+// Calculates and loads the marker which is closest to the current center of the map.
 export const findClosestMarker = (data, mapObject) => (dispatch) => {
     let latLng = mapObject.center;
     let R = 6371; // radius of earth in km
@@ -221,6 +251,7 @@ export const findClosestMarker = (data, mapObject) => (dispatch) => {
     dispatch(loadMapMarkerData(mapObject));
 }
 
+// Calculates and loads the most recent created marker to the current center of the map.
 export const findRecentMarker = (data, mapObject) => (dispatch) => {
     let mostRecent = data ? data[0] : null;;
     data.forEach(d => mostRecent = new Date(d.created).getTime() > new Date(mostRecent.created).getTime() ? d : mostRecent)
@@ -231,6 +262,7 @@ export const findRecentMarker = (data, mapObject) => (dispatch) => {
     window.setTimeout(dispatch(animateMapMarker(mapObject, null), 5000));
 }
 
+// Loads the Info window when mouse hovers over a marker
 export const infoWindowMarker = (data) => (dispatch) => {
     if (data === undefined) {
         dispatch(infoWindowFailed("Data is not defined"));
@@ -293,6 +325,7 @@ const loadMarkerAddresses = (m, address) => {
     }
 };
 
+// Loads the video in the Video Player when clicked from an Info window
 export const videoPlayer = (url) => (dispatch) => {
     dispatch(videoDataLoading(true));
     dispatch(loadVideoData(url));

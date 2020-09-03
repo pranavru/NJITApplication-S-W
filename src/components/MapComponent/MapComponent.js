@@ -69,8 +69,7 @@ const customOverlay = (m, i) => <div className="captionStyle">
     {i.hasOwnProperty('tags') && setCustomTags(i)}
 </div>;
 
-const setCustomTags = (i) => i.tags.map((t, index) =>
-    index !== 0 ? <div
+const setCustomTags = (i) => i.tags.map((t, index) => index !== 0 ? <div
         key={t.value}
         className="customTagStyle">
         {t.title}

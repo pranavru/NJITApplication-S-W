@@ -32,8 +32,8 @@
   margin-block-end: 4px;
   overflow-y: scroll;
   box-sizing: content-box;
-  padding-right: 6%;
-  width: 100%;
+  padding-right: 1%;
+  width: 105%;
 }
 
 .footer {
@@ -45,7 +45,7 @@
   display: flex;
   width: 31vw;
   max-height: 40vh;
-  padding-right: 5%;
+  padding-right: 1%;
   overflow-y: scroll;
   box-sizing: content-box;
 }
@@ -53,8 +53,6 @@
 .cardDisplay {
   display: flex;
   margin: 0.8%;
-  margin-right: -3.5%;
-  padding-left: 5%;
   align-items: center;
   justify-content: center;
   position: relative;
@@ -68,9 +66,9 @@
 .cardDate {
   position: absolute;
   bottom: 0px;
-  left: 19%;
-  max-width: 160px;
-  margin: 5px;
+  left: 0px;
+  max-width: 175px;
+  margin: 3px;
 }
 
 .tagStyle {
@@ -85,7 +83,7 @@
 }
 
 .cardThumb {
-  width: 180px;
+  width: 184px;
   height: 150px;
   border-radius: 8px;
 }
