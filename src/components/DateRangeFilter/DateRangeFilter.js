@@ -38,7 +38,7 @@ class DateRangeFilter extends React.Component {
                         rangeDivider="to  "
                     />
                 </div>
-                <div className="rangeSliderDiv">
+                {startDate === endDate ? <></> : <div className="rangeSliderDiv">
                     <RangeSlider
                         DataVuzix={this.props.DataVuzix}
                         multipleHours={multipleHours}
@@ -47,7 +47,7 @@ class DateRangeFilter extends React.Component {
                         onChange={this.onChange.bind(this)}
                         onUpdate={this.onUpdate.bind(this)}
                     />
-                </div>
+                </div>}
             </Card>
         );
     }
