@@ -129,7 +129,7 @@ const MapComponent = (props) => {
                                 if (!mapVuzix.keepAlive) {
                                     hoverMarker(null, props)
                                 }
-                            }, 2000)
+                            }, 1000)
                         }}
                         onClick={() => {
                             mapVuzix.keepAlive = true;
