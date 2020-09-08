@@ -73,12 +73,12 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
 
             //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
-            
+
             dispatch(loadDataVuzix(response))
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
             dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
-            
-        }).then(() => props.activateLoader(false) )
+
+        }).then(() => props.activateLoader(false))
         .catch(err => dispatch(dataVuzixFailed(err.message)))
 }
 
@@ -201,11 +201,13 @@ export const displayDetails = (data, mapReference) => dispatch => {
 export const loadMarkers = (data, mapReference) => (dispatch) => {
     const bounds = mapReference.mapObject.getBounds();
 
-    //Filter data based on Bounds values and return only those... available with in bounds
-    const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
-    mapReference.mapMarkers = markers;
-    mapReference.zIndex = mapReference.zIndex === undefined ? markers.length + 1 : mapReference.zIndex;
-    dispatch(loadMapMarkerData(mapReference));
+    if (data) {
+        //Filter data based on Bounds values and return only those... available with in bounds
+        const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
+        mapReference.mapMarkers = markers;
+        mapReference.zIndex = mapReference.zIndex === undefined ? markers.length + 1 : mapReference.zIndex;
+        dispatch(loadMapMarkerData(mapReference));
+    }
 }
 
 //Toggle Animation of map markers

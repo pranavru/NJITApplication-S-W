@@ -41,7 +41,7 @@ class MainComponent extends Component {
     render() {
         const data = this.props.DataVuzix.dataVuzix;
         const markerData = this.props.MapMarkersData.mapMarkersData;
-        if (this.props.DataVuzix.dataVuzix.vuzixMap !== undefined) {
+        if (data.vuzixMap !== undefined && this.props.DataVuzix.isLoading === false) {
             return (
                 <div>
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
@@ -70,7 +70,12 @@ class MainComponent extends Component {
                 </div>
             )
         } else {
-            return <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}> <Spinner /> </div>
+            if (this.props.DataVuzix.isLoading === true && !this.props.DataVuzix.errMess) {
+                return <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}> <Spinner /> </div>
+            } else {
+                /** Loading Map Div */
+                return <MapComponent activateLoader={this.activateLoader.bind(this)} />
+            }
         }
     }
 
