@@ -7,6 +7,7 @@ import { MapMarkerData } from './MapMarkerData';
 import { AddressValue } from './AddressValue';
 import { InfoWindow } from './InfoWindow';
 import { VideoPlayer } from './VideoPlayer';
+import { SpeechText } from './SpeechText';
 
 export const ConfigureStore = () => {
     const store = createStore(
@@ -16,7 +17,8 @@ export const ConfigureStore = () => {
             mapMarkersData: MapMarkerData,
             addresses: AddressValue,
             infoWindow: InfoWindow,
-            videoDetails: VideoPlayer
+            videoDetails: VideoPlayer,
+            speechText: SpeechText,
         }),
         process.env.NODE_ENV === 'development' | 'test' ? applyMiddleware(thunk, logger) : applyMiddleware(thunk)
 

@@ -13,7 +13,7 @@ export const DataVuzix = (state = {
             return { ...state, isLoading: true, errMess: null, dataVuzix: [] };
 
         case ActionTypes.DATAVUZIX_FALIED:
-            return { ...state, isLoading: false, errMess: action.payload };
+            return { ...state, isLoading: false, errMess: action.payload, dataVuzix: [] };
 
         default:
             return state;

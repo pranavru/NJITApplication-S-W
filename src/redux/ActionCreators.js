@@ -9,6 +9,7 @@ export const addressValueLoading = () => ({ type: ActionTypes.ADDRESSVALUE_LOADI
 export const mapMarkersDataLoading = () => ({ type: ActionTypes.MAPMARKERSDATA_LOADING });
 export const infoWindowLoading = () => ({ type: ActionTypes.INFOWINDOW_LOADING });
 export const videoDataLoading = () => ({ type: ActionTypes.VIDEODATA_LOADING });
+export const speechTextLoading = () => ({ type: ActionTypes.SPEECHTEXT_LOADING });
 
 //Send an error response if there is an error in updating the payload
 export const dataVuzixFailed = (errmess) => ({ type: ActionTypes.DATAVUZIX_FALIED, payload: errmess })
@@ -17,6 +18,7 @@ export const addressValueFailed = (errmess) => ({ type: ActionTypes.ADDRESSVALUE
 export const mapMarkersDataFailed = (errmess) => ({ type: ActionTypes.MAPMARKERSDATA_FAILED, payload: errmess });
 export const infoWindowFailed = (errmess) => ({ type: ActionTypes.INFOWINDOW_FAILED, payload: errmess });
 export const videoFailed = (errmess) => ({ type: ActionTypes.VIDEODATA_FAILED, payload: errmess });
+export const speechTextFailed = (errmess) => ({ type: ActionTypes.SPEECHTEXT_FALIED, payload: errmess })
 
 //Update the store with the payload to store the data 
 export const loadDataVuzix = (data) => ({ type: ActionTypes.ADD_DATAVUZIX, payload: data });
@@ -26,6 +28,7 @@ export const loadAddressValue = (data) => ({ type: ActionTypes.ADD_ADDRESSVALUE,
 export const loadMapMarkerData = (data) => ({ type: ActionTypes.ADD_MAPMARKERSDATA, payload: data });
 export const loadInfoWindow = (data) => ({ type: ActionTypes.INIT_INFOWINDOW, payload: data });
 export const loadVideoData = (data) => ({ type: ActionTypes.ADD_VIDEODATA, payload: data });
+export const loadSpeechText = (data) => ({ type: ActionTypes.ADD_SPEECHTEXT, payload: data });
 
 // Fetches data when initial URL is hit.
 export const fetchDataVuzix = (dispatch) => {
@@ -123,6 +126,57 @@ export const fetchMapFilter = (data) => (dispatch) => {
         videoRequired: "false",
     }));
 };
+
+//Fetch Speech Text Values
+export const fetchSpeechText = () => (dispatch) => {
+    dispatch(speechTextLoading());
+    return fetch(baseUrl + '/search/')
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, error => {
+            throw error;
+        })
+        .then(response => response.json())
+        .then(response => {
+            dispatch(loadSpeechText(response));
+        })
+        .catch(error => speechTextFailed(error));
+}
+
+// Fetch Data based on Speech Values
+export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => {
+    return axios.post(baseUrl + '/search/', { keyword: speech})
+    .then(response => {
+            if (!(response.data.vuzixMap.length > 0)) {
+                alert("No data with search query");
+
+                //If no data is returned, update Markers Array to []
+                dispatch(loadMarkers([], props.MapMarkersData.mapMarkersData));
+                props.activateLoader(false);
+            } else {
+                console.log(response.data);
+                return response;
+            }
+        })
+        .then(response => response.data)
+        .then(response => {
+
+            //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
+            response.gps_lists = new Map(Object.entries(response.gps_lists));
+
+            dispatch(loadDataVuzix(response))
+            dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
+            dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
+
+        }).then(() => props.activateLoader(false))
+        .catch(err => dispatch(dataVuzixFailed(err.message)))
+}
 
 // Edit Map Filter based on User Interaction
 // newValue is an object: 

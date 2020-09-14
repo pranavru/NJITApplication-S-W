@@ -64,8 +64,8 @@ class MainComponent extends Component {
                         {markerData && <MapComponent activateLoader={this.activateLoader.bind(this)} />}
 
                         {/* Load Buttons for Recent and Nearest Markers */}
-                        {!markerData.mapMarkers.length && this.findClosestMarkerMethod()}
-                        {this.findMostRecentMarkerMethod()}
+                        {!this.props.DataVuzix.errMess && !markerData.mapMarkers.length && this.findClosestMarkerMethod()}
+                        {!this.props.DataVuzix.errMess && this.findMostRecentMarkerMethod()}
                     </LoadingOverlay>
                 </div>
             )

@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Form, FormGroup, Label, Input, Card, InputGroup, CardText } from 'reactstrap';
+import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 import DateRangeFilter from '../DateRangeFilter/DateRangeFilter';
 import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponent';
@@ -7,17 +10,64 @@ import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponen
 import './MapFilterComponent.css'
 
 import { connect } from 'react-redux';
-import { fetchMapFilter, editMapFilter, editDataVuzix, videoPlayer, editVideo } from '../../redux/ActionCreators'
+import { fetchMapFilter, fetchSpeechText, editMapFilter, editDataVuzix, videoPlayer, editVideo, fetchDataUsingSpeechText } from '../../redux/ActionCreators'
 
-const mapStateToProps = (state) => { return { MapFilter: state.mapFilter, MapMarkersData: state.mapMarkersData } }
+const mapStateToProps = (state) => { return { MapFilter: state.mapFilter, MapMarkersData: state.mapMarkersData, SpeechText: state.speechText } }
 
 const mapDispatchToProps = (dispatch) => ({
     fetchMapFilter: (data, dateMap) => dispatch(fetchMapFilter(data, dateMap)),
+    fetchSpeechText: () => dispatch(fetchSpeechText()),
     editMapFilter: (type, newValue, props) => dispatch(editMapFilter(type, newValue, props)),
     editDataVuzix: (obj, loader) => dispatch(editDataVuzix(obj, loader)),
     videoPlayer: (data) => dispatch(videoPlayer(data)),
     editVideo: (obj, loader) => dispatch(editVideo(obj, loader)),
-})
+    fetchDataUsingSpeechText: (data, props) => dispatch(fetchDataUsingSpeechText(data, props))
+});
+
+function groupedPicker(props) {
+    const s = props.SpeechText;
+    const speech = s.speechText.map(s => { return { title: s } })
+    const options = speech.map((option) => {
+        const firstLetter = option.title[0].toUpperCase();
+        return {
+            firstLetter: /[0-9]/.test(firstLetter) ? '0-9' : firstLetter,
+            ...option,
+        };
+    });
+
+    return (
+        <Autocomplete
+            id="grouped-demo"
+            options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
+            groupBy={(option) => option.firstLetter}
+            getOptionLabel={(option) => option.title}
+            style={{ width: '90%', height: '10%' }}
+            loading={s.isLoading}
+            renderTags={{ size: "small" }}
+            renderInput={(params) => <TextField
+                {...params}
+                label="Enter Speech Text"
+                InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                        <React.Fragment>
+                            {s.isLoading ? <CircularProgress color="#2C4870" size={15} /> : null}
+                            {params.InputProps.endAdornment}
+                        </React.Fragment>
+                    )
+                }}
+            />}
+            filterSelectedOptions={true}
+            size="small"
+            onChange={(event, value) => {
+                if (value) {
+                    props.activateLoader(true);
+                    props.fetchDataUsingSpeechText(value.title, props);
+                }
+            }}
+        />
+    );
+}
 
 class MapFilterComponent extends Component {
 
@@ -30,7 +80,10 @@ class MapFilterComponent extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount = () => this.props.fetchMapFilter(this.props.DataVuzix);
+    componentDidMount = () => {
+        this.props.fetchMapFilter(this.props.DataVuzix);
+        this.props.fetchSpeechText();
+    }
 
     handleDateChange = (startDate, endDate) => {
         this.props.editMapFilter("dateValues", [startDate, endDate], this.props.MapFilter)
@@ -75,6 +128,7 @@ class MapFilterComponent extends Component {
 
     render() {
         const { isSpeech, personNames, isLoading, mapDateRange } = this.props.MapFilter.mapFilter;
+
         if (!isLoading) {
             return (
                 <div style={{ height: '98vh', marginLeft: "2%" }}>
@@ -86,6 +140,7 @@ class MapFilterComponent extends Component {
                                 <InputGroup className="inputGroupValue">
                                     <Input addon type="checkbox" name="isSpeech" value={isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
                                     <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
+                                    {isSpeech && groupedPicker(this.props)}
                                 </InputGroup>
                             </FormGroup>
 
