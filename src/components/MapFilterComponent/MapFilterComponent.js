@@ -91,8 +91,8 @@ class MapFilterComponent extends Component {
 
                             {/* * Persons Form * */}
                             {personNames && <FormGroup>
-                                <CardText className="filterCategoryLabel filterFont">PEOPLE</CardText>
-                                <InputGroup className="inputGroupValue">
+                                {personNames.length > 0 && <CardText className="filterCategoryLabel filterFont">PEOPLE</CardText>}
+                                <InputGroup className="inputGroupValue overflowPersons">
                                     {personNames.map(v =>
                                         <InputGroup key={v.name}>
                                             <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />

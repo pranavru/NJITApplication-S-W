@@ -41,7 +41,7 @@ class MainComponent extends Component {
     render() {
         const data = this.props.DataVuzix.dataVuzix;
         const markerData = this.props.MapMarkersData.mapMarkersData;
-        if (data.vuzixMap !== undefined && this.props.DataVuzix.isLoading === false) {
+        if (typeof data.vuzixMap !== undefined && this.props.DataVuzix.isLoading === false) {
             return (
                 <div>
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />

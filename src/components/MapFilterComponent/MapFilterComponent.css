@@ -35,7 +35,7 @@
   border: 0px;
   padding: 1%;
   margin-left: 3%;
-  width: 90%;
+  width: 85%;
   text-align: left;
 }
 
@@ -45,6 +45,20 @@
 
 .inputGroupValue {
   margin-left: 5%;
+}
+
+.overflowPersons {
+  max-width: 100%;
+  max-height: 11vh;
+  overflow-y: scroll;
+  box-sizing: content-box;
+  border-radius: 6px;
+  padding-right: 5%;
+}
+
+.overflowPersons::-webkit-scrollbar-track {
+  background: #ffffff;
+  border: 0px;
 }
 
 .submitButton {
