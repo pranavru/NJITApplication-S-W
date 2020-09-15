@@ -140,7 +140,7 @@ class MapFilterComponent extends Component {
                                 <InputGroup className="inputGroupValue">
                                     <Input addon type="checkbox" name="isSpeech" value={isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
                                     <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
-                                    {isSpeech && groupedPicker(this.props)}
+                                    {!this.props.SpeechText.isLoading && groupedPicker(this.props)}
                                 </InputGroup>
                             </FormGroup>
 
