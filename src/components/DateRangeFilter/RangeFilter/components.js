@@ -161,15 +161,18 @@ export const MuiTrack = withStyles(muiTrackStyle)(MuiTrackComponent);
 const muiTickStyle = theme => ({
   tick: {
     position: "absolute",
-    marginTop: 14,
-    width: 1,
+    marginTop: 5,
+    width: 2,
     height: 5,
-    backgroundColor: theme.palette.grey[400]
+    backgroundColor: '#2c4870',
+    opacity: 0.65
   },
   label: {
     position: "absolute",
-    marginTop: 22,
-    textAlign: "center"
+    marginTop: 10,
+    textAlign: "center",
+    color: '#2c4870',
+    font: '0.9em monospace'
   }
 });
 

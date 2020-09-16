@@ -43,7 +43,6 @@ function groupedPicker(props) {
             getOptionLabel={(option) => option.title}
             style={{ width: '90%', height: '10%' }}
             loading={s.isLoading}
-            renderTags={{ size: "small" }}
             renderInput={(params) => <TextField
                 {...params}
                 label="Enter Speech Text"
@@ -131,7 +130,7 @@ class MapFilterComponent extends Component {
 
         if (!isLoading) {
             return (
-                <div style={{ height: '98vh', marginLeft: "2%" }}>
+                <div style={{ height: '98%', marginLeft: "2%" }}>
                     <Card className="filterCard">
                         <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
                         <Form onSubmit={event => event.preventDefault()} >

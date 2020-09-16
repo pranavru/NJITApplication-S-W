@@ -100,7 +100,7 @@ const MapComponent = (props) => {
 
     const { center, detail, mapMarkers, mapObject } = markerData;
 
-    const mapContainerStyle = { height: window.innerHeight, width: detail ? "55vw" : "77.5vw", left: detail ? "45vw" : "22.5vw" };
+    const mapContainerStyle = { height: window.innerHeight * 0.92, width: detail ? "55%" : "77.5%", left: detail ? "45%" : "22.5%" };
     const mapOptions = { disableDefaultUI: true, zoomControl: true };
     const GOOGLE_API_KEY = 'AIzaSyAFHPjPBHcDOhJIn3HP6pbqVLZhCrORnbs';
     const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 19, gridSize: 60, ignoreHidden: true };

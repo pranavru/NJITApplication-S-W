@@ -35,7 +35,8 @@ class DateRangeFilter extends React.Component {
                         maxDate={new Date(endDate)}
                         required
                         clearIcon={null}
-                        rangeDivider="to  "
+                        format={window.innerWidth > 768 ? "MM/dd/yy" : "MMM dd" } 
+                        className="dateCSS"
                     />
                 </div>
                 {mapDateRange.updated[0] === mapDateRange.updated[1] ? <></> : <div className="rangeSliderDiv">

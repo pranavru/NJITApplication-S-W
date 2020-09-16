@@ -41,7 +41,7 @@
   align-items: flex-start;
   justify-content: center;
   position: absolute;
-  font: 10px monospace;
+  font: 1% monospace;
   right: 2%;
   top: 0;
 }

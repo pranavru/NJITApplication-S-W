@@ -6,11 +6,16 @@
 }
 
 .dateRange {
-    align-self: center
+    align-self: center;
+    font: 1em monospace;
+}
+
+.dateCSS {
+    width: 50%;
 }
 
 .rangeSliderDiv {
-    height: 45px;
+    height: 40px;
     border: none;
     margin-top: 1%;
     margin-left: 3%;

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import { Button, CardText, Spinner } from 'reactstrap'
+import {
+    Button, CardText, Spinner} from 'reactstrap'
+
 import { Animated } from 'react-animated-css';
 import LoadingOverlay from 'react-loading-overlay';
 
@@ -12,6 +14,7 @@ import { fetchDataVuzix, initMapDetails, findClosestMarker, displayDetails, find
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../MainComponent/MainComponent.css';
+import { NavBarComponent } from './NavBarComponent';
 
 const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMarkersData: state.mapMarkersData, Addresses: state.addresses } }
 
@@ -22,7 +25,6 @@ const mapDispatchToProps = (dispatch) => ({
     findRecentMarker: (data, mapRef) => dispatch(findRecentMarker(data, mapRef)),
     displayDetails: (data, refObj) => dispatch(displayDetails(data, refObj))
 })
-
 
 class MainComponent extends Component {
 
@@ -41,6 +43,7 @@ class MainComponent extends Component {
     render() {
         const data = this.props.DataVuzix.dataVuzix;
         const markerData = this.props.MapMarkersData.mapMarkersData;
+
         if (typeof data.vuzixMap !== undefined && this.props.DataVuzix.isLoading === false) {
             return (
                 <div>
@@ -48,13 +51,13 @@ class MainComponent extends Component {
                     <LoadingOverlay active={this.state.isActive} spinner text='Loading...'>
                         {/** Filter Component */}
                         <div className="filterStyle">
+                            {!markerData.detail ? this.ToggleDetailDivButton(">>") : <></>}
                             <MapFilterComponent DataVuzix={data} activateLoader={this.activateLoader.bind(this)} />
-                            {!markerData.detail ? this.ToggleDetailDivButton(">>", "22.4vw") : <></>}
                         </div>
 
                         {/** Card Detail Div */}
                         {!markerData.isLoading && <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={markerData.detail} className="detailsAnimatedStyle">
-                            {this.ToggleDetailDivButton("<<", "22.5vw")}
+                            {this.ToggleDetailDivButton("<<")}
                             <div className="detailsStyle">
                                 <MarkerPLaceDetailComponent />
                             </div>
@@ -113,10 +116,10 @@ class MainComponent extends Component {
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
 
-    ToggleDetailDivButton = (displayValue, leftValue) => {
+    ToggleDetailDivButton = (displayValue) => {
         const markerData = this.props.MapMarkersData.mapMarkersData;
         return <Button onClick={() => this.props.displayDetails(!markerData.detail, markerData)}
-            style={{ left: leftValue }} className="toggleDivButton">
+            className="toggleDivButton">
             {displayValue}</Button>
     }
 }
