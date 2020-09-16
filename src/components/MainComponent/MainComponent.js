@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {
-    Button, CardText, Spinner} from 'reactstrap'
+    Button, CardText, Spinner
+} from 'reactstrap'
 
 import { Animated } from 'react-animated-css';
 import LoadingOverlay from 'react-loading-overlay';
@@ -8,13 +9,13 @@ import LoadingOverlay from 'react-loading-overlay';
 import MapFilterComponent from '../MapFilterComponent/MapFilterComponent'
 import MapComponent from '../MapComponent/MapComponent';
 import MarkerPLaceDetailComponent from '../MarkerPlaceDetailComponent/MarkerPlaceDetailComponent';
+import { ButtonComponent } from '../ButtonComponent/ButtonComponent';
 
 import { connect } from 'react-redux';
 import { fetchDataVuzix, initMapDetails, findClosestMarker, displayDetails, findRecentMarker } from '../../redux/ActionCreators'
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../MainComponent/MainComponent.css';
-import { NavBarComponent } from './NavBarComponent';
 
 const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMarkersData: state.mapMarkersData, Addresses: state.addresses } }
 
@@ -67,8 +68,20 @@ class MainComponent extends Component {
                         {markerData && <MapComponent activateLoader={this.activateLoader.bind(this)} />}
 
                         {/* Load Buttons for Recent and Nearest Markers */}
-                        {!this.props.DataVuzix.errMess && !markerData.mapMarkers.length && this.findClosestMarkerMethod()}
-                        {!this.props.DataVuzix.errMess && this.findMostRecentMarkerMethod()}
+                        {!this.props.DataVuzix.errMess && !markerData.mapMarkers.length && <ButtonComponent
+                            name="Pan to Closest Marker" class="panToMarkerButton"
+                            callBackFunc={() => {
+                                this.activateLoader(true);
+                                this.props.findClosestMarker(data.vuzixMap, markerData);
+                            }}
+                        />}
+                        {!this.props.DataVuzix.errMess && <ButtonComponent
+                            name="Pan to Most Recent Event" class="panToRecentMarker"
+                            callBackFunc={() => {
+                                this.activateLoader(true);
+                                this.props.findRecentMarker(data.vuzixMap, markerData);
+                            }}
+                        />}
                     </LoadingOverlay>
                 </div>
             )
@@ -82,45 +95,13 @@ class MainComponent extends Component {
         }
     }
 
-    findMostRecentMarkerMethod() {
-        const data = this.props.DataVuzix.dataVuzix;
-        const markerData = this.props.MapMarkersData.mapMarkersData;
-        return <Button
-            value="Pan to Most Recent Event"
-            onClick={() => {
-                this.activateLoader(true);
-                this.props.findRecentMarker(data.vuzixMap, markerData);
-            }}
-            className="panToRecentMarker"
-        >
-            <CardText>Pan to Most Recent Event</CardText>
-        </Button>;
-    }
-
-    findClosestMarkerMethod() {
-        const data = this.props.DataVuzix.dataVuzix;
-        const markerData = this.props.MapMarkersData.mapMarkersData;
-
-        return <Button
-            value="Pan to Closest Marker"
-            onClick={() => {
-                this.activateLoader(true);
-                this.props.findClosestMarker(data.vuzixMap, markerData);
-            }}
-            className="panToMarkerButton"
-        >
-            <CardText>Pan to Closest Marker</CardText>
-        </Button>;
-    }
-
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
 
     ToggleDetailDivButton = (displayValue) => {
         const markerData = this.props.MapMarkersData.mapMarkersData;
-        return <Button onClick={() => this.props.displayDetails(!markerData.detail, markerData)}
-            className="toggleDivButton">
-            {displayValue}</Button>
+        return <ButtonComponent name={displayValue} class="toggleDivButton"
+            callBackFunc={() => this.props.displayDetails(!markerData.detail, markerData)} />
     }
 }
 

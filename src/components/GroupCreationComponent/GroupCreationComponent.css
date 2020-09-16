@@ -1,0 +1,45 @@
+.fontCard {
+  font: 1.2em monospace;
+  padding: 3%;
+}
+
+.addGroupCard {
+  min-height: 100px;
+  padding-left: 5%;
+}
+
+.personTitleCard {
+  background-color: #2C4870;
+  text-align: center;
+  color: #ffffff;  
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.groupNameDiv {
+  display: flex;
+  justify-content: space-around;
+}
+
+.groupButtonDiv {
+  display: flex;
+  margin-top: 3%;
+  padding-left: 1%;
+  position: absolute;
+}
+
+.personGroupNameLabel {
+  margin-top: 3%;
+}
+
+.personGroupNameInput {
+  margin-bottom: 1%;
+  width: 65%;
+}
+
+.personInputBoxCSS {
+  border: 0px;
+  border-bottom: 1px solid gray;
+  border-style: dashed;
+  border-radius: 0px;
+}

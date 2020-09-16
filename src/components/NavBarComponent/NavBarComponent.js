@@ -1,20 +1,22 @@
 import React from 'react';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink, NavbarText } from 'reactstrap';
 
+import './NavBarComponent.css';
+
 export const NavBarComponent = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
 
   return (
-    <div style={{ font: '1.2em monospace', backgroundColor: "#2C4870"}}>
+    <div className="navContainer">
       <Navbar dark expand="md">
-        <NavbarBrand href="/home">Vuzix Blade</NavbarBrand>
+        <NavbarBrand href="/">Vuzix Blade</NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>
             <NavItem>
-              <NavLink href="/home">Home</NavLink>
+              <NavLink href="/">Home</NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="/feedback">Feedback</NavLink>
