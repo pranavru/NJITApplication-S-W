@@ -2,6 +2,10 @@
   font: 1.2em monospace;
 }
 
+.fontButton {
+  font: 0.7em monospace;
+}
+
 .personTitle {
   padding: 1.75%;
   text-align: center;
