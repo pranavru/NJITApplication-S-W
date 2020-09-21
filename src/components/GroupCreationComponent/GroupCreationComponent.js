@@ -4,7 +4,7 @@ import { ButtonComponent } from '../ButtonComponent/ButtonComponent';
 
 import '../GroupCreationComponent/GroupCreationComponent.css';
 
-export class GroupCreationComponent extends React.Component {
+export default class GroupCreationComponent extends React.Component {
   constructor(props) {
     super(props);
   }

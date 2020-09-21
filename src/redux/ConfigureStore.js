@@ -8,6 +8,7 @@ import { AddressValue } from './AddressValue';
 import { InfoWindow } from './InfoWindow';
 import { VideoPlayer } from './VideoPlayer';
 import { SpeechText } from './SpeechText';
+import { FeedbackFormDetails } from './FeedbackFormDetails';
 
 export const ConfigureStore = () => {
     const store = createStore(
@@ -19,6 +20,7 @@ export const ConfigureStore = () => {
             infoWindow: InfoWindow,
             videoDetails: VideoPlayer,
             speechText: SpeechText,
+            feedback: FeedbackFormDetails,
         }),
         process.env.NODE_ENV === 'development' | 'test' ? applyMiddleware(thunk, logger) : applyMiddleware(thunk)
 

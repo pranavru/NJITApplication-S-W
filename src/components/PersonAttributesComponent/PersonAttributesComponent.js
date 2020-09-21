@@ -4,35 +4,36 @@ import { ButtonComponent } from '../ButtonComponent/ButtonComponent';
 
 import '../PersonAttributesComponent/PersonAttributesComponent.css'
 
-const PersonAttributesComponent = () => {
+import { connect } from 'react-redux';
+import { editPersonAttr, personAttributes } from '../../redux/ActionCreators';
+
+const mapStateToProps = (state) => { return state.feedback }
+const mapDispatchToProps = (dispatch) => ({
+  personAttributes: data => dispatch(personAttributes(data)),
+  editPersonAttr: (data, props) => dispatch(editPersonAttr(data, props))
+})
+
+const PersonAttributesComponent = (props) => {
   const [imageSelection, selectImage] = React.useState(false);
-  const [fname, handleFirstNameChange] = React.useState('')
-  const [lname, handleLastNameChange] = React.useState('')
-  const [images, handleSubmittedImages] = React.useState();
+
   function handleChange(event) {
     const { name, value } = event.target;
-    if (name.match("fname")) { handleFirstNameChange(value) };
-    if (name.match("lname")) { handleLastNameChange(value) };
-  }
+    if (typeof value !== null) { props.editPersonAttr({ name, value }, props) }
+  };
 
-  var files = []
   function previewFile() {
+    var files = [], result = [];
     var file = document.querySelector('input[type=file]').files;
-    Array.from(file).forEach((f, index) => {
+    Array.from(file).forEach((f) => {
       var reader = new FileReader();
       if (f) {
         reader.readAsDataURL(f);
         files.push(reader)
       }
     })
-    findFile();
-  }
-
-  function findFile() {
-    var result = [];
-    files.map(m => m.onloadend = async function () {
+    files.forEach(m => m.onloadend = async () => {
       await result.push(m.result)
-      await handleSubmittedImages(result);
+      if (typeof result !== null) { props.editPersonAttr({ name: "images", value: result }, props) };
     })
   }
 
@@ -51,22 +52,28 @@ const PersonAttributesComponent = () => {
           </div>
           <Form className="col-md-9 col-7" onSubmit={e => e.preventDefault()}>
             <div className="row col-md-12 col-12" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <Input placeholder="First name" className="col-md-5 col-6 inputBoxName" value={fname} name="fname" onChange={handleChange} />
-              <Input placeholder="Last name" className="col-md-6 col-5 inputBoxName" value={lname} name="lname" onChange={handleChange} />
+              <Input placeholder="First name" className="col-md-5 col-6 inputBoxName" value={props.fname} name="fname" onChange={handleChange} />
+              <Input placeholder="Last name" className="col-md-6 col-5 inputBoxName" value={props.lname} name="lname" onChange={handleChange} />
             </div>
             <div className="row col-md-12 col-12 savePersonInput">
               <div className="col-md-4 col-3">
-                <ButtonComponent type="submit" name={"Save"} class="fontButton" />
+                <ButtonComponent type="submit" name={"Save"} class="fontButton" callBackFunc={async () => {
+                  props.personAttributes(props.feedback);
+                  if (props.errMess !== null && !props.isLoading) {
+                    await alert(props.errMess);
+                  }
+                }} />
               </div>
-              <div className="col-md-8 col-9" style={{ display: imageSelection ? "flex" : "none", animation: 'fadeIn ease 1s' }}>
+              <div className="col-md-8 col-9" style={{ display: imageSelection ? "flex" : "none" }}>
                 <Input type="file" multiple={true} onChange={previewFile} name='imagesGallery' />
               </div>
             </div>
           </Form>
         </div>
-      </div>
+      </div>  
     </Card>
   );
 }
 
-export default PersonAttributesComponent;
+
+export default connect(mapStateToProps, mapDispatchToProps)(PersonAttributesComponent);

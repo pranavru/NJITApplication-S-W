@@ -3,9 +3,21 @@ import React, { Component } from 'react';
 import '../FeedBackComponent/FeedBackComponent.css';
 import PersonAttributesComponent from '../PersonAttributesComponent/PersonAttributesComponent';
 
-export default class FeedBackComponent extends Component {
+import { connect } from 'react-redux';
+import { initializePersonAttr } from '../../redux/ActionCreators';
+
+const mapStateToProps = (state) => { return state.feedback }
+const mapDispatchToProps = (dispatch) => ({
+  initializePersonAttr: () => dispatch(initializePersonAttr())
+})
+
+class FeedBackComponent extends Component {
   constructor(props) {
     super(props);
+  }
+
+  componentDidMount() {
+    this.props.initializePersonAttr();
   }
 
   render() {
@@ -22,3 +34,5 @@ export default class FeedBackComponent extends Component {
     );
   }
 }
+
+export default connect(mapStateToProps, mapDispatchToProps)(FeedBackComponent);

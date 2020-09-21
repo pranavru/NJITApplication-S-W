@@ -10,6 +10,7 @@ export const mapMarkersDataLoading = () => ({ type: ActionTypes.MAPMARKERSDATA_L
 export const infoWindowLoading = () => ({ type: ActionTypes.INFOWINDOW_LOADING });
 export const videoDataLoading = () => ({ type: ActionTypes.VIDEODATA_LOADING });
 export const speechTextLoading = () => ({ type: ActionTypes.SPEECHTEXT_LOADING });
+export const feedbackLoading = () => ({ type: ActionTypes.FEEDBACK_LOADING });
 
 //Send an error response if there is an error in updating the payload
 export const dataVuzixFailed = (errmess) => ({ type: ActionTypes.DATAVUZIX_FALIED, payload: errmess })
@@ -19,6 +20,7 @@ export const mapMarkersDataFailed = (errmess) => ({ type: ActionTypes.MAPMARKERS
 export const infoWindowFailed = (errmess) => ({ type: ActionTypes.INFOWINDOW_FAILED, payload: errmess });
 export const videoFailed = (errmess) => ({ type: ActionTypes.VIDEODATA_FAILED, payload: errmess });
 export const speechTextFailed = (errmess) => ({ type: ActionTypes.SPEECHTEXT_FALIED, payload: errmess })
+export const feedbackFailed = (errmess) => ({ type: ActionTypes.FEEDBACK_FAILED, payload: errmess })
 
 //Update the store with the payload to store the data 
 export const loadDataVuzix = (data) => ({ type: ActionTypes.ADD_DATAVUZIX, payload: data });
@@ -29,6 +31,8 @@ export const loadMapMarkerData = (data) => ({ type: ActionTypes.ADD_MAPMARKERSDA
 export const loadInfoWindow = (data) => ({ type: ActionTypes.INIT_INFOWINDOW, payload: data });
 export const loadVideoData = (data) => ({ type: ActionTypes.ADD_VIDEODATA, payload: data });
 export const loadSpeechText = (data) => ({ type: ActionTypes.ADD_SPEECHTEXT, payload: data });
+export const initFeedbackForm = (data) => ({ type: ActionTypes.INIT_FEEDBACK, payload: data });
+export const addFeedbackValue = (data) => ({ type: ActionTypes.ADD_FEEDBACK, payload: data });
 
 // Fetches data when initial URL is hit.
 export const fetchDataVuzix = (dispatch) => {
@@ -151,8 +155,8 @@ export const fetchSpeechText = () => (dispatch) => {
 
 // Fetch Data based on Speech Values
 export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => {
-    return axios.post(baseUrl + '/search/', { keyword: speech})
-    .then(response => {
+    return axios.post(baseUrl + '/search/', { keyword: speech })
+        .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
                 alert("No data with search query");
 
@@ -391,3 +395,67 @@ export const videoPlayer = (url) => (dispatch) => {
 const rad = (x) => x * Math.PI / 180;
 const sinSquare = (x) => Math.pow(Math.sin(x), 2);
 const cosSquare = (x) => Math.pow(Math.cos(x), 2);
+
+//Initialize person Information - feedback form
+export const initializePersonAttr = () => dispatch => {
+    return fetch(baseUrl + "/get_unk/")
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, error => {
+            throw error;
+        })
+        .then(response => response.json())
+        .then(response => {
+            const attributes = { images: response.map(m => baseUrl + m.imageFile), fname: "", lname: "", selectedImages: [] }
+            dispatch(initFeedbackForm(attributes));
+        })
+        .catch(error => dispatch(feedbackFailed(error.message)));
+}
+
+//Edit Person Attributes Form 
+export const editPersonAttr = (data, props) => dispatch => {
+    let newFeed = props.feedback;
+    console.log(data, newFeed)
+    switch (data.name) {
+        case "fname":
+            newFeed.fname = data.value;
+            break;
+        case "lname":
+            newFeed.lname = data.value;
+            break;
+        case "images":
+            console.log(data.value)
+            newFeed.selectedImages = data.value;
+            break;
+        default:
+            newFeed = props
+            break;
+    }
+    dispatch(addFeedbackValue(newFeed));
+}
+
+//Loads person Information from the feedback form
+export const personAttributes = (data) => (dispatch) => {
+    dispatch(feedbackLoading(true));
+    if (data.images && data.images.length > 0) {
+        if ((data.fname && data.fname.length >= 3) && (data.lname && data.lname.length >= 3)) {
+            const attributes = { name: data.fname + ' ' + data.lname, images: data.selectedImages };
+            dispatch(addFeedbackValue(attributes));
+            return axios.post(baseUrl + '/feedback/', attributes)
+                .then(() => {
+                    alert("Response Submitted");
+                })
+                .catch()
+        } else {
+            dispatch(feedbackFailed("Person name should be at least 3 letters"));
+        }
+    } else {
+        dispatch(feedbackFailed("No Images Found. Please enter an Image"));
+    }
+}
