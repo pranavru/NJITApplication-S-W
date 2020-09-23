@@ -59,6 +59,19 @@ export const fetchDataVuzix = (dispatch) => {
         .catch(error => dispatch(dataVuzixFailed(error.message)));
 };
 
+// To check if Image URL exists
+const checkImageURL = (data) => {
+    data.vuzixMap.forEach(obj => {
+        if (obj.video)
+            return fetch(baseUrl + obj.video).then(response => response.json())
+                .catch(() => obj.thumbnail = "/noImageFound.png")
+        else {
+            return fetch(baseUrl + obj.image).then(response => response.json())
+                .catch(() => obj.image = "/noImageFound.png")
+        }
+    })
+}
+
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter``` excluding video.
 export const editDataVuzix = (parameter, props) => (dispatch) => {
     parameter.videoRequired = "false";
@@ -91,7 +104,6 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
 
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter``` including video.
 export const editVideo = (parameter, props) => (dispatch) => {
-    parameter.videoRequired = "true";
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!response) {
@@ -451,7 +463,7 @@ export const editPersonAttr = (data, props) => (dispatch) => {
                     i.isSelected = true;
                     newFeed.selectedImages.push(i.src);
                 }
-                return;
+                return i;
             })
             break;
         default:
@@ -466,10 +478,14 @@ export const personAttributes = (data) => (dispatch) => {
     dispatch(feedbackLoading(true));
     if (data.selectedImages && data.selectedImages.length > 0) {
         if ((data.fname && data.fname.length >= 3) && (data.lname && data.lname.length >= 3)) {
-            const attributes = { name: data.fname + ' ' + data.lname, images: data.selectedImages };
+            const attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages };
             dispatch(addFeedbackValue(attributes));
-            return axios.post(baseUrl + '/feedback/', attributes)
-                .then(() => alert("Response Submitted"))
+            return axios.get(baseUrl + '/feedback/', attributes)
+                .then(res => {
+                    if (res.status === 200) {
+                        alert("Response Submitted")
+                    }
+                })
                 .catch((err) => alert(err));
         } else {
             dispatch(feedbackFailed("Person name should be at least 3 letters"));

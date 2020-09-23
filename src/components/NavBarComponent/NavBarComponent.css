@@ -2,3 +2,8 @@
   font: 1.2em monospace;
   background-color: #2C4870;
 }
+
+.redNotiDot {
+  top: 10%;
+  position: absolute;
+}

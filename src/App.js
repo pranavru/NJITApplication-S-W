@@ -4,7 +4,7 @@ import { ConfigureStore } from './redux/ConfigureStore';
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import MainComponent from './components/MainComponent/MainComponent';
-import { NavBarComponent } from './components/NavBarComponent/NavBarComponent';
+import NavBarComponent from './components/NavBarComponent/NavBarComponent';
 import FeedBackComponent from './components/FeedBackComponent/FeedBackComponent';
 
 
