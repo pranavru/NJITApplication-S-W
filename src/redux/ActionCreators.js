@@ -412,16 +412,22 @@ export const initializePersonAttr = () => dispatch => {
         })
         .then(response => response.json())
         .then(response => {
-            const attributes = { images: response.map(m => baseUrl + m.imageFile), fname: "", lname: "", selectedImages: [] }
+            const attributes = {
+                images: response.map(m => {
+                    return {
+                        src: baseUrl + m.imageFile, thumbnail: baseUrl + m.imageFile,
+                        thumbnailWidth: 100, thumbnailHeight: 100
+                    }
+                }), fname: "", lname: "", selectedImages: []
+            }
             dispatch(initFeedbackForm(attributes));
         })
         .catch(error => dispatch(feedbackFailed(error.message)));
 }
 
 //Edit Person Attributes Form 
-export const editPersonAttr = (data, props) => dispatch => {
+export const editPersonAttr = (data, props) => (dispatch) => {
     let newFeed = props.feedback;
-    console.log(data, newFeed)
     switch (data.name) {
         case "fname":
             newFeed.fname = data.value;
@@ -430,28 +436,41 @@ export const editPersonAttr = (data, props) => dispatch => {
             newFeed.lname = data.value;
             break;
         case "images":
-            console.log(data.value)
-            newFeed.selectedImages = data.value;
+            if (data.value.length > 0) {
+                data.value.forEach(d => newFeed.selectedImages.push(d));
+            } else {
+                newFeed.selectedImages = data.value;
+            }
+            break;
+        case "galleryImage":
+            newFeed.images.filter((i, index) => index === data.value).map(i => {
+                if (i.isSelected) {
+                    i.isSelected = false;
+                    newFeed.selectedImages.filter(s => s === i.src).map(i => newFeed.selectedImages.pop(i));
+                } else {
+                    i.isSelected = true;
+                    newFeed.selectedImages.push(i.src);
+                }
+                return;
+            })
             break;
         default:
             newFeed = props
             break;
     }
     dispatch(addFeedbackValue(newFeed));
-}
+};
 
 //Loads person Information from the feedback form
 export const personAttributes = (data) => (dispatch) => {
     dispatch(feedbackLoading(true));
-    if (data.images && data.images.length > 0) {
+    if (data.selectedImages && data.selectedImages.length > 0) {
         if ((data.fname && data.fname.length >= 3) && (data.lname && data.lname.length >= 3)) {
             const attributes = { name: data.fname + ' ' + data.lname, images: data.selectedImages };
             dispatch(addFeedbackValue(attributes));
             return axios.post(baseUrl + '/feedback/', attributes)
-                .then(() => {
-                    alert("Response Submitted");
-                })
-                .catch()
+                .then(() => alert("Response Submitted"))
+                .catch((err) => alert(err));
         } else {
             dispatch(feedbackFailed("Person name should be at least 3 letters"));
         }

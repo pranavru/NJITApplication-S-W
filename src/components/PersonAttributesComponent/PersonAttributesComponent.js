@@ -1,5 +1,7 @@
 import React from 'react';
 import { Card, Label, Input, Form } from 'reactstrap';
+import { Link } from 'react-router-dom';
+
 import { ButtonComponent } from '../ButtonComponent/ButtonComponent';
 
 import '../PersonAttributesComponent/PersonAttributesComponent.css'
@@ -18,7 +20,7 @@ const PersonAttributesComponent = (props) => {
 
   function handleChange(event) {
     const { name, value } = event.target;
-    if (typeof value !== null) { props.editPersonAttr({ name, value }, props) }
+    if (value !== null) { props.editPersonAttr({ name, value }, props) }
   };
 
   function previewFile() {
@@ -33,7 +35,7 @@ const PersonAttributesComponent = (props) => {
     })
     files.forEach(m => m.onloadend = async () => {
       await result.push(m.result)
-      if (typeof result !== null) { props.editPersonAttr({ name: "images", value: result }, props) };
+      if (result !== null) { props.editPersonAttr({ name: "images", value: result }, props) };
     })
   }
 
@@ -57,12 +59,14 @@ const PersonAttributesComponent = (props) => {
             </div>
             <div className="row col-md-12 col-12 savePersonInput">
               <div className="col-md-4 col-3">
-                <ButtonComponent type="submit" name={"Save"} class="fontButton" callBackFunc={async () => {
-                  props.personAttributes(props.feedback);
-                  if (props.errMess !== null && !props.isLoading) {
-                    await alert(props.errMess);
-                  }
-                }} />
+                <Link to="/home" >
+                  <ButtonComponent type="submit" name={"Save"} class="fontButton" callBackFunc={async ({ history }) => {
+                    props.personAttributes(props.feedback);
+                    if (props.errMess !== null && !props.isLoading) {
+                      await alert(props.errMess);
+                    };
+                  }} />
+                </Link>
               </div>
               <div className="col-md-8 col-9" style={{ display: imageSelection ? "flex" : "none" }}>
                 <Input type="file" multiple={true} onChange={previewFile} name='imagesGallery' />
@@ -70,7 +74,7 @@ const PersonAttributesComponent = (props) => {
             </div>
           </Form>
         </div>
-      </div>  
+      </div>
     </Card>
   );
 }
