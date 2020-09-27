@@ -4,17 +4,11 @@ import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } f
 import './NavBarComponent.css';
 
 import { connect } from 'react-redux';
-const mapStateToProps = (state) => state.mapFilter;
+const mapStateToProps = (state) => { return { filter: state.mapFilter, feed: state.feedback } };
 
 const NavBarComponent = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
-  // const [unknownDetected, setToUnknown] = React.useState(false);
-  let unknowns;
-  if (props.mapFilter.personNames) {
-    unknowns = props.mapFilter.personNames.filter(p => p.name === "unknown").length;
-  }
-  //   if (unknowns > 0) {
-  //     setToUnknown(true);
+
   const toggle = () => setIsOpen(!isOpen);
   return (
     <div className="navContainer">
@@ -29,7 +23,7 @@ const NavBarComponent = (props) => {
             <NavItem>
               <NavLink href="/feedback">Feedback <span className="redNotiDot">
                 <svg height="10" width="10">
-                  <circle cx="5" cy="5" r="3" fill={unknowns > 0 ? "red" : "green"} />
+                  <circle cx="5" cy="5" r="3" fill={(!props.filter.isLoading ? props.filter.mapFilter.personNames.filter(p => p.name === "unknown").length : (!props.feed.isLoading ? props.feed.feedback.images.length : 0)) > 0 ? "red" : "#2C4870"} />
                 </svg>
               </span></NavLink>
             </NavItem>

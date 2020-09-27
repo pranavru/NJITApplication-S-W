@@ -60,7 +60,7 @@ const PersonAttributesComponent = (props) => {
             <div className="row col-md-12 col-12 savePersonInput">
               <div className="col-md-4 col-3">
                 <Link to="/home" >
-                  <ButtonComponent type="submit" name={"Save"} class="fontButton" callBackFunc={async ({ history }) => {
+                  <ButtonComponent type="submit" name={"Submit"} class="fontButton" callBackFunc={async () => {
                     props.personAttributes(props.feedback);
                     if (props.errMess !== null && !props.isLoading) {
                       await alert(props.errMess);
@@ -69,7 +69,7 @@ const PersonAttributesComponent = (props) => {
                 </Link>
               </div>
               <div className="col-md-8 col-9" style={{ display: imageSelection ? "flex" : "none" }}>
-                <Input type="file" multiple={true} onChange={previewFile} name='imagesGallery' />
+                <Input type="file" onChange={previewFile} name='imagesGallery' />
               </div>
             </div>
           </Form>

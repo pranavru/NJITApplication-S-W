@@ -6,52 +6,54 @@ import RangeSlider from './RangeFilter/RangeSlider';
 
 import "./DateRangeFilter.css";
 
-const multipleHours = 3, hours = 1000 * 60 * 30 * 2 * multipleHours;
-class DateRangeFilter extends React.Component {
+const DateRangeFilter = (props) => {
+    const multipleHours = 3, hours = 1000 * 60 * 30 * 2 * multipleHours;
+    const { startDate, endDate, mapDateRange } = props.mapFilter.mapFilter;
 
-    handleChangeDate = (event) => {
+    const handleChangeDate = (event) => {
         let startDate = new Date(event[0]).getTime();
         let endDate = new Date(event[1]).getTime();
-        this.props.handleDateChange(startDate, endDate)
+        props.handleDateChange(startDate, endDate)
     }
 
-    onChange = ([ms, ms1]) => {
-        this.props.editMapFilter("mapDateRange", { type: "onChange", value: [ms, ms1] }, this.props.mapFilter);
-        this.props.handleSubmit();
+    const onChange = ([ms, ms1]) => {
+        props.editMapFilter("mapDateRange", { type: "onChange", value: [ms, ms1] }, props.mapFilter);
+        props.handleSubmit();
     }
 
-    onUpdate = ([ms, ms1]) => this.props.editMapFilter("mapDateRange", { type: "update", value: [ms, ms1] }, this.props.mapFilter);
+    const onUpdate = ([ms, ms1]) => props.editMapFilter("mapDateRange", { type: "update", value: [ms, ms1] }, props.mapFilter);
 
-    render() {
-        const { startDate, endDate, mapDateRange } = this.props.mapFilter.mapFilter;
-        return (
-            <Card className="dateRangeCard" style={{ border: '0px' }}>
-                <div className="dateRange">
-                    <DateRangePicker
-                        onChange={this.handleChangeDate}
-                        value={mapDateRange.values.map(m => new Date(m))}
-                        name="dateValue"
-                        minDate={new Date(startDate)}
-                        maxDate={new Date(endDate)}
-                        required
-                        clearIcon={null}
-                        format={window.innerWidth > 768 ? "MM/dd/yy" : "MMM dd" } 
-                        className="dateCSS"
-                    />
-                </div>
-                {mapDateRange.updated[0] === mapDateRange.updated[1] ? <></> : <div className="rangeSliderDiv">
-                    <RangeSlider
-                        DataVuzix={this.props.DataVuzix}
-                        multipleHours={multipleHours}
-                        hours={hours}
-                        mapFilter={this.props.mapFilter.mapFilter}
-                        onChange={this.onChange.bind(this)}
-                        onUpdate={this.onUpdate.bind(this)}
-                    />
-                </div>}
-            </Card>
-        );
-    }
+    const dateRangeProps = {
+        onChange: handleChangeDate,
+        value: mapDateRange.values.map(m => new Date(m)),
+        name: "dateValue",
+        minDate: new Date(startDate),
+        maxDate: new Date(endDate),
+        required: true,
+        clearIcon: null,
+        format: window.innerWidth > 768 ? "MM/dd/yy" : "MMM dd",
+        className: "dateCSS"
+    };
+    const rangeSliderProps = {
+        DataVuzix: props.DataVuzix,
+        multipleHours: multipleHours,
+        hours: hours,
+        mapFilter: props.mapFilter.mapFilter,
+        onChange: onChange,
+        onUpdate: onUpdate,
+    };
+    
+    return (
+        <Card className="dateRangeCard" style={{ border: '0px' }} >
+            <div className="dateRange">
+                <DateRangePicker {...dateRangeProps} />
+            </div>
+            {mapDateRange.updated[0] === mapDateRange.updated[1] ? <></> : <div className="rangeSliderDiv">
+                <RangeSlider {...rangeSliderProps} />
+            </div>}
+        </Card >
+    );
+
 }
 
 export default DateRangeFilter;

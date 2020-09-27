@@ -448,23 +448,48 @@ export const editPersonAttr = (data, props) => (dispatch) => {
             newFeed.lname = data.value;
             break;
         case "images":
-            if (data.value.length > 0) {
+            if (data.value.length > 1) {
                 data.value.forEach(d => newFeed.selectedImages.push(d));
             } else {
                 newFeed.selectedImages = data.value;
             }
             break;
         case "galleryImage":
-            newFeed.images.filter((i, index) => index === data.value).map(i => {
-                if (i.isSelected) {
-                    i.isSelected = false;
-                    newFeed.selectedImages.filter(s => s === i.src).map(i => newFeed.selectedImages.pop(i));
-                } else {
-                    i.isSelected = true;
-                    newFeed.selectedImages.push(i.src);
-                }
-                return i;
-            })
+            let img = newFeed.images[data.value];
+            if (img.hasOwnProperty("isSelected")) {
+                img.isSelected = !img.isSelected;
+                newFeed.selectedImages = img.src;
+                break;
+            }
+            else {
+                newFeed.images.filter(m => m.isSelected).map(m => m.isSelected = false)
+                img.isSelected = true;
+                newFeed.selectedImages = img.src;
+                break;
+            }
+            // if (newFeed.selectedImages.length > 0) {
+            //     newFeed.images.filter(i => i.isSelected === true).map(i => { return i.isSelected = false });
+            //     newFeed.images[data.value].isSelected = true;
+            //     newFeed.selectedImages = newFeed.images[data.value].src;
+            // }
+            // else {
+            //     if (typeof data.value === String) {
+            //         newFeed.selectedImages = data.value;
+            //     } else {
+            //         newFeed.images[data.value].isSelected = true;
+            //         newFeed.selectedImages = newFeed.images[data.value].src;
+            //     }
+            // }
+            // newFeed.images.filter((i, index) => index === data.value).map(i => {
+            //     if (i.isSelected) {
+            //         i.isSelected = false;
+            //         newFeed.selectedImages.filter(s => s === i.src).map(i => newFeed.selectedImages.pop(i));
+            //     } else {
+            //         i.isSelected = true;
+            //         newFeed.selectedImages.push(i.src);
+            //     }
+            //     return i;
+            // })
             break;
         default:
             newFeed = props
