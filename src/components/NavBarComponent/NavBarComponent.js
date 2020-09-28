@@ -9,12 +9,12 @@ const mapStateToProps = (state) => { return { filter: state.mapFilter, feed: sta
 const NavBarComponent = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  const toggle = () => setIsOpen(!isOpen);
+
   return (
     <div className="navContainer">
       <Navbar dark expand="md">
         <NavbarBrand href="/">Vuzix Blade</NavbarBrand>
-        <NavbarToggler onClick={toggle} />
+        <NavbarToggler onClick={() => setIsOpen(!isOpen)} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>
             <NavItem>
@@ -23,7 +23,9 @@ const NavBarComponent = (props) => {
             <NavItem>
               <NavLink href="/feedback">Feedback <span className="redNotiDot">
                 <svg height="10" width="10">
-                  <circle cx="5" cy="5" r="3" fill={(!props.filter.isLoading ? props.filter.mapFilter.personNames.filter(p => p.name === "unknown").length : (!props.feed.isLoading ? props.feed.feedback.images.length : 0)) > 0 ? "red" : "#2C4870"} />
+                  <circle cx="5" cy="5" r="3"
+                    fill={(!props.filter.isLoading && props.filter.mapFilter.personNames.filter(m => (m.name === "unknown" || m.name === 'null'))) ? "red" : "#2C4870"}
+                  />
                 </svg>
               </span></NavLink>
             </NavItem>
