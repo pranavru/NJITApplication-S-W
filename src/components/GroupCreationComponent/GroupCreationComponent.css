@@ -3,9 +3,13 @@
   padding: 3%;
 }
 
+.fontPersonDetails {
+  font: 1em monospace;
+  padding: 3%;
+}
+
 .addGroupCard {
-  min-height: 100px;
-  padding-left: 5%;
+  /* min-height: 100px; */
 }
 
 .personTitleCard {

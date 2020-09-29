@@ -6,6 +6,8 @@ import PersonAttributesComponent from '../PersonAttributesComponent/PersonAttrib
 
 import { connect } from 'react-redux';
 import { editPersonAttr, initializePersonAttr } from '../../redux/ActionCreators';
+import GroupCreationComponent from '../GroupCreationComponent/GroupCreationComponent';
+
 
 const mapStateToProps = (state) => { return state.feedback }
 const mapDispatchToProps = (dispatch) => ({
@@ -22,11 +24,11 @@ class FeedBackComponent extends Component {
   render() {
     return (
       <div className="container col-md-12">
-        <div className="row feedbackContainer">
-          <div className="imageRecogDiv col-md-7">
+        {this.props.feedback && <div className="row feedbackContainer">
+          <div className="imageRecogDiv col-md-8">
             <PersonAttributesComponent />
             <div className="imageSelectionDiv">
-              {this.props.feedback && <Gallery
+              <Gallery
                 images={this.props.feedback.images}
                 enableImageSelection={true}
                 rowHeight={120}
@@ -36,12 +38,13 @@ class FeedBackComponent extends Component {
                 preloadNextImage={true}
                 onSelectImage={(i) => this.props.editPersonAttr({ name: "galleryImage", value: i }, this.props)}
                 enableLightbox={false}
-              />}
+              />
             </div>
           </div>
-          <div className="col-md-4">
+          <div className="imageRecogDiv col-md-3">
+            {this.props.feedback.tags !== undefined && <GroupCreationComponent tags= {this.props.feedback.tags} />}
           </div>
-        </div>
+        </div>}
       </div>
     );
   }

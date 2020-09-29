@@ -410,6 +410,8 @@ const cosSquare = (x) => Math.pow(Math.cos(x), 2);
 
 //Initialize person Information - feedback form
 export const initializePersonAttr = () => dispatch => {
+    let attributes = {};
+    taggedPeople(attributes);
     return fetch(baseUrl + "/get_unk/")
         .then(response => {
             if (response.ok) {
@@ -424,14 +426,13 @@ export const initializePersonAttr = () => dispatch => {
         })
         .then(response => response.json())
         .then(response => {
-            const attributes = {
-                images: response.map(m => {
-                    return {
-                        src: baseUrl + m.imageFile, thumbnail: baseUrl + m.imageFile,
-                        thumbnailWidth: 100, thumbnailHeight: 100
-                    }
-                }), fname: "", lname: "", selectedImages: []
-            }
+            attributes.images = response.map(m => {
+                return {
+                    src: baseUrl + m.imageFile, thumbnail: baseUrl + m.imageFile,
+                    thumbnailWidth: 100, thumbnailHeight: 100
+                }
+            })
+            attributes.fname = ""; attributes.lname = ""; attributes.selectedImages = [];
             dispatch(initFeedbackForm(attributes));
         })
         .catch(error => dispatch(feedbackFailed(error.message)));
@@ -492,6 +493,26 @@ export const personAttributes = (data) => (dispatch) => {
         dispatch(feedbackFailed("No Images Found. Please enter an Image"));
     }
 }
+
+//Add Already Tagged People 
+export const taggedPeople = (attribute) => {
+    return fetch(baseUrl + "/get_people/")
+        .then(response => {
+            if (response.ok) {
+                return response;
+            } else {
+                var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                error.response = response;
+                throw error;
+            }
+        }, error => {
+            throw error;
+        })
+        .then(response => response.json())
+        .then(res => attribute.tags = res);
+    // .catch(error => dispatch(feedbackFailed(error.message)));
+}
+
  // if (newFeed.selectedImages.length > 0) {
             //     newFeed.images.filter(i => i.isSelected === true).map(i => { return i.isSelected = false });
             //     newFeed.images[data.value].isSelected = true;
