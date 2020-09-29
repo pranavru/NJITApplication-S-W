@@ -13,18 +13,18 @@ const GroupCreationComponent = (props) => {
         <div className="personGroupNameLabel fontPersonDetails">
           <Label>Group Name: {groupName.toUpperCase()}</Label>
         </div>
-        {people.map(p =>
-          <Card className="container shadow-sm bg-white fontPersonDetails" style={{ margin: '1%', padding: 0 }}>
-            <div className="row col-sm-12 col-12" key={p.id} style={{ margin: '6px 0px', paddingRight: '5px' }}>
-              <div className="col-sm-9 col-12"><p>Name: {p.name}</p></div>
-              <div
-                className="col-sm-3 col-12"
-                style={{ margin: '0px', padding: '0px', flexDirection: "row", display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-end' }}>
-                <img className="shadow-sm" src={baseUrl + p.img} width="80px" height="85px" style={{ borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} /></div>
-            </div>
-          </Card>
-        )}
-
+        <div className="groupPeopleDiv">
+          {people.map(p =>
+            <Card className="container shadow-sm bg-white fontPersonDetails addGroupCard">
+              <div className="row col-sm-12 col-12" key={p.id} style={{ margin: '6px 0px', paddingRight: '5px' }}>
+                <div className="col-sm-9 col-12"><p>Name: {p.name}</p></div>
+                <div className="col-sm-3 col-12 taggedPersonImageContainer">
+                  <img className="shadow-sm" src={baseUrl + p.img} width="80px" height="85px" style={{ borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} alt={"Image not found"} />
+                </div>
+              </div>
+            </Card>
+          )}
+        </div>
       </div>
     </Card>
   );

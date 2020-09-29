@@ -509,8 +509,8 @@ export const taggedPeople = (attribute) => {
             throw error;
         })
         .then(response => response.json())
-        .then(res => attribute.tags = res);
-    // .catch(error => dispatch(feedbackFailed(error.message)));
+        .then(res => attribute.tags = res)
+        .catch(error => console.log(error));
 }
 
  // if (newFeed.selectedImages.length > 0) {
