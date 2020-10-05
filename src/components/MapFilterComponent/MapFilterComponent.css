@@ -50,12 +50,10 @@
 }
 
 .overflowPersons {
-  max-width: 100%;
-  max-height: 11vh;
+  max-width: 95%;
+  max-height: 10.5vh;
   overflow-y: scroll;
   box-sizing: content-box;
-  border-radius: 6px;
-  padding-right: 5%;
 }
 
 .overflowPersons::-webkit-scrollbar-track {

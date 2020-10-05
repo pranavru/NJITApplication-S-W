@@ -479,10 +479,11 @@ export const personAttributes = (data) => (dispatch) => {
         if ((data.fname && data.fname.length >= 3) && (data.lname && data.lname.length >= 3)) {
             const attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages };
             dispatch(addFeedbackValue(attributes));
-            return axios.get(baseUrl + '/feedback/', attributes)
+            return axios.post(baseUrl + '/feedback/', attributes)
                 .then(res => {
                     if (res.status === 200) {
                         alert("Response Submitted")
+
                     }
                 })
                 .catch((err) => alert(err));
