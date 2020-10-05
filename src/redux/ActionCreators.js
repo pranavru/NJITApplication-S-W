@@ -483,6 +483,7 @@ export const personAttributes = (data) => (dispatch) => {
                 .then(res => {
                     if (res.status === 200) {
                         alert("Response Submitted")
+
                     }
                 })
                 .catch((err) => alert(err));

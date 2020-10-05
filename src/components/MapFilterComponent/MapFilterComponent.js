@@ -37,7 +37,7 @@ function groupedPicker(props) {
 
     return (
         <Autocomplete
-            id="grouped-demo"
+            id="speech-text"
             options={options.sort((a, b) => -b.firstLetter.localeCompare(a.firstLetter))}
             groupBy={(option) => option.firstLetter}
             getOptionLabel={(option) => option.title}
@@ -130,7 +130,7 @@ class MapFilterComponent extends Component {
 
         if (!isLoading) {
             return (
-                <div style={{ height: '98%', marginLeft: "2%" }}>
+                <div style={{ marginLeft: "2%" }}>
                     <Card className="filterCard">
                         <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
                         <Form onSubmit={event => event.preventDefault()} >

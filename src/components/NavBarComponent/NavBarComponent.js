@@ -4,12 +4,11 @@ import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } f
 import './NavBarComponent.css';
 
 import { connect } from 'react-redux';
-const mapStateToProps = (state) => { return { filter: state.mapFilter, feed: state.feedback } };
+import ZoomInOUTComponent from '../ZoomInOUTComponent/ZoomInOUTComponent';
+const mapStateToProps = (state) => { return { filter: state.mapFilter, feed: state.feedback, } };
 
 const NavBarComponent = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
-
-
   return (
     <div className="navContainer">
       <Navbar dark expand="md">
@@ -30,6 +29,7 @@ const NavBarComponent = (props) => {
               </span></NavLink>
             </NavItem>
           </Nav>
+          {!window.location.pathname.includes("feedback") && <ZoomInOUTComponent />}
         </Collapse>
       </Navbar>
     </div>
