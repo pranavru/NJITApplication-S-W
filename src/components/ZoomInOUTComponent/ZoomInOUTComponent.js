@@ -4,13 +4,13 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { changeMapCenter } from '../../redux/ActionCreators'
+import '../ZoomInOUTComponent/ZoomInOUTComponent.css'
 
 const mapStateToProps = (state) => state.mapMarkersData;
 const mapDispatchToProps = (dispatch) => ({
   changeMapCenter: (data) => dispatch(changeMapCenter(data)),
 })
-// ISO 3166-1 alpha-2
-// ⚠️ No support for IE 11
+
 function countryToFlag(isoCode) {
   return typeof String.fromCodePoint !== 'undefined'
     ? isoCode
@@ -21,10 +21,10 @@ function countryToFlag(isoCode) {
 
 const useStyles = makeStyles({
   option: {
-    fontSize: 10,
+    font: '8px monospace',
     '& > span': {
       marginRight: 10,
-      fontSize: 12,
+      font: '8px monospace',
     },
   },
 });
@@ -35,13 +35,11 @@ function ZoomInOUTComponent(props) {
 
   return (
     <Autocomplete
-      id="country-select-demo"
-      style={{ width: '20%', height: '10%' }}
+      id="country-select"
       size="small"
+      style={{ width: '25%', padding: '0px', color: '#fff' }}
       options={countries}
-      classes={{
-        option: classes.option,
-      }}
+      classes={{ option: classes.option }}
       closeIcon={false}
       autoHighlight
       getOptionLabel={(option) => option.label}
@@ -55,10 +53,9 @@ function ZoomInOUTComponent(props) {
         <TextField
           {...params}
           label="Choose a country"
+          variant="outlined"
           inputProps={{
             ...params.inputProps,
-            className: "textLabelCountries",
-            autoComplete: 'new-password', // disable autocomplete and autofill
           }}
         />
       )}
@@ -85,6 +82,7 @@ function ZoomInOUTComponent(props) {
 
 export default connect(mapStateToProps, mapDispatchToProps)(ZoomInOUTComponent);
 
+//List of Countries
 const countries = [
   { code: 'AD', label: 'Andorra' },
   { code: 'AE', label: 'United Arab Emirates', phone: '971' },

@@ -29,7 +29,7 @@ const NavBarComponent = (props) => {
               </span></NavLink>
             </NavItem>
           </Nav>
-          {!window.location.pathname.includes("feedback") && <ZoomInOUTComponent />}
+          {!window.location.pathname.includes("feedback") && <ZoomInOUTComponent style={{ color: '#ffffff'}} />}
         </Collapse>
       </Navbar>
     </div>
