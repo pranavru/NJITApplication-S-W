@@ -483,24 +483,33 @@ export const personAttributes = (data) => (dispatch) => {
 }
 
 //Add Already Tagged People 
-export const taggedPeople = (attributes) => {
-    // console.log("Inside Tagged+")
-    return fetch(baseUrl + "/get_people/")
-        .then(response => {
-            if (response.ok) {
-                return response;
-            } else {
-                var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                error.response = response;
-                throw error;
-            }
-        }, error => {
+export const taggedPeople = (attributes) => fetch(baseUrl + "/get_people/")
+    .then(response => {
+        if (response.ok) {
+            return response;
+        } else {
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
             throw error;
-        })
-        .then(response => response.json())
-        .then(res => attributes.tags = res)
-        .catch(error => console.log(error));
-}
+        }
+    }, error => {
+        throw error;
+    })
+    .then(response => response.json())
+    .then(res => attributes.tags = res)
+    .catch(error => console.log(error));
+
+export const taggingCompleted = () => axios.post(baseUrl + '/get_unk/').then(response => {
+    if (response.status === 200) {
+        alert("Response Submitted")
+    } else {
+        var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        error.response = response;
+        throw error;
+    }
+}, error => {
+    throw error;
+}).catch(error => console.log(error));
 
  // if (newFeed.selectedImages.length > 0) {
             //     newFeed.images.filter(i => i.isSelected === true).map(i => { return i.isSelected = false });

@@ -1,12 +1,16 @@
 import React from 'react';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 import './NavBarComponent.css';
 
 import { connect } from 'react-redux';
 import ZoomInOUTComponent from '../ZoomInOUTComponent/ZoomInOUTComponent';
-import { baseUrl } from '../../shared/baseUrl';
+import { taggingCompleted } from '../../redux/ActionCreators';
 const mapStateToProps = (state) => { return { filter: state.mapFilter, feed: state.feedback, } };
+const mapDispatchToProps = (dispatch) => ({
+  taggingCompleted: () => dispatch(taggingCompleted()),
+});
 
 const NavBarComponent = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -30,11 +34,18 @@ const NavBarComponent = (props) => {
               </span></NavLink>
             </NavItem>
           </Nav>
-          {!window.location.pathname.includes("feedback") && <ZoomInOUTComponent />}
+          {!window.location.pathname.includes("feedback") ?
+            <ZoomInOUTComponent /> :
+            <Link to="/"
+              className="btn btn-secondary"
+              style={{ backgroundColor: '#2C4870' }}
+              onClick={taggingCompleted}
+            >Done Tagging</Link>
+          }
         </Collapse>
       </Navbar>
     </div>
   );
 };
 
-export default connect(mapStateToProps)(NavBarComponent);
+export default connect(mapStateToProps, mapDispatchToProps)(NavBarComponent);
