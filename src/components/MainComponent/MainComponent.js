@@ -67,7 +67,7 @@ class MainComponent extends Component {
 
                         {/* Load Buttons for Recent and Nearest Markers */}
                         {!this.props.DataVuzix.errMess && !markerData.mapMarkers.length && <ButtonComponent
-                            name="Pan to Closest Marker" class="panToMarkerButton"
+                            name="Pan to Closest Event" class="panToMarkerButton"
                             callBackFunc={() => {
                                 this.activateLoader(true);
                                 this.props.findClosestMarker(data.vuzixMap, markerData);
@@ -91,7 +91,7 @@ class MainComponent extends Component {
                 return <MapComponent activateLoader={this.activateLoader.bind(this)} />
             }
         }
-    }
+    } 
 
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
