@@ -1,0 +1,1 @@
+export const noImage = "/media/images/no-image-480x480.png";
