@@ -33,16 +33,15 @@ const CssTextField = withStyles({
   root: {
     "& input":{
       color: '#fff',
+      fontWeight: 250,
+      font: '14px monospace',
     },
     "& label": {
       color: "#fff",
       fontWeight: 250,
+      font: '18px monospace',
     },
     "& label.Mui-focused": {
-      color: "#fff"
-    },
-    "& .MuiInput-underline:after": {
-      borderBottomColor: "green",
       color: "#fff"
     },
     "& .MuiOutlinedInput-root": {
@@ -85,8 +84,8 @@ function ZoomInOUTComponent(props) {
         renderInput={(params) => (
           <CssTextField
             {...params}
-            style={{ width: 0.15 * window.innerWidth }}
-            label="Choose a country"
+            style={{ width: 0.18 * window.innerWidth }}
+            label="CHOOSE A COUNTRY"
             variant="outlined"
             inputProps={{
               ...params.inputProps,

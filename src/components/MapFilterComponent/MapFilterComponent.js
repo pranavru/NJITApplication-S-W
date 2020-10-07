@@ -130,7 +130,7 @@ class MapFilterComponent extends Component {
 
         if (!isLoading) {
             return (
-                <div style={{ marginLeft: "2%" }}>
+                <div style={{ marginLeft: "2%", marginRight: '1%' }}>
                     <Card className="filterCard">
                         <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
                         <Form onSubmit={event => event.preventDefault()} >

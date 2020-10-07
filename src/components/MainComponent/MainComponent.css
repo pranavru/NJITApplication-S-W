@@ -22,7 +22,7 @@
 
 /* scroll width */
 .detailsStyle::-webkit-scrollbar {
-  width: 7px;
+  width: 4px;
 }
 
 /* scroll Track */
@@ -45,7 +45,7 @@
 .toggleDivButton {
   z-index: 4;
   margin-top: 6%;
-  margin-left: 1%;
+  /* margin-left: 1%; */
   left: 100%;
   padding-top: 3%;
   padding-bottom: 3%;
