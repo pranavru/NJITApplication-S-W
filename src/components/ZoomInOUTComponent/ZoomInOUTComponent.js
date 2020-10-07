@@ -1,7 +1,7 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { changeMapCenter } from '../../redux/ActionCreators'
 import '../ZoomInOUTComponent/ZoomInOUTComponent.css'
@@ -29,54 +29,89 @@ const useStyles = makeStyles({
   },
 });
 
+const CssTextField = withStyles({
+  root: {
+    "& input":{
+      color: '#fff',
+    },
+    "& label": {
+      color: "#fff",
+      fontWeight: 250,
+    },
+    "& label.Mui-focused": {
+      color: "#fff"
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "green",
+      color: "#fff"
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#2C4870",
+        color: "#fff"
+      },
+      "&:hover fieldset": {
+        borderColor: "#fff",
+        color: "#fff"
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "white",
+        color: "#fff"
+      }
+    }
+  }
+})(TextField);
+
 
 function ZoomInOUTComponent(props) {
   const classes = useStyles();
 
   return (
-    <Autocomplete
-      id="country-select"
-      size="small"
-      style={{ width: '25%', padding: '0px', color: '#fff' }}
-      options={countries}
-      classes={{ option: classes.option }}
-      closeIcon={false}
-      autoHighlight
-      getOptionLabel={(option) => option.label}
-      renderOption={(option) => (
-        <React.Fragment>
-          <span>{countryToFlag(option.code)}</span>
-          {option.label} ({option.code})
-        </React.Fragment>
-      )}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          label="Choose a country"
-          variant="outlined"
-          inputProps={{
-            ...params.inputProps,
-          }}
-        />
-      )}
-      onChange={(event, value) => {
-        if (value) {
-          const address = value.label;
-          new window.google.maps.Geocoder().geocode({ address: address }, (results, status) => {
-            if (status === "OK") {
-              let loc = results[0].geometry.location;
-              loc = { lat: loc.lat(), lng: loc.lng() }
-              let map = props.mapMarkersData.mapObject;
-              map.setCenter(loc);
-              map.setZoom(6);
-              props.changeMapCenter(props.mapMarkersData);
-            } else {
-              alert("Geocode was not successful for the following reason: " + status);
-            }
-          });
-        }
-      }}
-    />
+    <div className={classes.root}>
+      <Autocomplete
+        id="country-select"
+        size="small"
+        options={countries}
+        classes={{ option: classes.option }}
+        closeIcon={false}
+        autoHighlight
+        getOptionLabel={(option) => option.label}
+        renderOption={(option) => (
+          <React.Fragment>
+            <span>{countryToFlag(option.code)}</span>
+            {option.label} ({option.code})
+          </React.Fragment>
+        )}
+        renderInput={(params) => (
+          <CssTextField
+            {...params}
+            style={{ width: 0.15 * window.innerWidth }}
+            label="Choose a country"
+            variant="outlined"
+            inputProps={{
+              ...params.inputProps,
+            }}
+          />
+        )}
+        onChange={(event, value) => {
+          if (value) {
+            const address = value.label;
+            new window.google.maps.Geocoder().geocode({ address: address }, (results, status) => {
+              if (status === "OK") {
+                let loc = results[0].geometry.location;
+                loc = { lat: loc.lat(), lng: loc.lng() }
+                let map = props.mapMarkersData.mapObject;
+                map.setCenter(loc);
+                map.setZoom(6);
+                props.changeMapCenter(props.mapMarkersData);
+              } else {
+                alert("Geocode was not successful for the following reason: " + status);
+              }
+            });
+          }
+        }}
+      />
+    </div>
   );
 }
 
