@@ -25,24 +25,26 @@ class FeedBackComponent extends Component {
     return (
       <div className="container col-md-12">
         {this.props.feedback && <div className="row feedbackContainer">
-          <div className="imageRecogDiv col-md-8">
-            <PersonAttributesComponent />
-            <div className="imageSelectionDiv">
-              <Gallery
-                images={this.props.feedback.images}
-                enableImageSelection={true}
-                rowHeight={120}
-                backdropClosesModal={true}
-                showCloseButton={false}
-                showImageCount={true}
-                preloadNextImage={true}
-                onSelectImage={(i) => this.props.editPersonAttr({ name: "galleryImage", value: i }, this.props)}
-                enableLightbox={false}
-              />
+          <div className="col-md-8">
+            <div className="imageRecogDiv">
+              <PersonAttributesComponent />
+              <div className="imageSelectionDiv">
+                <Gallery
+                  images={this.props.feedback.images}
+                  enableImageSelection={true}
+                  rowHeight={120}
+                  backdropClosesModal={true}
+                  showCloseButton={false}
+                  showImageCount={true}
+                  preloadNextImage={true}
+                  onSelectImage={(i) => this.props.editPersonAttr({ name: "galleryImage", value: i }, this.props)}
+                  enableLightbox={false}
+                />
+              </div>
             </div>
           </div>
           <div className="imageRecogDiv col-md-3">
-            {this.props.feedback.tags !== undefined && <GroupCreationComponent tags= {this.props.feedback.tags} />}
+            {this.props.feedback.tags !== undefined && <GroupCreationComponent tags={this.props.feedback.tags} />}
           </div>
         </div>}
       </div>

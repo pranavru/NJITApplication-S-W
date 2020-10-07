@@ -59,19 +59,6 @@ export const fetchDataVuzix = (dispatch) => {
         .catch(error => dispatch(dataVuzixFailed(error.message)));
 };
 
-// To check if Image URL exists
-const checkImageURL = (data) => {
-    data.vuzixMap.forEach(obj => {
-        if (obj.video)
-            return fetch(baseUrl + obj.video).then(response => response.json())
-                .catch(() => obj.thumbnail = "/noImageFound.png")
-        else {
-            return fetch(baseUrl + obj.image).then(response => response.json())
-                .catch(() => obj.image = "/noImageFound.png")
-        }
-    })
-}
-
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter``` excluding video.
 export const editDataVuzix = (parameter, props) => (dispatch) => {
     parameter.videoRequired = "false";
@@ -409,9 +396,9 @@ const sinSquare = (x) => Math.pow(Math.sin(x), 2);
 const cosSquare = (x) => Math.pow(Math.cos(x), 2);
 
 //Initialize person Information - feedback form
-export const initializePersonAttr = () => dispatch => {
+export const initializePersonAttr = () => async (dispatch) => {
     let attributes = {};
-    taggedPeople(attributes);
+    await taggedPeople(attributes);
     return fetch(baseUrl + "/get_unk/")
         .then(response => {
             if (response.ok) {
@@ -475,6 +462,7 @@ export const editPersonAttr = (data, props) => (dispatch) => {
 //Loads person Information from the feedback form
 export const personAttributes = (data) => (dispatch) => {
     dispatch(feedbackLoading(true));
+    // if(data.selectedImages.includes(''))
     if (data.selectedImages && data.selectedImages.length > 0) {
         if ((data.fname && data.fname.length >= 3) && (data.lname && data.lname.length >= 3)) {
             const attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages };
@@ -483,7 +471,6 @@ export const personAttributes = (data) => (dispatch) => {
                 .then(res => {
                     if (res.status === 200) {
                         alert("Response Submitted")
-
                     }
                 })
                 .catch((err) => alert(err));
@@ -496,7 +483,8 @@ export const personAttributes = (data) => (dispatch) => {
 }
 
 //Add Already Tagged People 
-export const taggedPeople = (attribute) => {
+export const taggedPeople = (attributes) => {
+    // console.log("Inside Tagged+")
     return fetch(baseUrl + "/get_people/")
         .then(response => {
             if (response.ok) {
@@ -510,7 +498,7 @@ export const taggedPeople = (attribute) => {
             throw error;
         })
         .then(response => response.json())
-        .then(res => attribute.tags = res)
+        .then(res => attributes.tags = res)
         .catch(error => console.log(error));
 }
 

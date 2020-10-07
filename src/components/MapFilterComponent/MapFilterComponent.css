@@ -1,6 +1,6 @@
 .filterCard {
   padding: 4px;
-  margin-top: 4%;
+  margin-top: 3%;
   padding-top: 1px;
   padding-bottom: 0px;
 }
@@ -50,10 +50,31 @@
 }
 
 .overflowPersons {
-  max-width: 95%;
+  max-width: 96%;
   max-height: 10.5vh;
   overflow-y: scroll;
-  box-sizing: content-box;
+}
+
+/* scroll width */
+.overflowPersons::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* scroll Track */
+.overflowPersons::-webkit-scrollbar-track {
+  box-shadow: inset 2px 2px 5px #e6e6e6; 
+  border-radius: 4px;
+}
+ 
+/* scroll Handle */
+.overflowPersons::-webkit-scrollbar-thumb {
+  background: #406aa5; 
+  border-radius: 4px;
+}
+
+/* scroll Handle on hover */
+.overflowPersons::-webkit-scrollbar-thumb:hover {
+  background: #325381;
 }
 
 .overflowPersons::-webkit-scrollbar-track {

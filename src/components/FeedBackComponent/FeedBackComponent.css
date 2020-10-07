@@ -23,6 +23,28 @@
   border-radius: 4px;
 }
 
+/* scroll width */
+.imageSelectionDiv::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* scroll Track */
+.imageSelectionDiv::-webkit-scrollbar-track {
+  box-shadow: inset 2px 2px 5px #e6e6e6; 
+  border-radius: 4px;
+}
+ 
+/* scroll Handle */
+.imageSelectionDiv::-webkit-scrollbar-thumb {
+  background: #406aa5; 
+  border-radius: 4px;
+}
+
+/* scroll Handle on hover */
+.imageSelectionDiv::-webkit-scrollbar-thumb:hover {
+  background: #325381;
+}
+
 .imageCont {
   margin: 0.75%;
 }

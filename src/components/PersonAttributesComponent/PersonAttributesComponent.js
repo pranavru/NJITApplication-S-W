@@ -48,7 +48,7 @@ const PersonAttributesComponent = (props) => {
             <div className="labelPersonName col-md-12 col-12">
               <Label>Person Name:</Label>
             </div>
-            <div className="col-md-12 col-12" style={{ marginTop: '10%' }}>
+            <div style={{ marginTop: '11%', marginLeft: '3%' }}>
               <ButtonComponent name={"Add Face Image"} callBackFunc={() => selectImage(!imageSelection)} class="fontButton" />
             </div>
           </div>

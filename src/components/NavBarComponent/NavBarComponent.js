@@ -5,6 +5,7 @@ import './NavBarComponent.css';
 
 import { connect } from 'react-redux';
 import ZoomInOUTComponent from '../ZoomInOUTComponent/ZoomInOUTComponent';
+import { baseUrl } from '../../shared/baseUrl';
 const mapStateToProps = (state) => { return { filter: state.mapFilter, feed: state.feedback, } };
 
 const NavBarComponent = (props) => {
@@ -29,7 +30,7 @@ const NavBarComponent = (props) => {
               </span></NavLink>
             </NavItem>
           </Nav>
-          {!window.location.pathname.includes("feedback") && <ZoomInOUTComponent style={{ color: '#ffffff'}} />}
+          {!window.location.pathname.includes("feedback") && <ZoomInOUTComponent />}
         </Collapse>
       </Navbar>
     </div>
