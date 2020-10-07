@@ -7,13 +7,25 @@ import './NavBarComponent.css';
 import { connect } from 'react-redux';
 import ZoomInOUTComponent from '../ZoomInOUTComponent/ZoomInOUTComponent';
 import { taggingCompleted } from '../../redux/ActionCreators';
+import { baseUrl } from '../../shared/baseUrl';
 const mapStateToProps = (state) => { return { filter: state.mapFilter, feed: state.feedback, } };
 const mapDispatchToProps = (dispatch) => ({
   taggingCompleted: () => dispatch(taggingCompleted()),
 });
 
+const checkUnknownPeople = (setFillColor) => {
+  fetch(baseUrl + '/get_unk').then(res => res.ok ? res.json() : null).then(res => {
+    if (res) {
+      res.length > 0 ? setFillColor(true) : setFillColor(false);
+    }
+  })
+}
+
 const NavBarComponent = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [fillColor, setFillColor] = React.useState(false);
+  checkUnknownPeople(setFillColor);
+  
   return (
     <div className="navContainer">
       <Navbar dark expand="md">
@@ -28,7 +40,7 @@ const NavBarComponent = (props) => {
               <NavLink href="/feedback">Feedback <span className="redNotiDot">
                 <svg height="10" width="10">
                   <circle cx="5" cy="5" r="3"
-                    fill={(!props.filter.isLoading && props.filter.mapFilter.personNames.filter(m => (m.name === "unknown" || m.name === 'null'))) ? "red" : "#2C4870"}
+                    fill={fillColor ? "red" : "#2C4870"}
                   />
                 </svg>
               </span></NavLink>

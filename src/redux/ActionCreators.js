@@ -59,9 +59,8 @@ export const fetchDataVuzix = (dispatch) => {
         .catch(error => dispatch(dataVuzixFailed(error.message)));
 };
 
-// Edit Vuzix Blade data based on the Filter parameters as ```parameter``` excluding video.
+// Edit Vuzix Blade data based on the Filter parameters as ```parameter```
 export const editDataVuzix = (parameter, props) => (dispatch) => {
-    parameter.videoRequired = "false";
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
@@ -89,7 +88,7 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         .catch(err => dispatch(dataVuzixFailed(err.message)))
 }
 
-// Edit Vuzix Blade data based on the Filter parameters as ```parameter``` including video.
+// Edit Vuzix Blade data based on the Filter parameters as ```parameter```
 export const editVideo = (parameter, props) => (dispatch) => {
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
@@ -153,33 +152,31 @@ export const fetchSpeechText = () => (dispatch) => {
 }
 
 // Fetch Data based on Speech Values
-export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => {
-    return axios.post(baseUrl + '/search/', { keyword: speech })
-        .then(response => {
-            if (!(response.data.vuzixMap.length > 0)) {
-                alert("No data with search query");
+export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.post(baseUrl + '/search/', { keyword: speech })
+    .then(response => {
+        if (!(response.data.vuzixMap.length > 0)) {
+            alert("No data with search query");
 
-                //If no data is returned, update Markers Array to []
-                dispatch(loadMarkers([], props.MapMarkersData.mapMarkersData));
-                props.activateLoader(false);
-            } else {
-                console.log(response.data);
-                return response;
-            }
-        })
-        .then(response => response.data)
-        .then(response => {
+            //If no data is returned, update Markers Array to []
+            dispatch(loadMarkers([], props.MapMarkersData.mapMarkersData));
+            props.activateLoader(false);
+        } else {
+            console.log(response.data);
+            return response;
+        }
+    })
+    .then(response => response.data)
+    .then(response => {
 
-            //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
-            response.gps_lists = new Map(Object.entries(response.gps_lists));
+        //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
+        response.gps_lists = new Map(Object.entries(response.gps_lists));
 
-            dispatch(loadDataVuzix(response))
-            dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
-            dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
+        dispatch(loadDataVuzix(response))
+        dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
+        dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
 
-        }).then(() => props.activateLoader(false))
-        .catch(err => dispatch(dataVuzixFailed(err.message)))
-}
+    }).then(() => props.activateLoader(false))
+    .catch(err => dispatch(dataVuzixFailed(err.message)))
 
 // Edit Map Filter based on User Interaction
 // newValue is an object: 
