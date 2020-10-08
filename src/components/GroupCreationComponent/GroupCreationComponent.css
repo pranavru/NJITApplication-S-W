@@ -37,7 +37,7 @@
 
 /* scroll width */
 .groupPeopleDiv::-webkit-scrollbar {
-  width: 7px;
+  width: 4px;
 }
 
 /* scroll Track */
