@@ -70,27 +70,57 @@ const customOverlay = (m, i) => <div className="captionStyle">
 </div>;
 
 const setCustomTags = (i) => i.tags.map((t, index) => index !== 0 ? <div
-        key={t.value}
-        className="customTagStyle">
-        {t.title}
-    </div> : <></>);
+    key={t.value}
+    className="customTagStyle">
+    {t.title}
+</div> : <></>);
 
 const customInfoWindow = (props, center) => {
     const data = props.DataVuzix.dataVuzix;
     const markerData = props.MapMarkersData.mapMarkersData;
     const infoWindow = props.InfoWindow.infoWindow;
-
     let sw = markerData.mapObject.getBounds().getSouthWest(), lat = (center.lat + sw.lat()) / 2;
     return <InfoWindow
-        position={{ lat: lat, lng: center.lng }}
+        // position={{ lat: lat, lng: center.lng }}
+        position={{ lat: infoWindow.lat, lng: infoWindow.long }}
         onCloseClick={() => {
             data.vuzixMap.filter(m => m.keepAlive).map(m => m.keepAlive = false);
             props.infoWindowMarker(null);
         }}
-        options={{ disableAutoPan: true }}
+        options={{
+            disableAutoPan: true,
+            pixelOffset: calculateInfowWindowLatLng(markerData.mapObject, center, new window.google.maps.LatLng(infoWindow.lat, infoWindow.long))
+        }}
     >
         <MapInfoWindow point={infoWindow} v={props.videoPlayer} />
     </InfoWindow >;
+}
+
+const calculateInfowWindowLatLng = (map, center, latLng) => {
+    latLng = getPixelFromLatLng(map, latLng);
+    center = map.getProjection().fromLatLngToPoint(map.getCenter());
+    let quadrant = "", offset = {};
+    quadrant += (latLng.y > center.y) ? "b" : "t";
+    quadrant += (latLng.x < center.x) ? "l" : "r";
+    console.log(quadrant);
+    if (quadrant == "tr") {
+        offset = new window.google.maps.Size(-230, 420);
+    } else if (quadrant == "tl") {
+        offset = new window.google.maps.Size(230, 420);
+    } else if (quadrant == "br") {
+        offset = new window.google.maps.Size(-230, 100);
+    } else if (quadrant == "bl") {
+        offset = new window.google.maps.Size(230, 100);
+    }
+    console.log(offset)
+    return offset;
+}
+
+const getPixelFromLatLng = (mapObject, latLng) => {
+    var projection = mapObject.getProjection();
+    //refer to the google.maps.Projection object in the Maps API reference
+    var point = projection.fromLatLngToPoint(latLng);
+    return point;
 }
 
 const MapComponent = (props) => {
