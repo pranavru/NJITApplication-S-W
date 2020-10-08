@@ -154,13 +154,12 @@ const MapComponent = (props) => {
                         onMouseOver={() => {
                             hoverMarker(mapVuzix, props)
                             data.vuzixMap.filter(m => m.keepAlive).map(m => m.keepAlive = false)
-
-                            window.setTimeout(() => {
-                                if (!mapVuzix.keepAlive) {
-                                    hoverMarker(null, props)
-                                }
-                            }, 1000)
                         }}
+                        onMouseOut={() => window.setTimeout(() => {
+                            if (!mapVuzix.keepAlive) {
+                                hoverMarker(null, props)
+                            }
+                        }, 200)}
                         onClick={() => {
                             mapVuzix.keepAlive = true;
                             if (mapVuzix.images || mapVuzix.videos) {

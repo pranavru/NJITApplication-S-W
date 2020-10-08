@@ -4,7 +4,6 @@ import Gallery from 'react-grid-gallery';
 
 import "./MapInfoWindow.css";
 import { baseUrl } from "../../shared/baseUrl";
-import { noImage } from '../../shared/noImage';
 import ImageComponent from '../ImageComponent/ImageComponent';
 
 function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
@@ -12,20 +11,19 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
     return (<>
         <CardHeader style={{ marginBottom: '0px' }}>
             <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", marginBottom: 0 }}>{p.address}
-                {/* {months[d.getMonth()]} {d.getDate() < 10 ? `0${d.getDate()}` : d.getDate()}, {d.getFullYear()}  {d.getHours() < 10 ? `0${d.getHours()}` : d.getHours()}:{d.getMinutes() < 10 ? `0${d.getMinutes()}` : d.getMinutes()} */}
                 <p> {p.images && p.images.length > 0 ? `Images: ${p.images.length}  ` : ``}{p.videos && p.videos.length > 0 ? `Videos: ${p.videos.length}` : ``}</p>
             </CardTitle>
         </CardHeader>
         {(p.keepAlive && p.videos) ? <div className="toggleVideoButton">
             <label className="switch" alt="Images/Videos">
-                <input type="checkbox" onClick={() => setToDisplay(!displayImagesVideo)} />
+                {(p.videos.length > 0 && !p.images.length > 0) ? <input type="checkbox" disabled checked={true} /> : <input type="checkbox" onClick={() => setToDisplay(!displayImagesVideo)} />}
                 <span className="slider"></span>
             </label>
         </div> : <></>}
     </>)
 }
 
-function displayBody(props, displayImagesVideo, setSpeechValues) {
+function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
     const p = props.point;
     return !p.keepAlive ?
         (<div id="containerImg">
@@ -50,9 +48,10 @@ function displayBody(props, displayImagesVideo, setSpeechValues) {
                             tagStyle={{ backgroundColor: "#2C4870", font: "8px monospace", fontWeight: "bold", color: "#ffff1a", padding: '3px', borderRadius: '3px' }}
                         />
                     </div> :
-                    <div id="containerImg">
-                        <ImageComponent src={baseUrl + p.image} alt={p.id} idTag="theImage" />
-                    </div> :
+                    // <div id="containerImg">
+                    //     <ImageComponent src={baseUrl + p.image} alt={p.id} idTag="theImage" />
+                    // </div> :
+                    setToDisplay(true) :
             <div className="row videoDiv" style={{ margin: '0px' }}>
                 {p.videos.map(m => <div className="cardDisplay" onClick={() => onVideoClicked(props, m, setSpeechValues)}>
                     <ImageComponent src={baseUrl + m.thumbnail} classes="cardThumb" alt="Thumbnail not found" />
@@ -96,7 +95,7 @@ function MapInfoWindow(props) {
             props.updateInfoWindow(props.point);
         }} >
             {displayWindowHeader(props, displayImagesVideo, setToDisplay)}
-            {displayBody(props, displayImagesVideo, setSpeechValues)}
+            {displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay)}
             {displayImagesVideo && displaySpeechValue ? displayFooter(displaySpeechValue) : <CardFooter style={{ minHeight: '40px' }}></CardFooter>}
         </Card>
     )
