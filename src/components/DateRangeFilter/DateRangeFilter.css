@@ -12,6 +12,7 @@
 
 .dateCSS {
     width: 50%;
+    z-index: 4;
 }
 
 .rangeSliderDiv {

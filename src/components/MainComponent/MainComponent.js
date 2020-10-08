@@ -56,8 +56,8 @@ class MainComponent extends Component {
 
                         {/** Card Detail Div */}
                         {!markerData.isLoading && <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={markerData.detail} className="detailsAnimatedStyle">
-                            {this.ToggleDetailDivButton("<<")}
                             <div className="detailsStyle">
+                                {this.ToggleDetailDivButton("<<")}
                                 <MarkerPLaceDetailComponent />
                             </div>
                         </Animated>}
@@ -91,7 +91,7 @@ class MainComponent extends Component {
                 return <MapComponent activateLoader={this.activateLoader.bind(this)} />
             }
         }
-    } 
+    }
 
     //To Activate/De-activate the loader
     activateLoader = isActive => this.setState({ isActive })
