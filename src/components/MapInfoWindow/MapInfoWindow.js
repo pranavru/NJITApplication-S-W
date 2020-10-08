@@ -91,7 +91,10 @@ function MapInfoWindow(props) {
     const [displayImagesVideo, setToDisplay] = React.useState(false);
     const [displaySpeechValue, setSpeechValues] = React.useState(undefined);
     return (
-        <Card style={{ width: "30vw", overflow: 'hidden' }} onClick={() => props.point.keepAlive = true} >
+        <Card style={{ width: "30vw", overflow: 'hidden' }} onClick={() => {
+            props.point.keepAlive = true;
+            props.updateInfoWindow(props.point);
+        }} >
             {displayWindowHeader(props, displayImagesVideo, setToDisplay)}
             {displayBody(props, displayImagesVideo, setSpeechValues)}
             {displayImagesVideo && displaySpeechValue ? displayFooter(displaySpeechValue) : <CardFooter style={{ minHeight: '40px' }}></CardFooter>}

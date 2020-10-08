@@ -14,7 +14,7 @@ const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMar
 const mapDispatchToProps = (dispatch) => ({
     loadMap: (data, refObj) => dispatch(loadMap(data, refObj)),
     changeMapCenter: (data) => dispatch(changeMapCenter(data)),
-    loadMarkers: (data, mapObj, mapReference, type) => dispatch(loadMarkers(data, mapObj, mapReference, type)),
+    loadMarkers: (data, mapReference) => dispatch(loadMarkers(data, mapReference)),
     infoWindowMarker: (data) => dispatch(infoWindowMarker(data)),
     updateMapAddressOnExpiry: () => dispatch(updateMapAddressOnExpiry()),
     videoPlayer: data => dispatch(videoPlayer(data))
@@ -92,7 +92,7 @@ const customInfoWindow = (props, center) => {
             pixelOffset: calculateInfowWindowLatLng(markerData.mapObject, center, new window.google.maps.LatLng(infoWindow.lat, infoWindow.long))
         }}
     >
-        <MapInfoWindow point={infoWindow} v={props.videoPlayer} />
+        <MapInfoWindow point={infoWindow} v={props.videoPlayer} updateInfoWindow={props.infoWindowMarker} />
     </InfoWindow >;
 }
 
