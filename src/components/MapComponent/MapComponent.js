@@ -79,9 +79,7 @@ const customInfoWindow = (props, center) => {
     const data = props.DataVuzix.dataVuzix;
     const markerData = props.MapMarkersData.mapMarkersData;
     const infoWindow = props.InfoWindow.infoWindow;
-    let sw = markerData.mapObject.getBounds().getSouthWest(), lat = (center.lat + sw.lat()) / 2;
     return <InfoWindow
-        // position={{ lat: lat, lng: center.lng }}
         position={{ lat: infoWindow.lat, lng: infoWindow.long }}
         onCloseClick={() => {
             data.vuzixMap.filter(m => m.keepAlive).map(m => m.keepAlive = false);
@@ -103,16 +101,15 @@ const calculateInfowWindowLatLng = (map, center, latLng) => {
     quadrant += (latLng.y > center.y) ? "b" : "t";
     quadrant += (latLng.x < center.x) ? "l" : "r";
     console.log(quadrant);
-    if (quadrant == "tr") {
-        offset = new window.google.maps.Size(-230, 420);
-    } else if (quadrant == "tl") {
-        offset = new window.google.maps.Size(230, 420);
-    } else if (quadrant == "br") {
-        offset = new window.google.maps.Size(-230, 100);
-    } else if (quadrant == "bl") {
-        offset = new window.google.maps.Size(230, 100);
+    if (quadrant === "tr") {
+        offset = new window.google.maps.Size(-230, 400);
+    } else if (quadrant === "tl") {
+        offset = new window.google.maps.Size(230, 400);
+    } else if (quadrant === "br") {
+        offset = new window.google.maps.Size(-230, 120);
+    } else if (quadrant === "bl") {
+        offset = new window.google.maps.Size(230, 120);
     }
-    console.log(offset)
     return offset;
 }
 

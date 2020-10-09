@@ -24,7 +24,7 @@ const mapDispatchToProps = (dispatch) => ({
     fetchDataUsingSpeechText: (data, props) => dispatch(fetchDataUsingSpeechText(data, props))
 });
 
-function groupedPicker(props) {
+function groupedPicker(props, handleSubmit) {
     const s = props.SpeechText;
     const speech = s.speechText.map(s => { return { title: s } })
     const options = speech.map((option) => {
@@ -62,6 +62,8 @@ function groupedPicker(props) {
                 if (value) {
                     props.activateLoader(true);
                     props.fetchDataUsingSpeechText(value.title, props);
+                } else if (value === null) {
+                    handleSubmit();
                 }
             }}
         />
@@ -139,13 +141,13 @@ class MapFilterComponent extends Component {
                                 <InputGroup className="inputGroupValue">
                                     <Input addon type="checkbox" name="isSpeech" value={isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
                                     <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
-                                    {!this.props.SpeechText.isLoading && groupedPicker(this.props)}
+                                    {!this.props.SpeechText.isLoading && groupedPicker(this.props, this.handleSubmit)}
                                 </InputGroup>
                             </FormGroup>
 
                             {/* * Persons Form * */}
                             {personNames && <FormGroup>
-                                {personNames.length > 0 && <CardText className="filterCategoryLabel filterFont">PEOPLE</CardText>}
+                                {personNames.length > 0 && <Label className="filterCategoryLabel filterFont">PEOPLE</Label>}
                                 <InputGroup className="inputGroupValue overflowPersons">
                                     {personNames.map(v =>
                                         <InputGroup key={v.name}>
