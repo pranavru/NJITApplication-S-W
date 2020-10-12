@@ -38,6 +38,7 @@ const hoverMarker = (mark, props) => {
     const addr = props.Addresses.addresses.address;
     if (mark) {
         mark.address = addr.get(`${mark.lat.toFixed(3)}:${mark.long.toFixed(3)}`);
+        if(!mark.address) { mark.address = "Location Unavailable"}
         mark.animated = false;
         if (data.gps_lists) {
             let keyValues = data.gps_lists.has(`${mark.lat},${mark.long}`) ? data.gps_lists.get(`${mark.lat},${mark.long}`).map(m => data.vuzixMap.filter(v => v.id === m.id)[0]) : [];
