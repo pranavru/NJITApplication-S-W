@@ -435,17 +435,14 @@ export const editPersonAttr = (data, props) => (dispatch) => {
         case "images":
             (data.value.length > 1) ? data.value.forEach(d => newFeed.selectedImages.push(d)) : newFeed.selectedImages = data.value;
             break;
-        case "galleryImage":
+        case "gallery":
             let img = newFeed.images[data.value];
             if (img.hasOwnProperty("isSelected")) {
                 img.isSelected = !img.isSelected;
                 newFeed.selectedImages = img.src;
-                newFeed.id = img.id;
             }
             else {
-                newFeed.images.filter(m => m.isSelected).map(m => delete m.isSelected)
                 img.isSelected = true;
-                newFeed.id = img.id;
                 newFeed.selectedImages = img.src;
             }
             break;
@@ -462,7 +459,7 @@ export const personAttributes = (data) => (dispatch) => {
     // if(data.selectedImages.includes(''))
     if (data.selectedImages && data.selectedImages.length > 0) {
         if ((data.fname && data.fname.length >= 3) && (data.lname && data.lname.length >= 3)) {
-            const attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages, id: data.id };
+            const attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages, id: data.images.filter(m => m.isSelected).map(m => m.id) };
             dispatch(addFeedbackValue(attributes));
             return axios.post(baseUrl + '/feedback/', attributes)
                 .then(res => {

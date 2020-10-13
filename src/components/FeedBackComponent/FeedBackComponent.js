@@ -37,7 +37,7 @@ class FeedBackComponent extends Component {
                   showCloseButton={false}
                   showImageCount={true}
                   preloadNextImage={true}
-                  onSelectImage={(i) => this.props.editPersonAttr({ name: "galleryImage", value: i }, this.props)}
+                  onSelectImage={(i) => this.props.editPersonAttr({ name: "gallery", value: i }, this.props)}
                   enableLightbox={false}
                 />
               </div>
