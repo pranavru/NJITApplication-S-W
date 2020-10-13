@@ -38,7 +38,7 @@ const hoverMarker = (mark, props) => {
     const addr = props.Addresses.addresses.address;
     if (mark) {
         mark.address = addr.get(`${mark.lat.toFixed(3)}:${mark.long.toFixed(3)}`);
-        if(!mark.address) { mark.address = "Location Unavailable"}
+        if (!mark.address) { mark.address = "Location Unavailable" }
         mark.animated = false;
         if (data.gps_lists) {
             let keyValues = data.gps_lists.has(`${mark.lat},${mark.long}`) ? data.gps_lists.get(`${mark.lat},${mark.long}`).map(m => data.vuzixMap.filter(v => v.id === m.id)[0]) : [];
@@ -98,18 +98,19 @@ const customInfoWindow = (props, center) => {
 const calculateInfowWindowLatLng = (map, center, latLng) => {
     latLng = getPixelFromLatLng(map, latLng);
     center = map.getProjection().fromLatLngToPoint(map.getCenter());
+    const northEast = map.getProjection().fromLatLngToPoint(map.getBounds().getNorthEast()), southWest = map.getProjection().fromLatLngToPoint(map.getBounds().getSouthWest());
+    const topNearCenter = ((center.y + northEast.y) / 2) < latLng.y, bottomNearCenter = ((center.y + southWest.y) / 2) < latLng.y;
     let quadrant = "", offset = {};
     quadrant += (latLng.y > center.y) ? "b" : "t";
     quadrant += (latLng.x < center.x) ? "l" : "r";
-    console.log(quadrant);
     if (quadrant === "tr") {
-        offset = new window.google.maps.Size(-230, 400);
+        offset = new window.google.maps.Size(-230, !topNearCenter ? 430 : 340);
     } else if (quadrant === "tl") {
-        offset = new window.google.maps.Size(230, 400);
+        offset = new window.google.maps.Size(230, !topNearCenter ? 430 : 340);
     } else if (quadrant === "br") {
-        offset = new window.google.maps.Size(-230, 120);
+        offset = new window.google.maps.Size(-230, bottomNearCenter ? -20: 120);
     } else if (quadrant === "bl") {
-        offset = new window.google.maps.Size(230, 120);
+        offset = new window.google.maps.Size(230, bottomNearCenter ? -20: 120);
     }
     return offset;
 }
@@ -205,9 +206,6 @@ const MapComponent = (props) => {
                 }
             }}
             onResize={() => props.activateLoader(true)}
-            onMouseMove={() => {
-
-            }}
         >
             {infoWindow ? customInfoWindow(props, center) : null}
             <MarkerClusterer options={clusterOptions}>
