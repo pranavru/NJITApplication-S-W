@@ -25,7 +25,7 @@ const NavBarComponent = (props) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [fillColor, setFillColor] = React.useState(false);
   checkUnknownPeople(setFillColor);
-  
+
   return (
     <div className="navContainer">
       <Navbar dark expand="md">
@@ -47,12 +47,7 @@ const NavBarComponent = (props) => {
             </NavItem>
           </Nav>
           {!window.location.pathname.includes("feedback") ?
-            <ZoomInOUTComponent /> :
-            <Link to="/"
-              className="btn btn-secondary"
-              style={{ backgroundColor: '#2C4870' }}
-              onClick={taggingCompleted}
-            >Done Tagging</Link>
+            <ZoomInOUTComponent /> : <></>
           }
         </Collapse>
       </Navbar>
@@ -61,3 +56,11 @@ const NavBarComponent = (props) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBarComponent);
+
+{/* 
+<Link to="/" 
+  className="btn btn-secondary"
+  style={{ backgroundColor: '#2C4870' }}
+  onClick={taggingCompleted}
+>Done Tagging</Link> 
+*/}
