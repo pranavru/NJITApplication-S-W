@@ -30,7 +30,7 @@ class RangeSlider extends React.Component {
         const formatTick = (ms) => ((domain[1] - domain[0]) < new Date("Jan 02, 1970")) ? format(new Date(ms), "HH:ss") : format(new Date(ms), "MMM dd");
 
         return (
-            <Grid container className="rangeSliderGrid" style={{ width: "85%" }} >
+            <Grid container className="rangeSliderGrid" style={{ width: "85%", zIndex: displayChart ? 5 : 1 }} >
                 <Grid item xs={12}>
                     <Card>
                         <div
