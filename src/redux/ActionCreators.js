@@ -1,6 +1,7 @@
 import * as ActionTypes from './ActionTypes';
 import axios from 'axios';
 import { baseUrl } from "../shared/baseUrl";
+import { createReadStream } from 'fs';
 
 //Change the isLoading attribute to true when data is updating
 export const dataVuzixLoading = () => ({ type: ActionTypes.DATAVUZIX_LOADING });
@@ -434,6 +435,7 @@ export const editPersonAttr = (data, props) => (dispatch) => {
             break;
         case "images":
             (data.value.length > 1) ? data.value.forEach(d => newFeed.selectedImages.push(d)) : newFeed.selectedImages = data.value;
+            newFeed.localFile = true;
             break;
         case "gallery":
             let img = newFeed.images[data.value];
@@ -445,6 +447,7 @@ export const editPersonAttr = (data, props) => (dispatch) => {
                 img.isSelected = true;
                 newFeed.selectedImages = img.src;
             }
+            newFeed.localFile = false;
             break;
         default:
             newFeed = props
@@ -456,14 +459,24 @@ export const editPersonAttr = (data, props) => (dispatch) => {
 //Loads person Information from the feedback form
 export const personAttributes = (data) => (dispatch) => {
     dispatch(feedbackLoading(true));
-    // if(data.selectedImages.includes(''))
-    if (data.selectedImages && data.selectedImages.length > 0) {
+    if (data.selectedImages) {
         if ((data.fname && data.fname.length >= 3) && (data.lname && data.lname.length >= 3)) {
-            const attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages, id: data.images.filter(m => m.isSelected).map(m => m.id) };
+            let attributes;
+            if (data.localFile) {
+                attributes = new FormData();
+                attributes.append("name", data.fname + ' ' + data.lname);
+                attributes.append("file", data.selectedImages)
+            } else {
+                attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages, id: data.images.filter(m => m.isSelected).map(m => m.id) };
+            }
             dispatch(addFeedbackValue(attributes));
-            return axios.post(baseUrl + '/feedback/', attributes)
+            return axios.post(baseUrl + '/feedback/', attributes, {
+                headers: {
+                    'Content-Type': data.localFile ? 'multipart/form-data' : 'application/json'
+                }
+            })
                 .then(res => {
-                    if (res.status === 200) {
+                    if (res.status === 200 || res.status === 206) {
                         alert("Response Submitted")
                     }
                 })

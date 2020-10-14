@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, Label, Input, Form } from 'reactstrap';
 import { Link } from 'react-router-dom';
-
+import { createReadStream, createWriteStream } from 'fs';
 import { ButtonComponent } from '../ButtonComponent/ButtonComponent';
 
 import '../PersonAttributesComponent/PersonAttributesComponent.css'
@@ -24,19 +24,9 @@ const PersonAttributesComponent = (props) => {
   };
 
   function previewFile() {
-    var files = [], result = [];
-    var file = document.querySelector('input[type=file]').files;
-    Array.from(file).forEach((f) => {
-      var reader = new FileReader();
-      if (f) {
-        reader.readAsDataURL(f);
-        files.push(reader)
-      }
-    })
-    files.forEach(m => m.onloadend = async () => {
-      await result.push(m.result)
-      if (result !== null) { props.editPersonAttr({ name: "images", value: result }, props) };
-    })
+    var files = [];
+    var files = document.querySelector('input[type=file]').files[0];
+    props.editPersonAttr({ name: "images", value: files }, props)    
   }
 
   return (
