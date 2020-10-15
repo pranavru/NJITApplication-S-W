@@ -45,7 +45,7 @@ function groupedPicker(props, handleSubmit) {
             loading={s.isLoading}
             renderInput={(params) => <TextField
                 {...params}
-                label="Enter Speech Text"
+                label="Enter Text"
                 InputProps={{
                     ...params.InputProps,
                     endAdornment: (

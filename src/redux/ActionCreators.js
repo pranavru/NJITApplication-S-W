@@ -435,7 +435,7 @@ export const editPersonAttr = (data, props) => (dispatch) => {
             break;
         case "images":
             (data.value.length > 1) ? data.value.forEach(d => newFeed.selectedImages.push(d)) : newFeed.selectedImages = data.value;
-            newFeed.localFile = true;
+            newFeed.images = newFeed.images.map(i => i.isSelected = false)
             break;
         case "gallery":
             let img = newFeed.images[data.value];
@@ -447,7 +447,6 @@ export const editPersonAttr = (data, props) => (dispatch) => {
                 img.isSelected = true;
                 newFeed.selectedImages = img.src;
             }
-            newFeed.localFile = false;
             break;
         default:
             newFeed = props
