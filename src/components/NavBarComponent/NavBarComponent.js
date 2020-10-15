@@ -16,7 +16,7 @@ const mapDispatchToProps = (dispatch) => ({
 const checkUnknownPeople = (setFillColor) => {
   fetch(baseUrl + '/get_unk').then(res => res.ok ? res.json() : null).then(res => {
     if (res) {
-      res.length > 0 ? setFillColor(true) : setFillColor(false);
+      (res.length > 0 && !window.location.pathname.includes("feedback")) ? setFillColor(true) : setFillColor(false);
     }
   })
 }
