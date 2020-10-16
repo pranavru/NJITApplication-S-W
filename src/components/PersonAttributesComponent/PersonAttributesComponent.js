@@ -1,7 +1,6 @@
 import React from 'react';
 import { Card, Label, Input, Form } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { createReadStream, createWriteStream } from 'fs';
 import { ButtonComponent } from '../ButtonComponent/ButtonComponent';
 
 import '../PersonAttributesComponent/PersonAttributesComponent.css'
@@ -24,7 +23,6 @@ const PersonAttributesComponent = (props) => {
   };
 
   function previewFile() {
-    var files = [];
     var files = document.querySelector('input[type=file]').files[0];
     props.editPersonAttr({ name: "images", value: files }, props)    
   }

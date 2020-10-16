@@ -1,6 +1,5 @@
 import React from 'react';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
 
 import './NavBarComponent.css';
 
@@ -21,7 +20,7 @@ const checkUnknownPeople = (setFillColor) => {
   })
 }
 
-const NavBarComponent = (props) => {
+const NavBarComponent = () => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [fillColor, setFillColor] = React.useState(false);
   checkUnknownPeople(setFillColor);
@@ -56,11 +55,3 @@ const NavBarComponent = (props) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavBarComponent);
-
-{/* 
-<Link to="/" 
-  className="btn btn-secondary"
-  style={{ backgroundColor: '#2C4870' }}
-  onClick={taggingCompleted}
->Done Tagging</Link> 
-*/}

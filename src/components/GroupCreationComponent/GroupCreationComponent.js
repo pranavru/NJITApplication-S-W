@@ -19,7 +19,7 @@ const GroupCreationComponent = (props) => {
               <div className="row col-sm-12 col-12" key={p.id} style={{ margin: '6px 0px', paddingRight: '5px' }}>
                 <div className="col-sm-9 col-12"><p>Name: {p.name}</p></div>
                 <div className="col-sm-3 col-12 taggedPersonImageContainer">
-                  <img className="shadow-sm" src={baseUrl + p.img} width="80px" height="85px" style={{ borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} alt={"Image not found"} />
+                  <img className="shadow-sm" src={baseUrl + p.img} width="80px" height="85px" style={{ borderTopRightRadius: '4px', borderBottomRightRadius: '4px' }} alt={"Not found"} />
                 </div>
               </div>
             </Card>

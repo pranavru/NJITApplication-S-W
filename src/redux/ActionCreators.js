@@ -1,7 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import axios from 'axios';
 import { baseUrl } from "../shared/baseUrl";
-import { createReadStream } from 'fs';
 
 //Change the isLoading attribute to true when data is updating
 export const dataVuzixLoading = () => ({ type: ActionTypes.DATAVUZIX_LOADING });
@@ -90,7 +89,7 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
 }
 
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter```
-export const editVideo = (parameter, props) => (dispatch) => {
+export const editVideo = (parameter) => (dispatch) => {
     return axios.post(baseUrl + '/query/', parameter)
         .then(response => {
             if (!response) {
