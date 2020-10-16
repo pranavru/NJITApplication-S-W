@@ -180,17 +180,25 @@ input:checked + .slider:before {
 
 /* scroll Track */
 .galleryDiv::-webkit-scrollbar-track {
-  box-shadow: inset 2px 2px 5px #e6e6e6; 
+  box-shadow: inset 2px 2px 5px #e6e6e6;
   border-radius: 4px;
 }
- 
+
 /* scroll Handle */
 .galleryDiv::-webkit-scrollbar-thumb {
-  background: #406aa5; 
+  background: #406aa5;
   border-radius: 4px;
 }
 
 /* scroll Handle on hover */
 .galleryDiv::-webkit-scrollbar-thumb:hover {
   background: #325381;
+}
+
+.cardButtonOnHover {
+  position: absolute;
+  left: 45%;
+  top: 45%;
+  width: 10%;
+  height: 10%;
 }

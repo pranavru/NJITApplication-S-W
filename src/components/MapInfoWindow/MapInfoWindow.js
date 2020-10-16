@@ -25,16 +25,30 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
 
 function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
     const p = props.point;
+    console.log(p)
     return !p.keepAlive ?
-        (<div id="containerImg">
-            <ImageComponent src={baseUrl + p.image} alt={p.id} idTag="theImage" />
-        </div>) :
-        (!displayImagesVideo ?
+
+        //Display Image if Marker is not clicked and only hovered. If No Image Found then checks for Video or else "No Image Found" is displayed
+        (p.image && !p.video) ?
+            <div id="containerImg">
+                <ImageComponent src={baseUrl + p.image} alt={p.id} idTag="theImage" />
+            </div>
+            : <div id="containerImg" onClick={() => onVideoClicked(props, p, setSpeechValues)}>
+                <img src={baseUrl + p.thumbnail} id="theImage" alt="Thumbnail not found" />
+                <img src="/mediaControl.svg" className="cardButtonOnHover" alt="Load svg" onClick={() => onVideoClicked(props, p, setSpeechValues)} title="Click to view the video" />
+            </div>
+
+        : !displayImagesVideo ?
+            //If Info Window is kept alive, as Marker is clicked
+
             !p.images ?
+
+                //If no Images found  
                 <div id="containerImg">
                     <ImageComponent src={baseUrl + p.image} alt={p.id} idTag="theImage" />
-                </div> :
-                p.images.length > 0 ?
+                </div>
+
+                : p.images.length > 0 ?
                     <div className="galleryDiv">
                         <Gallery
                             images={p.images}
@@ -47,18 +61,24 @@ function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
                             preloadNextImage={true}
                             tagStyle={{ backgroundColor: "#2C4870", font: "8px monospace", fontWeight: "bold", color: "#ffff1a", padding: '3px', borderRadius: '3px' }}
                         />
-                    </div> :
-                    // <div id="containerImg">
-                    //     <ImageComponent src={baseUrl + p.image} alt={p.id} idTag="theImage" />
-                    // </div> :
-                    setToDisplay(true) :
-            <div className="row videoDiv" style={{ margin: '0px' }}>
-                {p.videos.map(m => <div className="cardDisplay" onClick={() => onVideoClicked(props, m, setSpeechValues)}>
-                    <ImageComponent src={baseUrl + m.thumbnail} classes="cardThumb" alt="Thumbnail not found" />
-                    <img src="/mediaControl.svg" className="cardButton" alt="Load svg" onClick={() => onVideoClicked(props, m, setSpeechValues)} />
-                    <div className="row cardDate">{m.tags.map(t => <div className="tagStyle">{t.value}</div>)}</div>
-                </div>)}
-            </div>);
+                    </div>
+                    : setToDisplay(true)
+
+            : <div className="row videoDiv" style={{ margin: '0px' }}>
+                {p.videos.map(m =>
+                    <div className="cardDisplay" onClick={() => onVideoClicked(props, m, setSpeechValues)}>
+                        <ImageComponent src={baseUrl + m.thumbnail} classes="cardThumb" alt="Thumbnail not found" />
+                        <img src="/mediaControl.svg" className="cardButton" alt="Load svg" onClick={() => onVideoClicked(props, m, setSpeechValues)} />
+                        <div className="row cardDate">
+                            {m.tags.map(t =>
+                                <div className="tagStyle">
+                                    {t.value}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+            </div>;
 }
 
 function onVideoClicked(props, m, setSpeechValues) {
@@ -90,10 +110,7 @@ function MapInfoWindow(props) {
     const [displayImagesVideo, setToDisplay] = React.useState(false);
     const [displaySpeechValue, setSpeechValues] = React.useState(undefined);
     return (
-        <Card style={{ width: "30vw", overflow: 'hidden' }} onClick={() => {
-            props.point.keepAlive = true;
-            props.updateInfoWindow(props.point);
-        }} >
+        <Card style={{ width: "30vw", overflow: 'hidden' }} >
             {displayWindowHeader(props, displayImagesVideo, setToDisplay)}
             {displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay)}
             {displayImagesVideo && displaySpeechValue ? displayFooter(displaySpeechValue) : <CardFooter style={{ minHeight: '40px' }}></CardFooter>}

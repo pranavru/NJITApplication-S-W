@@ -158,7 +158,7 @@ const MapComponent = (props) => {
                             if (!mapVuzix.keepAlive) {
                                 hoverMarker(null, props)
                             }
-                        }, 200)}
+                        }, 1500)}
                         onClick={() => {
                             mapVuzix.keepAlive = true;
                             if (mapVuzix.images || mapVuzix.videos) {
