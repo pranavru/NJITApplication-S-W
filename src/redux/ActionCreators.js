@@ -337,8 +337,8 @@ const setDateValueinMilliSeconds = (dateValue) => {
 
 // This method calculates the range of slider and names of people in event
 const initializeMapFilter = (data) => {
-    let address = new Map(), addressValue;
-    let range = [+setDateValueinMilliSeconds(data.startDate), +setDateValueinMilliSeconds(data.endDate)], dateMap = [], persons = new Map([]), personObject = [];
+    let address = new Map(), addressValue, hours = 1000 * 60 * 30 * 2 * 3;
+    let range = [+setDateValueinMilliSeconds(data.startDate) - (2 * hours), +setDateValueinMilliSeconds(data.endDate) + (2 * hours)], dateMap = [], persons = new Map([]), personObject = [];
     data.vuzixMap.forEach(m => {
         m.animated = false;
         dateMap.push(setDateValueinMilliSeconds(m.created))     //Event Date in milliseconds
