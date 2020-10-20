@@ -1,13 +1,16 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { GoogleMap, useLoadScript, Marker, InfoWindow, MarkerClusterer } from "@react-google-maps/api";
+import { Input, InputGroup, CardText } from 'reactstrap';
 
 import MapInfoWindow from '../MapInfoWindow/MapInfoWindow';
+import { ButtonComponent } from '../ButtonComponent/ButtonComponent';
 
 import "../MapComponent/MapComponent.css"
 import { baseUrl } from "../../shared/baseUrl";
 
 import { connect } from 'react-redux';
-import { updateMapAddressOnExpiry, loadMarkers, infoWindowMarker, changeMapCenter, loadMap, videoPlayer } from '../../redux/ActionCreators'
+import { updateMapAddressOnExpiry, loadMarkers, infoWindowMarker, changeMapCenter, loadMap, videoPlayer, setMarkersAsMapMoves, editDataVuzix } from '../../redux/ActionCreators'
+import { FormGroup } from "@material-ui/core";
 
 const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMarkersData: state.mapMarkersData, Addresses: state.addresses, InfoWindow: state.infoWindow } }
 
@@ -17,7 +20,9 @@ const mapDispatchToProps = (dispatch) => ({
     loadMarkers: (data, mapReference) => dispatch(loadMarkers(data, mapReference)),
     infoWindowMarker: (data) => dispatch(infoWindowMarker(data)),
     updateMapAddressOnExpiry: () => dispatch(updateMapAddressOnExpiry()),
-    videoPlayer: data => dispatch(videoPlayer(data))
+    videoPlayer: data => dispatch(videoPlayer(data)),
+    setMarkersAsMapMoves: data => dispatch(setMarkersAsMapMoves(data)),
+    editDataVuzix: (obj, props) => dispatch(editDataVuzix(obj, props)),
 })
 
 const dateStringVal = (p) => {
@@ -108,9 +113,9 @@ const calculateInfowWindowLatLng = (map, center, latLng) => {
     } else if (quadrant === "tl") {
         offset = new window.google.maps.Size(230, !topNearCenter ? 430 : 340);
     } else if (quadrant === "br") {
-        offset = new window.google.maps.Size(-230, bottomNearCenter ? -20: 120);
+        offset = new window.google.maps.Size(-230, bottomNearCenter ? -20 : 120);
     } else if (quadrant === "bl") {
-        offset = new window.google.maps.Size(230, bottomNearCenter ? -20: 120);
+        offset = new window.google.maps.Size(230, bottomNearCenter ? -20 : 120);
     }
     return offset;
 }
@@ -180,38 +185,70 @@ const MapComponent = (props) => {
     }
 
     const logBounds = () => {
-        props.loadMarkers(data.vuzixMap, markerData);
+        if (markerData.searchAsMapMoves || markerData.initialLoad) {
+            if (markerData.initialLoad) { markerData.initialLoad = false; }
+            props.loadMarkers(data.vuzixMap, markerData);
+        }
         props.activateLoader(false);
     }
 
+    const SearchMapMarkersAsMapMoves = () => <FormGroup>
+        <InputGroup>
+            <Input addon type="checkbox" name="searchAsMapMoves" checked={markerData.searchAsMapMoves} aria-label="SearchAsMapMoves" onClick={() => props.setMarkersAsMapMoves(markerData)} style={{ marginTop: '1%' }} />
+            <CardText style={{ color: '#ffffff', font: '1em monospace', marginLeft: '2%' }}>SEARCH AS MAP MOVES</CardText>
+        </InputGroup >
+    </FormGroup >;
+
+    const redoSearch = () => {
+        const bounds = markerData.mapObject.getBounds();
+        const n = bounds.getNorthEast(), s = bounds.getSouthWest();
+        const location = [n.lat(), n.lng(), s.lat(), s.lng()];
+        props.activateLoader(true);
+        props.editDataVuzix({ location }, props)
+    }
+    const RedoSearchComponent = () => <ButtonComponent name={"Redo Search in Map"} class="redoSearchDiv"
+        callBackFunc={() => redoSearch()}
+    />
+
     return (
-        <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={center}
-            clickableIcons={false}
-            options={mapOptions}
-            onLoad={onLoad}
-            onIdle={() => logBounds()}
-            onDragEnd={() => {
-                props.activateLoader(true);
-                props.changeMapCenter(markerData)
-            }}
-            onZoomChanged={() => {
-                props.changeMapCenter(markerData)
-                if (mapObject) {
-                    const zoomLevel = mapObject.getZoom();
-                    if (zoomLevel < 20) {
-                        props.activateLoader(true);
+        <Fragment>
+            {!markerData.searchEventsOnCurrentLocation ? <div className="searchAsMapMovesDiv">
+                <SearchMapMarkersAsMapMoves />
+            </div> : <RedoSearchComponent />}
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={center}
+                clickableIcons={false}
+                options={mapOptions}
+                onLoad={onLoad}
+                onIdle={() => logBounds()}
+                onDragEnd={() => {
+                    props.activateLoader(true);
+                    if (!markerData.searchAsMapMoves) {
+                        markerData.searchEventsOnCurrentLocation = true;
                     }
-                }
-            }}
-            onResize={() => props.activateLoader(true)}
-        >
-            {infoWindow ? customInfoWindow(props, center) : null}
-            <MarkerClusterer options={clusterOptions}>
-                {clusterer => MarkerData(mapMarkers, clusterer)}
-            </MarkerClusterer>
-        </GoogleMap >
+                    props.changeMapCenter(markerData)
+                }}
+                onZoomChanged={() => {
+                    if (!markerData.searchAsMapMoves) {
+                        markerData.searchEventsOnCurrentLocation = true;
+                    }
+                    props.changeMapCenter(markerData)
+                    if (mapObject) {
+                        const zoomLevel = mapObject.getZoom();
+                        if (zoomLevel < 20) {
+                            props.activateLoader(true);
+                        }
+                    }
+                }}
+                onResize={() => props.activateLoader(true)}
+            >
+                {infoWindow ? customInfoWindow(props, center) : null}
+                <MarkerClusterer options={clusterOptions}>
+                    {clusterer => MarkerData(mapMarkers, clusterer)}
+                </MarkerClusterer>
+            </GoogleMap >
+        </Fragment>
     );
 }
 

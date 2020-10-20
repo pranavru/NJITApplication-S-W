@@ -24,3 +24,22 @@
   vertical-align: baseline;
   margin: 3px;
 }
+
+.searchAsMapMovesDiv {
+  position: absolute;
+  right: 1%;
+  z-index: 5;
+  width: 16%;
+  top: 2%;
+  background-color: #2C4870;
+  padding : 0.60%;
+  border-radius: 4px;
+  elevation: 2;
+}
+
+.redoSearchDiv {
+  width: 16%;
+  right: 1%;
+  top: 2%;
+  z-index: 5;
+}

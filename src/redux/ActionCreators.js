@@ -61,7 +61,15 @@ export const fetchDataVuzix = (dispatch) => {
 
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter```
 export const editDataVuzix = (parameter, props) => (dispatch) => {
-    return axios.post(baseUrl + '/query/', parameter)
+    console.log(parameter, props)
+    const markerData = props.MapMarkersData.mapMarkersData
+    let url = "";
+    if (markerData.searchEventsOnCurrentLocation && parameter.hasOwnProperty("location")) {
+        url = baseUrl + '/location/'
+    } else {
+        url = baseUrl + '/query/'
+    }
+    return axios.post(url, parameter)
         .then(response => {
             if (!(response.data.vuzixMap.length > 0)) {
                 alert("No data with search query");
@@ -76,13 +84,15 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         })
         .then(response => response.data)
         .then(response => {
-
             //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
 
             dispatch(loadDataVuzix(response))
-            dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
-            dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
+            dispatch(loadMarkers(props.DataVuzix.vuzixMap, markerData))
+            //Change Map Center and set searchAsMapMoves to true
+            markerData.initialLoad = true;
+            markerData.searchEventsOnCurrentLocation = false;
+            dispatch(changeMapCenter(markerData))
 
         }).then(() => props.activateLoader(false))
         .catch(err => dispatch(dataVuzixFailed(err.message)))
@@ -126,6 +136,7 @@ export const fetchMapFilter = (data) => (dispatch) => {
             data: dateMap
         },
         videoRequired: "false",
+        searchByText: '',
     }));
 };
 
@@ -211,6 +222,9 @@ export const editMapFilter = (type, newValue, props) => (dispatch) => {
             dispatch(loadEditedFilter(newFilter));
         };
     };
+    if (type.includes("searchByText")) {
+        newFilter.searchByText = newValue;
+    }
     dispatch(loadEditedFilter(newFilter));
 };
 
@@ -221,7 +235,10 @@ export const initMapDetails = () => (dispatch) => {
         detail: false,
         mapMarkers: [],                                     // Markers to load on Map
         animatedMarkerID: {},
-        mapObject: null                                     // Stores map details - bounds, terrain, etc.
+        mapObject: null,                                     // Stores map details - bounds, terrain, etc.
+        searchMapAsMoves: false,
+        initialLoad: true,
+        searchEventsOnCurrentLocation: false,
     }
     dispatch(loadMapMarkerData(mapReference));
 }
@@ -325,6 +342,12 @@ export const infoWindowMarker = (data) => (dispatch) => {
     } else {
         dispatch(loadInfoWindow(data));
     }
+}
+
+//Sets Loading markers when Map Moves
+export const setMarkersAsMapMoves = (data) => dispatch => {
+    data.searchAsMapMoves = !data.searchAsMapMoves;
+    dispatch(loadMapMarkerData(data))
 }
 
 // The method converts the Date isoStringValue to time in milliseconds.
