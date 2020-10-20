@@ -14,7 +14,7 @@ const dateStringVal = (p) => {
     return `${month} ${day}, ${year} ${hour}:${minute}:${second}`;
 }
 
-const mapStateToProps = (state) => { return { MapMarkersData: state.mapMarkersData, Addresses: state.addresses } }
+const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMarkersData: state.mapMarkersData, Addresses: state.addresses } }
 
 const mapDispatchToProps = (dispatch) => ({
     animateMapMarker: (data, marker) => dispatch(animateMapMarker(data, marker)),
@@ -25,6 +25,7 @@ const mapDispatchToProps = (dispatch) => ({
 function MarkerPLaceDetailComponent(props) {
     const { mapMarkers } = props.MapMarkersData.mapMarkersData;
     const { address } = props.Addresses.addresses;
+    const { dataVuzix } = props.DataVuzix;
     return (
         <>
             {mapMarkers.length <= 0 ?
@@ -85,7 +86,10 @@ function MarkerPLaceDetailComponent(props) {
                             </Card>
                         )}
                     </div>
-                    <div><p className="endOfList">End of List</p></div>
+                    <div>
+                        <p className="endOfList">End of List</p>
+                        <p className="endOfList">Displaying {mapMarkers.length} of {dataVuzix.vuzixMap.length} </p>
+                    </div>
                 </>
             }
         </>
