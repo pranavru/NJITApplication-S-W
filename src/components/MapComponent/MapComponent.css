@@ -29,16 +29,22 @@
   position: absolute;
   right: 1%;
   z-index: 5;
-  width: 16%;
+  width: 15%;
   top: 2%;
-  background-color: #2C4870;
-  padding : 0.60%;
+  background-color: #2c4870;
+  padding: 0.55%;
   border-radius: 4px;
   elevation: 2;
 }
 
+.searchAsMapMovesText {
+  color: #ffffff;
+  font: 0.9em monospace;
+  margin-left: 7.5%;
+}
+
 .redoSearchDiv {
-  width: 16%;
+  width: 15%;
   right: 1%;
   top: 2%;
   z-index: 5;

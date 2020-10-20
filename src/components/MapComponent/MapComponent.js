@@ -186,16 +186,16 @@ const MapComponent = (props) => {
 
     const logBounds = () => {
         if (markerData.searchAsMapMoves || markerData.initialLoad) {
-            if (markerData.initialLoad) { markerData.initialLoad = false; }
             props.loadMarkers(data.vuzixMap, markerData);
+            if (markerData.initialLoad) { markerData.initialLoad = false; }
         }
         props.activateLoader(false);
     }
 
     const SearchMapMarkersAsMapMoves = () => <FormGroup>
         <InputGroup>
-            <Input addon type="checkbox" name="searchAsMapMoves" checked={markerData.searchAsMapMoves} aria-label="SearchAsMapMoves" onClick={() => props.setMarkersAsMapMoves(markerData)} style={{ marginTop: '1%' }} />
-            <CardText style={{ color: '#ffffff', font: '1em monospace', marginLeft: '2%' }}>SEARCH AS MAP MOVES</CardText>
+            <Input addon type="checkbox" name="searchAsMapMoves" checked={markerData.searchAsMapMoves} aria-label="SearchAsMapMoves" onClick={() => props.setMarkersAsMapMoves(markerData)} />
+            <CardText className="searchAsMapMovesText">Search as Map moves</CardText>
         </InputGroup >
     </FormGroup >;
 
@@ -224,13 +224,13 @@ const MapComponent = (props) => {
                 onIdle={() => logBounds()}
                 onDragEnd={() => {
                     props.activateLoader(true);
-                    if (!markerData.searchAsMapMoves) {
+                    if (!markerData.searchAsMapMoves && !markerData.initialLoad) {
                         markerData.searchEventsOnCurrentLocation = true;
                     }
                     props.changeMapCenter(markerData)
                 }}
                 onZoomChanged={() => {
-                    if (!markerData.searchAsMapMoves) {
+                    if (!markerData.searchAsMapMoves && !markerData.initialLoad) {
                         markerData.searchEventsOnCurrentLocation = true;
                     }
                     props.changeMapCenter(markerData)
