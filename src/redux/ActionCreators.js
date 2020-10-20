@@ -27,12 +27,16 @@ export const loadDataVuzix = (data) => ({ type: ActionTypes.ADD_DATAVUZIX, paylo
 export const loadMapFilter = (data) => ({ type: ActionTypes.ADD_INIT_MAPFILTER, payload: data });
 export const loadEditedFilter = (data) => ({ type: ActionTypes.EDIT_MAPFILTER, payload: data });
 export const loadAddressValue = (data) => ({ type: ActionTypes.ADD_ADDRESSVALUE, payload: data });
-export const loadMapMarkerData = (data) => ({ type: ActionTypes.ADD_MAPMARKERSDATA, payload: data });
+export const loadMapMarkerData = (data, type) => ({ type: type, payload: data });
 export const loadInfoWindow = (data) => ({ type: ActionTypes.INIT_INFOWINDOW, payload: data });
 export const loadVideoData = (data) => ({ type: ActionTypes.ADD_VIDEODATA, payload: data });
 export const loadSpeechText = (data) => ({ type: ActionTypes.ADD_SPEECHTEXT, payload: data });
 export const initFeedbackForm = (data) => ({ type: ActionTypes.INIT_FEEDBACK, payload: data });
 export const addFeedbackValue = (data) => ({ type: ActionTypes.ADD_FEEDBACK, payload: data });
+
+/*
+    *** Start of => Actions Performed in Data Loading Module
+*/
 
 // Fetches data when initial URL is hit.
 export const fetchDataVuzix = (dispatch) => {
@@ -98,22 +102,204 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         .catch(err => dispatch(dataVuzixFailed(err.message)))
 }
 
-// Edit Vuzix Blade data based on the Filter parameters as ```parameter```
-export const editVideo = (parameter) => (dispatch) => {
-    return axios.post(baseUrl + '/query/', parameter)
-        .then(response => {
-            if (!response) {
-                alert("No video found with search query");
-            } else {
-                console.log(response.data)
-                let videoRef = { video: baseUrl + response.data.video, thumbnail: baseUrl + response.data.thumbnail }
-                return videoRef;
-            }
-        })
-        //Update videoDetails Object with the video Data.
-        .then(r => dispatch(videoPlayer(r)))
-        .catch(err => dispatch(videoFailed(err.message)))
+/*
+    *** End of => Actions Performed in Data Loading Module
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    *** Start of => Actions Performed in Map Module
+*/
+
+// Fetches initial Map details when initial URL is hit
+export const initMapDetails = () => (dispatch) => {
+    let mapReference = {
+        center: { lat: 40.74918, lng: -74.156204 },         // center: Harrision, Newark, NJ
+        detail: false,
+        mapMarkers: [],                                     // Markers to load on Map
+        animatedMarkerID: {},
+        mapObject: null,                                     // Stores map details - bounds, terrain, etc.
+        searchMapAsMoves: false,
+        initialLoad: true,
+        searchEventsOnCurrentLocation: false,
+    }
+    dispatch(loadMapMarkerData(mapReference, ActionTypes.INIT_MAP_DETAILS));
 }
+
+// Load map details in ```mapObject``` on map Load
+export const loadMap = (mapObj, mapReference) => dispatch => {
+    dispatch(mapMarkersDataLoading(true));
+    mapReference.mapObject = mapObj;
+    dispatch(loadMapMarkerData(mapReference, ActionTypes.LOAD_MAP));
+}
+
+// Load markers available with in bounds of the screen after ```mapObject``` is loaded
+export const loadMarkers = (data, mapReference) => (dispatch) => {
+    const bounds = mapReference.mapObject.getBounds();
+
+    if (data) {
+        //Filter data based on Bounds values and return only those... available with in bounds
+        const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
+        mapReference.mapMarkers = markers;
+        mapReference.zIndex = mapReference.zIndex === undefined ? markers.length + 1 : mapReference.zIndex;
+        dispatch(loadMapMarkerData(mapReference, ActionTypes.ADD_MAPMARKERSDATA));
+    }
+}
+
+// Change Center of map based on the Drag / Zoom In / Zoom Out of the map by the User
+export const changeMapCenter = (data) => (dispatch) => {
+    data.center = { lat: data.mapObject.getCenter().lat(), lng: data.mapObject.getCenter().lng() };
+    dispatch(loadMapMarkerData(data, ActionTypes.CHANGE_MAP_CENTER));
+}
+
+// Calculates and loads the marker which is closest to the current center of the map.
+export const findClosestMarker = (data, mapObject) => (dispatch) => {
+    let latLng = mapObject.center;
+    let R = 6371; // radius of earth in km
+    let distances = [];
+    let closest = -1;
+    for (let i = 0; i < data.length; i++) {
+        let mlatLng = { lat: data[i].lat, lng: data[i].long };
+        let dLat = rad(mlatLng.lat - latLng.lat);
+        let dLong = rad(mlatLng.lng - latLng.lng);
+        let a = sinSquare(dLat / 2) + cosSquare(rad(latLng.lat)) * sinSquare(dLong / 2);
+        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        let d = R * c;
+        distances[i] = d;
+        if (closest === -1 || d < distances[closest]) {
+            closest = i;
+        }
+    }
+    mapObject.center = { lat: data[closest].lat, lng: data[closest].long };
+    dispatch(loadMapMarkerData(mapObject, ActionTypes.CLOSEST_MARKER));
+}
+
+// Calculates and loads the most recent created marker to the current center of the map.
+export const findRecentMarker = (data, mapObject) => (dispatch) => {
+    let mostRecent = data ? data[0] : null;;
+    data.forEach(d => mostRecent = new Date(d.created).getTime() > new Date(mostRecent.created).getTime() ? d : mostRecent)
+    mapObject.center = { lat: mostRecent.lat, lng: mostRecent.long };
+    mapObject.mapMarkers.push(mostRecent);
+    dispatch(loadMapMarkerData(mapObject, ActionTypes.MOST_RECENT_MARKER));
+    dispatch(animateMapMarker(mapObject, mostRecent));
+    window.setTimeout(dispatch(animateMapMarker(mapObject, null), 5000));
+}
+
+//Sets Loading markers when Map Moves
+export const setMarkersAsMapMoves = (data) => dispatch => {
+    data.searchAsMapMoves = !data.searchAsMapMoves;
+    dispatch(loadMapMarkerData(data, ActionTypes.SEARCH_AS_MAP_MOVES))
+}
+
+// Loads the Info window when mouse hovers over a marker
+export const infoWindowMarker = (data) => (dispatch) => {
+    if (data === undefined) {
+        dispatch(infoWindowFailed("Data is not defined"));
+    } else {
+        dispatch(loadInfoWindow(data));
+    }
+}
+
+// Pan to the Closest Marker if current Bounds contains zero markers
+const rad = (x) => x * Math.PI / 180;
+const sinSquare = (x) => Math.pow(Math.sin(x), 2);
+const cosSquare = (x) => Math.pow(Math.cos(x), 2);
+
+export const updateMapAddressOnExpiry = (data) => (dispatch) => {
+    let address = new Map(), addressValue;
+    dispatch(addressValueLoading(true));
+    data.forEach(m => {
+        let temp = loadMarkerAddresses(m, address)              //Load Address Values
+        if (temp !== undefined) {
+            addressValue = temp;
+        }
+    });
+    dispatch(loadAddressValue(addressValue));
+}
+/*
+    *** End of => Actions Performed in Map Module
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    *** Start of => Actions Performed in Details Card Module
+*/
+
+// Load Details Div 
+export const displayDetails = (data, mapReference) => dispatch => {
+    mapReference.detail = data;
+    dispatch(loadMapMarkerData(mapReference, ActionTypes.DISPLAY_MARKER_DETAILS));
+}
+
+//Toggle Animation of map markers
+export const animateMapMarker = (data, marker) => (dispatch) => {
+    data.zIndex = data.zIndex + 1;
+    if (marker === null) {
+        data.mapMarkers.filter((d) => d.animated).map((m) => m.animated = false);
+    } else {
+        data.mapMarkers.filter((d) => d.id === marker.id).map(m => {
+            m.animated = true;
+            m.zIndex = data.zIndex;
+            return m;
+        });
+    }
+    dispatch(loadMarkers(data.mapMarkers, data));
+}
+
+/*
+    *** End of => Actions Performed in Details Card Module
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    *** Start of => Actions Performed in Filter Module
+*/
+
+
+// This method calculates the range of slider and names of people in event
+const initializeMapFilter = (data) => {
+    let address = new Map(), addressValue, hours = 1000 * 60 * 30 * 2 * 3;
+    let range = [+setDateValueinMilliSeconds(data.startDate) - (2 * hours), +setDateValueinMilliSeconds(data.endDate) + (2 * hours)], dateMap = [], persons = new Map([]), personObject = [];
+    data.vuzixMap.forEach(m => {
+        m.animated = false;
+        dateMap.push(setDateValueinMilliSeconds(m.created))     //Event Date in milliseconds
+        personsArray(m, persons);                               //Load Persons Names
+        let temp = loadMarkerAddresses(m, address)              //Load Address Values
+        if (temp !== undefined) {
+            addressValue = temp;
+        }
+    });
+    Array.from(persons.keys()).forEach(element => personObject.push({ checked: false, name: element }))
+    dateMap.sort();
+    return { range, dateMap, personObject, addressValue };
+};
+
+// The method converts the Date isoStringValue to time in milliseconds.
+const setDateValueinMilliSeconds = (dateValue) => {
+    const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
+    let [{ value: month }, , { value: day }, , { value: year }, , { value: hours }] = dateTimeFormat.formatToParts(new Date(dateValue));
+    return new Date(`${month} ${day}, ${year} ${hours -= hours % 3 === 1 ? 1 : hours % 3 === 2 ? 2 : 0}:00:00`).getTime();
+};
+
+//Loads person names in the Filter list.
+const personsArray = (m, persons) => m.person_names.forEach(element => {
+    if (!persons.has(element.person_name)) {
+        persons.set(element.person_name);
+    }
+});
+
+//Load addresses for Markers - Card Detail Div
+const loadMarkerAddresses = (m, address) => {
+    let expiryDate = new Date().getTime() + 300000;
+    let key = `${m.lat.toFixed(3)}:${m.long.toFixed(3)}`;
+
+    const fetchAndLoadMarkerAddresses = () => {
+        Promise.all(
+            fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${m.lat},${m.long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
+                .then(res => res.json())
+                .then(data => {
+                    address.set(key, data.results[(parseInt(data.results.length / 2) + 1)].formatted_address);
+                }).catch(err => console.log(err))
+        ).then().catch(err => err);
+    }
+
+    if (!address.has(key)) {
+        address.set(key, "");
+        fetchAndLoadMarkerAddresses();
+        return { address, expiryDate };
+    }
+};
 
 // Fetches filter data when initial URL is hit
 export const fetchMapFilter = (data) => (dispatch) => {
@@ -140,7 +326,52 @@ export const fetchMapFilter = (data) => (dispatch) => {
     }));
 };
 
-//Fetch Speech Text Values
+// Edit Map Filter based on User Interaction
+// newValue is an object: 
+// ``` newValue={ type: String, value: String} ``` or 
+// ``` newValue={ type: String, value: { type: String, value: String }} ```
+export const editMapFilter = (type, newValue, props) => (dispatch) => {
+    dispatch(mapFilterLoading(true))
+    dispatch(videoDataLoading(true))
+    let newFilter = props.mapFilter;
+    if (type.includes("isSpeech")) {
+        newFilter.isSpeech = newValue;
+    }
+    if (type.includes("personNames")) {
+        newFilter.personNames = newValue;
+    }
+    if (type.includes("dateValues")) {
+        newFilter.dateValues = newValue;
+        let updated = newValue, domain = newValue, values = newValue;
+        newFilter.mapDateRange = { updated, domain, values, data: newFilter.mapDateRange.data }
+    }
+    if (type.includes("mapDateRange")) {
+        const type = newValue.type;
+        if (type.includes("update")) {
+            newFilter.mapDateRange.updated = newValue.value;
+        } else if (type.includes("onChange")) {
+            newFilter.mapDateRange.values = newValue.value;
+        } else if (type.includes("domain")) {
+            newFilter.mapDateRange.domain = newValue.value;
+        } else if (type.includes("barGraphData")) {
+            newFilter.mapDateRange.data = newValue.value;
+        } else {
+            dispatch(loadEditedFilter(newFilter));
+        };
+    };
+    if (type.includes("searchByText")) {
+        newFilter.searchByText = newValue;
+    }
+    dispatch(loadEditedFilter(newFilter));
+};
+
+/*
+    *** End of => Actions Performed in Filter Module
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    *** Start of => Actions Performed in Autocomplete API Module
+*/
+
+//Fetch Speech Text Values - Autocomplete API
 export const fetchSpeechText = () => (dispatch) => {
     dispatch(speechTextLoading());
     return fetch(baseUrl + '/search/')
@@ -189,220 +420,11 @@ export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.p
     }).then(() => props.activateLoader(false))
     .catch(err => dispatch(dataVuzixFailed(err.message)))
 
-// Edit Map Filter based on User Interaction
-// newValue is an object: 
-// ``` newValue={ type: String, value: String} ``` or 
-// ``` newValue={ type: String, value: { type: String, value: String }} ```
-export const editMapFilter = (type, newValue, props) => (dispatch) => {
-    dispatch(mapFilterLoading(true))
-    dispatch(videoDataLoading(true))
-    let newFilter = props.mapFilter;
-    if (type.includes("isSpeech")) {
-        newFilter.isSpeech = newValue;
-    }
-    if (type.includes("personNames")) {
-        newFilter.personNames = newValue;
-    }
-    if (type.includes("dateValues")) {
-        newFilter.dateValues = newValue;
-        let updated = newValue, domain = newValue, values = newValue;
-        newFilter.mapDateRange = { updated, domain, values, data: newFilter.mapDateRange.data }
-    }
-    if (type.includes("mapDateRange")) {
-        const type = newValue.type;
-        if (type.includes("update")) {
-            newFilter.mapDateRange.updated = newValue.value;
-        } else if (type.includes("onChange")) {
-            newFilter.mapDateRange.values = newValue.value;
-        } else if (type.includes("domain")) {
-            newFilter.mapDateRange.domain = newValue.value;
-        } else if (type.includes("barGraphData")) {
-            newFilter.mapDateRange.data = newValue.value;
-        } else {
-            dispatch(loadEditedFilter(newFilter));
-        };
-    };
-    if (type.includes("searchByText")) {
-        newFilter.searchByText = newValue;
-    }
-    dispatch(loadEditedFilter(newFilter));
-};
-
-// Fetches initial Map details when initial URL is hit
-export const initMapDetails = () => (dispatch) => {
-    let mapReference = {
-        center: { lat: 40.74918, lng: -74.156204 },         // center: Harrision, Newark, NJ
-        detail: false,
-        mapMarkers: [],                                     // Markers to load on Map
-        animatedMarkerID: {},
-        mapObject: null,                                     // Stores map details - bounds, terrain, etc.
-        searchMapAsMoves: false,
-        initialLoad: true,
-        searchEventsOnCurrentLocation: false,
-    }
-    dispatch(loadMapMarkerData(mapReference));
-}
-
-export const updateMapAddressOnExpiry = (data) => (dispatch) => {
-    let address = new Map(), addressValue;
-    dispatch(addressValueLoading(true));
-    data.forEach(m => {
-        let temp = loadMarkerAddresses(m, address)              //Load Address Values
-        if (temp !== undefined) {
-            addressValue = temp;
-        }
-    });
-    dispatch(loadAddressValue(addressValue));
-}
-
-// Load map details in ```mapObject``` on map Load
-export const loadMap = (mapObj, mapReference) => dispatch => {
-    dispatch(mapMarkersDataLoading(true));
-    mapReference.mapObject = mapObj;
-    dispatch(loadMapMarkerData(mapReference));
-}
-
-// Load Details Div 
-export const displayDetails = (data, mapReference) => dispatch => {
-    mapReference.detail = data;
-    dispatch(loadMapMarkerData(mapReference));
-}
-
-// Load markers available with in bounds of the screen after ```mapObject``` is loaded
-export const loadMarkers = (data, mapReference) => (dispatch) => {
-    const bounds = mapReference.mapObject.getBounds();
-
-    if (data) {
-        //Filter data based on Bounds values and return only those... available with in bounds
-        const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
-        mapReference.mapMarkers = markers;
-        mapReference.zIndex = mapReference.zIndex === undefined ? markers.length + 1 : mapReference.zIndex;
-        dispatch(loadMapMarkerData(mapReference));
-    }
-}
-
-//Toggle Animation of map markers
-export const animateMapMarker = (data, marker) => (dispatch) => {
-    data.zIndex = data.zIndex + 1;
-    if (marker === null) {
-        data.mapMarkers.filter((d) => d.animated).map((m) => m.animated = false);
-    } else {
-        data.mapMarkers.filter((d) => d.id === marker.id).map(m => {
-            m.animated = true;
-            m.zIndex = data.zIndex;
-            return m;
-        });
-    }
-    dispatch(loadMarkers(data.mapMarkers, data));
-}
-
-// Change Center of map based on the Drag / Zoom In / Zoom Out of the map by the User
-export const changeMapCenter = (data) => (dispatch) => {
-    data.center = { lat: data.mapObject.getCenter().lat(), lng: data.mapObject.getCenter().lng() };
-    dispatch(loadMapMarkerData(data));
-}
-
-// Calculates and loads the marker which is closest to the current center of the map.
-export const findClosestMarker = (data, mapObject) => (dispatch) => {
-    let latLng = mapObject.center;
-    let R = 6371; // radius of earth in km
-    let distances = [];
-    let closest = -1;
-    for (let i = 0; i < data.length; i++) {
-        let mlatLng = { lat: data[i].lat, lng: data[i].long };
-        let dLat = rad(mlatLng.lat - latLng.lat);
-        let dLong = rad(mlatLng.lng - latLng.lng);
-        let a = sinSquare(dLat / 2) + cosSquare(rad(latLng.lat)) * sinSquare(dLong / 2);
-        let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        let d = R * c;
-        distances[i] = d;
-        if (closest === -1 || d < distances[closest]) {
-            closest = i;
-        }
-    }
-    mapObject.center = { lat: data[closest].lat, lng: data[closest].long };
-    dispatch(loadMapMarkerData(mapObject));
-}
-
-// Calculates and loads the most recent created marker to the current center of the map.
-export const findRecentMarker = (data, mapObject) => (dispatch) => {
-    let mostRecent = data ? data[0] : null;;
-    data.forEach(d => mostRecent = new Date(d.created).getTime() > new Date(mostRecent.created).getTime() ? d : mostRecent)
-    mapObject.center = { lat: mostRecent.lat, lng: mostRecent.long };
-    mapObject.mapMarkers.push(mostRecent);
-    dispatch(loadMapMarkerData(mapObject));
-    dispatch(animateMapMarker(mapObject, mostRecent));
-    window.setTimeout(dispatch(animateMapMarker(mapObject, null), 5000));
-}
-
-// Loads the Info window when mouse hovers over a marker
-export const infoWindowMarker = (data) => (dispatch) => {
-    if (data === undefined) {
-        dispatch(infoWindowFailed("Data is not defined"));
-    } else {
-        dispatch(loadInfoWindow(data));
-    }
-}
-
-//Sets Loading markers when Map Moves
-export const setMarkersAsMapMoves = (data) => dispatch => {
-    data.searchAsMapMoves = !data.searchAsMapMoves;
-    dispatch(loadMapMarkerData(data))
-}
-
-// The method converts the Date isoStringValue to time in milliseconds.
-const setDateValueinMilliSeconds = (dateValue) => {
-    const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
-    let [{ value: month }, , { value: day }, , { value: year }, , { value: hours }] = dateTimeFormat.formatToParts(new Date(dateValue));
-    return new Date(`${month} ${day}, ${year} ${hours -= hours % 3 === 1 ? 1 : hours % 3 === 2 ? 2 : 0}:00:00`).getTime();
-};
-
-// This method calculates the range of slider and names of people in event
-const initializeMapFilter = (data) => {
-    let address = new Map(), addressValue, hours = 1000 * 60 * 30 * 2 * 3;
-    let range = [+setDateValueinMilliSeconds(data.startDate) - (2 * hours), +setDateValueinMilliSeconds(data.endDate) + (2 * hours)], dateMap = [], persons = new Map([]), personObject = [];
-    data.vuzixMap.forEach(m => {
-        m.animated = false;
-        dateMap.push(setDateValueinMilliSeconds(m.created))     //Event Date in milliseconds
-        personsArray(m, persons);                               //Load Persons Names
-        let temp = loadMarkerAddresses(m, address)              //Load Address Values
-        if (temp !== undefined) {
-            addressValue = temp;
-        }
-    });
-    Array.from(persons.keys()).forEach(element => personObject.push({ checked: false, name: element }))
-    dateMap.sort();
-    return { range, dateMap, personObject, addressValue };
-};
-
-//Loads person names in the Filter list.
-const personsArray = (m, persons) => m.person_names.forEach(element => {
-    if (!persons.has(element.person_name)) {
-        persons.set(element.person_name);
-    }
-});
-
-//Load addresses for Markers - Card Detail Div
-const loadMarkerAddresses = (m, address) => {
-    let expiryDate = new Date().getTime() + 300000;
-    let key = `${m.lat.toFixed(3)}:${m.long.toFixed(3)}`;
-
-    const fetchAndLoadMarkerAddresses = () => {
-        Promise.all(
-            fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${m.lat},${m.long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
-                .then(res => res.json())
-                .then(data => {
-                    address.set(key, data.results[(parseInt(data.results.length / 2) + 1)].formatted_address);
-                }).catch(err => console.log(err))
-        ).then().catch(err => err);
-    }
-
-    if (!address.has(key)) {
-        address.set(key, "");
-        fetchAndLoadMarkerAddresses();
-        return { address, expiryDate };
-    }
-};
+/*
+    *** End of => Actions Performed in Autocomplete API Module
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    *** Start of => Actions Performed in Video Module
+*/
 
 // Loads the video in the Video Player when clicked from an Info window
 export const videoPlayer = (url) => (dispatch) => {
@@ -410,10 +432,28 @@ export const videoPlayer = (url) => (dispatch) => {
     dispatch(loadVideoData(url));
 };
 
-// Pan to the Closest Marker if current Bounds contains zero markers
-const rad = (x) => x * Math.PI / 180;
-const sinSquare = (x) => Math.pow(Math.sin(x), 2);
-const cosSquare = (x) => Math.pow(Math.cos(x), 2);
+// Edit Vuzix Blade data based on the Filter parameters as ```parameter```
+export const editVideo = (parameter) => (dispatch) => {
+    return axios.post(baseUrl + '/query/', parameter)
+        .then(response => {
+            if (!response) {
+                alert("No video found with search query");
+            } else {
+                console.log(response.data)
+                let videoRef = { video: baseUrl + response.data.video, thumbnail: baseUrl + response.data.thumbnail }
+                return videoRef;
+            }
+        })
+        //Update videoDetails Object with the video Data.
+        .then(r => dispatch(videoPlayer(r)))
+        .catch(err => dispatch(videoFailed(err.message)))
+}
+
+/*
+    *** End of => Actions Performed in Video Module
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+    *** Start of => Actions Performed in Feedback Module
+*/
 
 //Initialize person Information - feedback form
 export const initializePersonAttr = () => async (dispatch) => {
@@ -539,7 +579,7 @@ export const taggingCompleted = () => axios.post(baseUrl + '/get_unk/').then(res
     throw error;
 }).catch(error => console.log(error));
 
- // if (newFeed.selectedImages.length > 0) {
+// if (newFeed.selectedImages.length > 0) {
             //     newFeed.images.filter(i => i.isSelected === true).map(i => { return i.isSelected = false });
             //     newFeed.images[data.value].isSelected = true;
             //     newFeed.selectedImages = newFeed.images[data.value].src;
