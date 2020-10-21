@@ -66,20 +66,22 @@ class MainComponent extends Component {
                         {markerData && <MapComponent activateLoader={this.activateLoader.bind(this)} />}
 
                         {/* Load Buttons for Recent and Nearest Markers */}
-                        {!this.props.DataVuzix.errMess && !markerData.mapMarkers.length && <ButtonComponent
-                            name="Pan to Closest Event" class="panToMarkerButton"
-                            callBackFunc={() => {
-                                this.activateLoader(true);
-                                this.props.findClosestMarker(data.vuzixMap, markerData);
-                            }}
-                        />}
-                        {!this.props.DataVuzix.errMess && <ButtonComponent
-                            name="Pan to Most Recent Event" class="panToRecentMarker"
-                            callBackFunc={() => {
-                                this.activateLoader(true);
-                                this.props.findRecentMarker(data.vuzixMap, markerData);
-                            }}
-                        />}
+                        {(!this.props.DataVuzix.errMess && !markerData.mapMarkers.length && markerData.searchAsMapMoves) &&
+                            <ButtonComponent
+                                name="Pan to Closest Event" class="panToMarkerButton"
+                                callBackFunc={() => {
+                                    this.activateLoader(true);
+                                    this.props.findClosestMarker(data.vuzixMap, markerData);
+                                }}
+                            />}
+                        {(!this.props.DataVuzix.errMess && markerData.searchAsMapMoves) &&
+                            <ButtonComponent
+                                name="Pan to Most Recent Event" class="panToRecentMarker"
+                                callBackFunc={() => {
+                                    this.activateLoader(true);
+                                    this.props.findRecentMarker(data.vuzixMap, markerData);
+                                }}
+                            />}
                     </LoadingOverlay>
                 </div>
             )

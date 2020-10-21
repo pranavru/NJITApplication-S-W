@@ -133,10 +133,10 @@ export const loadMap = (mapObj, mapReference) => dispatch => {
 // Load markers available with in bounds of the screen after ```mapObject``` is loaded
 export const loadMarkers = (data, mapReference) => (dispatch) => {
     const bounds = mapReference.mapObject.getBounds();
-
+    console.log()
     if (data) {
         //Filter data based on Bounds values and return only those... available with in bounds
-        const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
+        const markers = mapReference.searchMapAsMoves ? data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long))) : data
         mapReference.mapMarkers = markers;
         mapReference.zIndex = mapReference.zIndex === undefined ? markers.length + 1 : mapReference.zIndex;
         dispatch(loadMapMarkerData(mapReference, ActionTypes.ADD_MAPMARKERSDATA));
