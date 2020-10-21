@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useCallback } from "react";
 import { GoogleMap, useLoadScript, Marker, InfoWindow, MarkerClusterer } from "@react-google-maps/api";
 import { Input, InputGroup, CardText } from 'reactstrap';
 
@@ -140,11 +140,11 @@ const MapComponent = (props) => {
     const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 19, gridSize: 60, ignoreHidden: true };
 
     const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
-    const onLoad = React.useCallback(function callback(map1) {
+    const onLoad = useCallback(map1 => {
         const bounds = new window.google.maps.LatLngBounds(center);
         map1.fitBounds(bounds);
         props.loadMap(map1, props.MapMarkersData.mapMarkersData);
-    }, [center, props])
+    }, [center, markerData])
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";

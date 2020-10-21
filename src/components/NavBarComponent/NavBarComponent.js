@@ -1,29 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } from 'reactstrap';
 
 import './NavBarComponent.css';
 
-import { connect } from 'react-redux';
 import ZoomInOUTComponent from '../ZoomInOUTComponent/ZoomInOUTComponent';
-import { taggingCompleted } from '../../redux/ActionCreators';
 import { baseUrl } from '../../shared/baseUrl';
-const mapStateToProps = (state) => { return { filter: state.mapFilter, feed: state.feedback, } };
-const mapDispatchToProps = (dispatch) => ({
-  taggingCompleted: () => dispatch(taggingCompleted()),
-});
-
-const checkUnknownPeople = (setFillColor) => {
-  fetch(baseUrl + '/get_unk').then(res => res.ok ? res.json() : null).then(res => {
-    if (res) {
-      (res.length > 0 && !window.location.pathname.includes("feedback")) ? setFillColor(true) : setFillColor(false);
-    }
-  })
-}
 
 const NavBarComponent = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [fillColor, setFillColor] = React.useState(false);
-  checkUnknownPeople(setFillColor);
+  const [isOpen, setIsOpen] = useState(false);
+  const [fillColor, setFillColor] = useState(false);
+
+  useEffect(() => {
+    fetch(baseUrl + '/get_unk').then(res => res.ok ? res.json() : null).then(res => {
+      if (res) {
+        (res.length > 0 && !window.location.pathname.includes("feedback")) ? setFillColor(true) : setFillColor(false);
+      }
+    })
+  }, [fillColor]);
 
   return (
     <div className="navContainer">
@@ -54,4 +47,5 @@ const NavBarComponent = () => {
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(NavBarComponent);
+export default NavBarComponent;
+//connect(mapStateToProps, mapDispatchToProps)
