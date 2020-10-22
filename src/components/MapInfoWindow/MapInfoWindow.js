@@ -15,17 +15,18 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
             </CardTitle>
         </CardHeader>
         {(p.keepAlive && p.videos) ? <div className="toggleVideoButton">
-            <label className="switch" alt="Images/Videos">
-                {(p.videos.length > 0 && !p.images.length > 0) ? <input type="checkbox" disabled checked={true} /> : <input type="checkbox" onClick={() => setToDisplay(!displayImagesVideo)} />}
-                <span className="slider"></span>
-            </label>
+            {(p.videos.length > 0 && !p.images.length > 0) || (!p.videos.length > 0 && p.images.length > 0) ?
+                <></>
+                : <label className="switch" alt="Images/Videos">
+                    <input type="checkbox" onClick={() => setToDisplay(!displayImagesVideo)} />
+                    <span className="slider"></span>
+                </label>}
         </div> : <></>}
     </>)
 }
 
 function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
     const p = props.point;
-    console.log(p)
     return !p.keepAlive ?
 
         //Display Image if Marker is not clicked and only hovered. If No Image Found then checks for Video or else "No Image Found" is displayed
