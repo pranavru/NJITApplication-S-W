@@ -11,7 +11,7 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
     return (<>
         <CardHeader style={{ marginBottom: '0px' }}>
             <CardTitle className="text-center" style={{ font: "1.1em monospace", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis", marginBottom: 0 }}>{p.address}
-                <p> {p.images && p.images.length > 0 ? `Images: ${p.images.length}  ` : ``}{p.videos && p.videos.length > 0 ? `Videos: ${p.videos.length}` : ``}</p>
+                <p> Images: {p.images.length}, Videos: {p.videos.length}</p>
             </CardTitle>
         </CardHeader>
         {(p.keepAlive && p.videos) ? <div className="toggleVideoButton">
