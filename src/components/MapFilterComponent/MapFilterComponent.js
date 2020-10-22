@@ -11,6 +11,7 @@ import './MapFilterComponent.css'
 
 import { connect } from 'react-redux';
 import { fetchMapFilter, fetchSpeechText, editMapFilter, editDataVuzix, videoPlayer, editVideo, fetchDataUsingSpeechText } from '../../redux/ActionCreators'
+import { LoadingDivSpinner } from '../MainComponent/LoadingDivSpinner';
 
 const mapStateToProps = (state) => { return { MapFilter: state.mapFilter, MapMarkersData: state.mapMarkersData, SpeechText: state.speechText } }
 
@@ -130,51 +131,52 @@ class MapFilterComponent extends Component {
     render() {
         const { isSpeech, personNames, isLoading, mapDateRange } = this.props.MapFilter.mapFilter;
 
-        if (!isLoading) {
-            return (
-                <div style={{ marginLeft: "2%", marginRight: '1%' }}>
-                    <Card className="filterCard">
-                        <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
-                        <Form onSubmit={event => event.preventDefault()} >
-                            {/* * Speech Form * */}
-                            <FormGroup>
-                                <InputGroup className="inputGroupValue">
-                                    <Input addon type="checkbox" name="isSpeech" value={isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
-                                    <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
-                                    {!this.props.SpeechText.isLoading && groupedPicker(this.props, this.handleSubmit)}
-                                </InputGroup>
-                            </FormGroup>
-
-                            {/* * Persons Form * */}
-                            {personNames && <FormGroup>
-                                {personNames.length > 0 && <Label className="filterCategoryLabel filterFont">PEOPLE</Label>}
-                                <InputGroup className="inputGroupValue overflowPersons">
-                                    {personNames.map(v =>
-                                        <InputGroup key={v.name}>
-                                            <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
-                                            <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</CardText>
-                                        </InputGroup>
-                                    )}
-                                </InputGroup>
-                            </FormGroup>}
-
-                            {/* * Date Value Form * */}
-                            <FormGroup>
-                                <CardText className="filterCategoryLabel filterFont">DATE</CardText>
-                                {mapDateRange && <DateRangeFilter
-                                    handleDateChange={this.handleDateChange.bind(this)}
-                                    DataVuzix={this.props.DataVuzix}
-                                    mapFilter={this.props.MapFilter}
-                                    editMapFilter={this.props.editMapFilter}
-                                    handleSubmit={this.handleSubmit.bind(this)}
-                                />}
-                            </FormGroup>
-                        </Form>
-                    </Card>
-                    <DisplayVideoComponent />
-                </div >
-            );
+        if (isLoading) {
+            return <LoadingDivSpinner />
         }
+        return (
+            <div style={{ marginLeft: "2%", marginRight: '1%' }}>
+                <Card className="filterCard">
+                    <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
+                    <Form onSubmit={event => event.preventDefault()} >
+                        {/* * Speech Form * */}
+                        <FormGroup>
+                            <InputGroup className="inputGroupValue">
+                                <Input addon type="checkbox" name="isSpeech" value={isSpeech} aria-label="Speech" onClick={this.handleChangeCheck} className="checkboxButton filterFont" />
+                                <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>SPEECH</CardText>
+                                {!this.props.SpeechText.isLoading && groupedPicker(this.props, this.handleSubmit)}
+                            </InputGroup>
+                        </FormGroup>
+
+                        {/* * Persons Form * */}
+                        {personNames && <FormGroup>
+                            {personNames.length > 0 && <Label className="filterCategoryLabel filterFont">PEOPLE</Label>}
+                            <InputGroup className="inputGroupValue overflowPersons">
+                                {personNames.map(v =>
+                                    <InputGroup key={v.name}>
+                                        <Input key={v.name} addon type="checkbox" name={v.name} value={v.checked} aria-label="Person" onClick={this.changePersonAsSelected} className="checkboxButton filterFont" />
+                                        <CardText className="checkboxButtonLabel filterFont" style={{ color: '#2C4870' }}>{v.name.toUpperCase()}</CardText>
+                                    </InputGroup>
+                                )}
+                            </InputGroup>
+                        </FormGroup>}
+
+                        {/* * Date Value Form * */}
+                        <FormGroup>
+                            <CardText className="filterCategoryLabel filterFont">DATE</CardText>
+                            {mapDateRange && <DateRangeFilter
+                                handleDateChange={this.handleDateChange.bind(this)}
+                                DataVuzix={this.props.DataVuzix}
+                                mapFilter={this.props.MapFilter}
+                                editMapFilter={this.props.editMapFilter}
+                                handleSubmit={this.handleSubmit.bind(this)}
+                            />}
+                        </FormGroup>
+                    </Form>
+                </Card>
+                <DisplayVideoComponent />
+            </div >
+        );
     }
 }
 

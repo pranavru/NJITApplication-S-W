@@ -1,11 +1,12 @@
 import React from 'react';
-import { Card, CardText, CardImg } from 'reactstrap';
+import { Card, CardText, CardImg, Spinner } from 'reactstrap';
 
 import './MarkerPlaceDetailComponent.css';
 import { baseUrl } from "../../shared/baseUrl";
 
 import { connect } from 'react-redux';
 import { updateMapAddressOnExpiry, animateMapMarker } from '../../redux/ActionCreators'
+import { LoadingDivSpinner } from '../MainComponent/LoadingDivSpinner';
 
 const dateStringVal = (p) => {
     const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
@@ -26,6 +27,9 @@ function MarkerPLaceDetailComponent(props) {
     const { mapMarkers } = props.MapMarkersData.mapMarkersData;
     const { address } = props.Addresses.addresses;
     const { dataVuzix } = props.DataVuzix;
+    if (props.MapMarkersData.isLoading) {
+        return <LoadingDivSpinner />
+    }
     return (
         <>
             {mapMarkers.length <= 0 ?

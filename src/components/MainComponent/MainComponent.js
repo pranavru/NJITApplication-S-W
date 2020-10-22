@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Spinner } from 'reactstrap'
 
 import { Animated } from 'react-animated-css';
 import LoadingOverlay from 'react-loading-overlay';
@@ -14,6 +13,7 @@ import { fetchDataVuzix, initMapDetails, findClosestMarker, displayDetails, find
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../MainComponent/MainComponent.css';
+import { LoadingDivSpinner } from './LoadingDivSpinner';
 
 const mapStateToProps = (state) => { return { DataVuzix: state.dataVuzix, MapMarkersData: state.mapMarkersData, Addresses: state.addresses } }
 
@@ -43,7 +43,7 @@ class MainComponent extends Component {
         const data = this.props.DataVuzix.dataVuzix;
         const markerData = this.props.MapMarkersData.mapMarkersData;
 
-        if (typeof data.vuzixMap !== undefined && this.props.DataVuzix.isLoading === false) {
+        if (typeof data.vuzixMap !== undefined && !this.props.DataVuzix.isLoading) {
             return (
                 <div>
                     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
@@ -55,15 +55,15 @@ class MainComponent extends Component {
                         </div>
 
                         {/** Card Detail Div */}
-                        {!markerData.isLoading && <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={markerData.detail} className="detailsAnimatedStyle">
+                        <Animated animationIn="fadeIn" animationOut="fadeOut" animateOnMount={false} isVisible={markerData.detail} className="detailsAnimatedStyle">
                             <div className="detailsStyle">
                                 {this.ToggleDetailDivButton("<<")}
                                 <MarkerPLaceDetailComponent />
                             </div>
-                        </Animated>}
+                        </Animated>
 
                         {/** Loading Map Div */}
-                        {markerData && <MapComponent activateLoader={this.activateLoader.bind(this)} />}
+                        <MapComponent activateLoader={this.activateLoader.bind(this)} />
 
                         {/* Load Buttons for Recent and Nearest Markers */}
                         {(!this.props.DataVuzix.errMess && !markerData.mapMarkers.length && markerData.searchAsMapMoves) &&
@@ -87,7 +87,7 @@ class MainComponent extends Component {
             )
         } else {
             if (this.props.DataVuzix.isLoading === true && !this.props.DataVuzix.errMess) {
-                return <div style={{ display: 'flex', alignContent: 'center', justifyContent: 'center' }}> <Spinner /> </div>
+                return <LoadingDivSpinner />
             } else {
                 /** Loading Map Div */
                 return <MapComponent activateLoader={this.activateLoader.bind(this)} />
