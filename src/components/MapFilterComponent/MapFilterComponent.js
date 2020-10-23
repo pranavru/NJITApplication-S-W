@@ -59,13 +59,14 @@ function groupedPicker(props, handleSubmit) {
             />}
             filterSelectedOptions={true}
             size="small"
-            onChange={(event, value) => {
+            onChange={(_, value) => {
+                props.activateLoader(true);
                 if (value) {
-                    props.activateLoader(true);
-                    props.fetchDataUsingSpeechText(value.title, props);
+                    props.editMapFilter("searchByText", value, props.MapFilter);
                 } else if (value === null) {
-                    handleSubmit();
+                    props.editMapFilter("searchByText", "", props.MapFilter);
                 }
+                handleSubmit()
             }}
         />
     );
@@ -106,7 +107,7 @@ class MapFilterComponent extends Component {
     }
 
     submitObjectValues() {
-        const { isSpeech, personNames, mapDateRange } = this.props.MapFilter.mapFilter;
+        const { isSpeech, personNames, mapDateRange, keyword } = this.props.MapFilter.mapFilter;
         let people = [];
         personNames.forEach(p => (p.checked === true) ? people.push(p.name) : null)
         let json_body = {
@@ -118,6 +119,7 @@ class MapFilterComponent extends Component {
             start_date: new Date(mapDateRange.updated[0]).toISOString(),
             end_date: new Date(mapDateRange.updated[1]).toISOString(),
             vid: "123456789",
+            keyword,
         }
         console.log(json_body)
         return json_body;

@@ -1,8 +1,8 @@
 import * as ActionTypes from './ActionTypes';
 import axios from 'axios';
 const { REACT_APP_BASE_URL,
-    REACT_APP_GET_APP_DATA_API, REACT_APP_GET_APP_DATA_LOCATION_API, REACT_APP_QUERY_DATA_API, REACT_APP_QUERY_SPEECH_DATA_API, 
-    REACT_APP_TAGGED_PEOPLE_API, REACT_APP_UNTAGGED_PEOPLE_API, REACT_APP_USER_FEEDBACK_API, 
+    REACT_APP_GET_APP_DATA_API, REACT_APP_GET_APP_DATA_LOCATION_API, REACT_APP_QUERY_DATA_API, REACT_APP_QUERY_SPEECH_DATA_API,
+    REACT_APP_TAGGED_PEOPLE_API, REACT_APP_UNTAGGED_PEOPLE_API, REACT_APP_USER_FEEDBACK_API,
     REACT_APP_GOOGLE_MAP_LOCATION_DETAILS_KEY, REACT_APP_GOOGLE_MAP_LOCATION_DETAILS_URL } = process.env;
 
 //Change the isLoading attribute to true when data is updating
@@ -327,8 +327,7 @@ export const fetchMapFilter = (data) => (dispatch) => {
             domain: range,
             data: dateMap
         },
-        videoRequired: "false",
-        searchByText: '',
+        keyword: '',
     }));
 };
 
@@ -337,8 +336,11 @@ export const fetchMapFilter = (data) => (dispatch) => {
 // ``` newValue={ type: String, value: String} ``` or 
 // ``` newValue={ type: String, value: { type: String, value: String }} ```
 export const editMapFilter = (type, newValue, props) => (dispatch) => {
-    dispatch(mapFilterLoading(true))
-    dispatch(videoDataLoading(true))
+    dispatch(mapFilterLoading(true));
+    dispatch(videoDataLoading(true));
+
+    console.log(type, newValue.title, props);
+
     let newFilter = props.mapFilter;
     if (type.includes("isSpeech")) {
         newFilter.isSpeech = newValue;
@@ -366,21 +368,15 @@ export const editMapFilter = (type, newValue, props) => (dispatch) => {
         };
     };
     if (type.includes("searchByText")) {
-        newFilter.searchByText = newValue;
+        newFilter.keyword = newValue.title;
     }
     dispatch(loadEditedFilter(newFilter));
 };
 
-/*
-    *** End of => Actions Performed in Filter Module
------------------------------------------------------------------------------------------------------------------------------------------------------------
-    *** Start of => Actions Performed in Autocomplete API Module
-*/
-
 //Fetch Speech Text Values - Autocomplete API
 export const fetchSpeechText = () => (dispatch) => {
     dispatch(speechTextLoading());
-    return fetch(REACT_APP_BASE_URL + REACT_APP_QUERY_SPEECH_DATA_API)
+    return fetch(REACT_APP_BASE_URL + REACT_APP_QUERY_DATA_API)
         .then(response => {
             if (response.ok) {
                 return response;
@@ -427,7 +423,7 @@ export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.p
     .catch(err => dispatch(dataVuzixFailed(err.message)))
 
 /*
-    *** End of => Actions Performed in Autocomplete API Module
+    *** End of => Actions Performed in Filter Module
 -----------------------------------------------------------------------------------------------------------------------------------------------------------
     *** Start of => Actions Performed in Video Module
 */
