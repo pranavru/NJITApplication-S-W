@@ -3,7 +3,6 @@ import { Card, CardTitle, CardSubtitle, CardHeader, CardFooter } from 'reactstra
 import Gallery from 'react-grid-gallery';
 
 import "./MapInfoWindow.css";
-import { baseUrl } from "../../shared/baseUrl";
 import ImageComponent from '../ImageComponent/ImageComponent';
 
 function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
@@ -27,15 +26,17 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
 
 function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
     const p = props.point;
+    const { REACT_APP_BASE_URL } = process.env;
+
     return !p.keepAlive ?
 
         //Display Image if Marker is not clicked and only hovered. If No Image Found then checks for Video or else "No Image Found" is displayed
         (p.image && !p.video) ?
             <div id="containerImg">
-                <ImageComponent src={baseUrl + p.image} alt={p.id} idTag="theImage" />
+                <ImageComponent src={REACT_APP_BASE_URL + p.image} alt={p.id} idTag="theImage" />
             </div>
             : <div id="containerImg" onClick={() => onVideoClicked(props, p, setSpeechValues)}>
-                <img src={baseUrl + p.thumbnail} id="theImage" alt="Thumbnail not found" />
+                <img src={REACT_APP_BASE_URL + p.thumbnail} id="theImage" alt="Thumbnail not found" />
                 <img src="/mediaControl.svg" className="cardButtonOnHover" alt="Load svg" onClick={() => onVideoClicked(props, p, setSpeechValues)} title="Click to view the video" />
             </div>
 
@@ -46,7 +47,7 @@ function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
 
                 //If no Images found  
                 <div id="containerImg">
-                    <ImageComponent src={baseUrl + p.image} alt={p.id} idTag="theImage" />
+                    <ImageComponent src={REACT_APP_BASE_URL + p.image} alt={p.id} idTag="theImage" />
                 </div>
 
                 : p.images.length > 0 ?
@@ -68,7 +69,7 @@ function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
             : <div className="row videoDiv" style={{ margin: '0px' }}>
                 {p.videos.map(m =>
                     <div className="cardDisplay" onClick={() => onVideoClicked(props, m, setSpeechValues)}>
-                        <ImageComponent src={baseUrl + m.thumbnail} classes="cardThumb" alt="Thumbnail not found" />
+                        <ImageComponent src={REACT_APP_BASE_URL + m.thumbnail} classes="cardThumb" alt="Thumbnail not found" />
                         <img src="/mediaControl.svg" className="cardButton" alt="Load svg" onClick={() => onVideoClicked(props, m, setSpeechValues)} />
                         <div className="row cardDate">
                             {m.tags.map(t =>

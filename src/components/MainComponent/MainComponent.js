@@ -42,11 +42,12 @@ class MainComponent extends Component {
     render() {
         const data = this.props.DataVuzix.dataVuzix;
         const markerData = this.props.MapMarkersData.mapMarkersData;
+        const { REACT_APP_ANIMATION_CSS_URL } = process.env;
 
         if (typeof data.vuzixMap !== undefined && !this.props.DataVuzix.isLoading) {
             return (
                 <div>
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.2/animate.css" />
+                    <link rel="stylesheet" href={REACT_APP_ANIMATION_CSS_URL} />
                     <LoadingOverlay active={this.state.isActive} spinner text='Loading...'>
                         {/** Filter Component */}
                         <div className="filterStyle">

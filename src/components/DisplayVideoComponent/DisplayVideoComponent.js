@@ -5,17 +5,17 @@ import ReactPlayer from 'react-player/lazy'
 
 import "../DisplayVideoComponent/DisplayVideoComponent.css"
 
-import { baseUrl } from "../../shared/baseUrl";
 import { connect } from 'react-redux';
 
 const mapStateToProps = (state) => { return state.videoDetails }
 
 const DisplayVideoComponent = (props) => {
     const [playVideo, setToPlay] = React.useState(false);
+    const { REACT_APP_BASE_URL } = process.env;
     const v = props.videoDetails;
     const params = {
-        url: baseUrl + v.video,
-        light: baseUrl + v.thumbnail,
+        url: REACT_APP_BASE_URL + v.video,
+        light: REACT_APP_BASE_URL + v.thumbnail,
         controls: playVideo,
         width: "100%", height: "29.5vh",
         autoPlay: true, muted: true,

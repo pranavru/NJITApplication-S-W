@@ -1,6 +1,9 @@
 import * as ActionTypes from './ActionTypes';
 import axios from 'axios';
-import { baseUrl } from "../shared/baseUrl";
+const { REACT_APP_BASE_URL,
+    REACT_APP_GET_APP_DATA_API, REACT_APP_GET_APP_DATA_LOCATION_API, REACT_APP_QUERY_DATA_API, REACT_APP_QUERY_SPEECH_DATA_API, 
+    REACT_APP_TAGGED_PEOPLE_API, REACT_APP_UNTAGGED_PEOPLE_API, REACT_APP_USER_FEEDBACK_API, 
+    REACT_APP_GOOGLE_MAP_LOCATION_DETAILS_KEY, REACT_APP_GOOGLE_MAP_LOCATION_DETAILS_URL } = process.env;
 
 //Change the isLoading attribute to true when data is updating
 export const dataVuzixLoading = () => ({ type: ActionTypes.DATAVUZIX_LOADING });
@@ -41,7 +44,7 @@ export const addFeedbackValue = (data) => ({ type: ActionTypes.ADD_FEEDBACK, pay
 // Fetches data when initial URL is hit.
 export const fetchDataVuzix = (dispatch) => {
     dispatch(dataVuzixLoading(true));
-    return fetch(baseUrl + '/signal')
+    return fetch(REACT_APP_BASE_URL + REACT_APP_GET_APP_DATA_API)
         .then(response => {
             if (response.ok) {
                 return response;
@@ -69,9 +72,9 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
     const markerData = props.MapMarkersData.mapMarkersData
     let url = "";
     if (markerData.searchEventsOnCurrentLocation && parameter.hasOwnProperty("location")) {
-        url = baseUrl + '/location/'
+        url = REACT_APP_BASE_URL + REACT_APP_GET_APP_DATA_LOCATION_API
     } else {
-        url = baseUrl + '/query/'
+        url = REACT_APP_BASE_URL + REACT_APP_QUERY_DATA_API
     }
     return axios.post(url, parameter)
         .then(response => {
@@ -135,7 +138,7 @@ export const loadMarkers = (data, mapReference) => (dispatch) => {
     const bounds = mapReference.mapObject.getBounds();
     if (data) {
         //Filter data based on Bounds values and return only those... available with in bounds
-        if(mapReference.searchAsMapMoves || mapReference.initialLoad) {
+        if (mapReference.searchAsMapMoves || mapReference.initialLoad) {
             const markers = data.filter(m => bounds.contains(new window.google.maps.LatLng(m.lat, m.long)))
             mapReference.mapMarkers = markers;
         } else {
@@ -289,7 +292,7 @@ const loadMarkerAddresses = (m, address) => {
 
     const fetchAndLoadMarkerAddresses = () => {
         Promise.all(
-            fetch(`https://maps.googleapis.com/maps/api/geocode/json?latlng=${m.lat},${m.long}&key=AIzaSyAaY23IZJ6Vi7HAkYr4QgQioPY2knvUgpw`)
+            fetch(`${REACT_APP_GOOGLE_MAP_LOCATION_DETAILS_URL}latlng=${m.lat},${m.long}&key=${REACT_APP_GOOGLE_MAP_LOCATION_DETAILS_KEY}`)
                 .then(res => res.json())
                 .then(data => {
                     address.set(key, data.results[(parseInt(data.results.length / 2) + 1)].formatted_address);
@@ -377,7 +380,7 @@ export const editMapFilter = (type, newValue, props) => (dispatch) => {
 //Fetch Speech Text Values - Autocomplete API
 export const fetchSpeechText = () => (dispatch) => {
     dispatch(speechTextLoading());
-    return fetch(baseUrl + '/search/')
+    return fetch(REACT_APP_BASE_URL + REACT_APP_QUERY_SPEECH_DATA_API)
         .then(response => {
             if (response.ok) {
                 return response;
@@ -397,7 +400,7 @@ export const fetchSpeechText = () => (dispatch) => {
 }
 
 // Fetch Data based on Speech Values
-export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.post(baseUrl + '/search/', { keyword: speech })
+export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.post(REACT_APP_BASE_URL + REACT_APP_QUERY_SPEECH_DATA_API, { keyword: speech })
     .then(response => {
         if (!(response.data.vuzixMap.length > 0)) {
             alert("No data with search query");
@@ -437,13 +440,13 @@ export const videoPlayer = (url) => (dispatch) => {
 
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter```
 export const editVideo = (parameter) => (dispatch) => {
-    return axios.post(baseUrl + '/query/', parameter)
+    return axios.post(REACT_APP_BASE_URL + REACT_APP_QUERY_DATA_API, parameter)
         .then(response => {
             if (!response) {
                 alert("No video found with search query");
             } else {
                 console.log(response.data)
-                let videoRef = { video: baseUrl + response.data.video, thumbnail: baseUrl + response.data.thumbnail }
+                let videoRef = { video: REACT_APP_BASE_URL + response.data.video, thumbnail: REACT_APP_BASE_URL + response.data.thumbnail }
                 return videoRef;
             }
         })
@@ -462,7 +465,7 @@ export const editVideo = (parameter) => (dispatch) => {
 export const initializePersonAttr = () => async (dispatch) => {
     let attributes = {};
     await taggedPeople(attributes);
-    return fetch(baseUrl + "/get_unk/")
+    return fetch(REACT_APP_BASE_URL + REACT_APP_UNTAGGED_PEOPLE_API)
         .then(response => {
             if (response.ok) {
                 return response;
@@ -478,7 +481,7 @@ export const initializePersonAttr = () => async (dispatch) => {
         .then(response => {
             attributes.images = response.map(m => {
                 return {
-                    src: baseUrl + m.imageFile, thumbnail: baseUrl + m.imageFile,
+                    src: REACT_APP_BASE_URL + m.imageFile, thumbnail: REACT_APP_BASE_URL + m.imageFile,
                     thumbnailWidth: 100, thumbnailHeight: 100, id: m.id
                 }
             })
@@ -534,7 +537,7 @@ export const personAttributes = (data) => (dispatch) => {
                 attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages, id: data.images.filter(m => m.isSelected).map(m => m.id) };
             }
             dispatch(addFeedbackValue(attributes));
-            return axios.post(baseUrl + '/feedback/', attributes, {
+            return axios.post(REACT_APP_BASE_URL + REACT_APP_USER_FEEDBACK_API, attributes, {
                 headers: {
                     'Content-Type': data.localFile ? 'multipart/form-data' : 'application/json'
                 }
@@ -554,7 +557,7 @@ export const personAttributes = (data) => (dispatch) => {
 }
 
 //Add Already Tagged People 
-export const taggedPeople = (attributes) => fetch(baseUrl + "/get_people/")
+export const taggedPeople = (attributes) => fetch(REACT_APP_BASE_URL + REACT_APP_TAGGED_PEOPLE_API)
     .then(response => {
         if (response.ok) {
             return response;
@@ -570,7 +573,7 @@ export const taggedPeople = (attributes) => fetch(baseUrl + "/get_people/")
     .then(res => attributes.tags = res)
     .catch(error => console.log(error));
 
-export const taggingCompleted = () => axios.post(baseUrl + '/get_unk/').then(response => {
+export const taggingCompleted = () => axios.post(REACT_APP_BASE_URL + REACT_APP_UNTAGGED_PEOPLE_API).then(response => {
     if (response.status === 200) {
         alert("Response Submitted")
     } else {

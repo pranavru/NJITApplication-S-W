@@ -4,14 +4,14 @@ import { Collapse, Navbar, NavbarToggler, NavbarBrand, Nav, NavItem, NavLink } f
 import './NavBarComponent.css';
 
 import ZoomInOUTComponent from '../ZoomInOUTComponent/ZoomInOUTComponent';
-import { baseUrl } from '../../shared/baseUrl';
 
 const NavBarComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [fillColor, setFillColor] = useState(false);
 
+  const { REACT_APP_BASE_URL, REACT_APP_DISPLAY_NAME, REACT_APP_UNTAGGED_PEOPLE_API, REACT_APP_USER_FEEDBACK_API } = process.env;
   useEffect(() => {
-    fetch(baseUrl + '/get_unk').then(res => res.ok ? res.json() : null).then(res => {
+    fetch(REACT_APP_BASE_URL + REACT_APP_UNTAGGED_PEOPLE_API).then(res => res.ok ? res.json() : null).then(res => {
       if (res) {
         (res.length > 0 && !window.location.pathname.includes("feedback")) ? setFillColor(true) : setFillColor(false);
       }
@@ -21,7 +21,7 @@ const NavBarComponent = () => {
   return (
     <div className="navContainer">
       <Navbar dark expand="md">
-        <NavbarBrand href="/">Vuzix Blade</NavbarBrand>
+        <NavbarBrand href="/">{REACT_APP_DISPLAY_NAME}</NavbarBrand>
         <NavbarToggler onClick={() => setIsOpen(!isOpen)} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>
@@ -38,7 +38,7 @@ const NavBarComponent = () => {
               </span></NavLink>
             </NavItem>
           </Nav>
-          {!window.location.pathname.includes("feedback") ?
+          {!window.location.pathname.includes(REACT_APP_USER_FEEDBACK_API) ?
             <ZoomInOUTComponent /> : <></>
           }
         </Collapse>

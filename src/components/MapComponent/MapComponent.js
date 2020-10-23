@@ -34,8 +34,10 @@ const dateStringVal = (p) => {
 const iconImage = (mapVuzix) => {
     const s = mapVuzix.all_speech.length;
     const p = mapVuzix.person_names.length;
-    return s > 0 && p <= 0 ? "/markerSpeech.svg" : s <= 0 && p > 0 ? "/markerPerson.svg" :
-        !(s > 0 && p > 0) ? "/markerN.svg" : (s > 0 && p > 0) ? "/markerSP.svg" : "/markerN.svg";
+    const { REACT_APP_MARKER_URL_SPEECH, REACT_APP_MARKER_URL_PERSON, REACT_APP_MARKER_URL_NONE, REACT_APP_MARKER_URL_SPEECH_PERSON } = process.env;
+
+    return s > 0 && p <= 0 ? REACT_APP_MARKER_URL_SPEECH : s <= 0 && p > 0 ? REACT_APP_MARKER_URL_PERSON :
+        !(s > 0 && p > 0) ? REACT_APP_MARKER_URL_NONE : (s > 0 && p > 0) ? REACT_APP_MARKER_URL_SPEECH_PERSON : REACT_APP_MARKER_URL_NONE;
 }
 
 const hoverMarker = (mark, props) => {
@@ -133,13 +135,12 @@ const MapComponent = (props) => {
     const infoWindow = props.InfoWindow.infoWindow;
 
     const { center, detail, mapMarkers, mapObject } = markerData;
-
+    const { REACT_APP_GOOGLE_MAP_API_KEY, REACT_APP_GOOGLE_MAP_CLUSTER_IMAGE_URL } = process.env;
     const mapContainerStyle = { height: window.innerHeight * 0.92, width: detail ? "55%" : "77.5%", left: detail ? "45%" : "22.5%" };
     const mapOptions = { disableDefaultUI: true, zoomControl: true };
-    const GOOGLE_API_KEY = 'AIzaSyAFHPjPBHcDOhJIn3HP6pbqVLZhCrORnbs';
-    const clusterOptions = { imagePath: "https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m", maxZoom: 19, gridSize: 60, ignoreHidden: true };
+    const clusterOptions = { imagePath: REACT_APP_GOOGLE_MAP_CLUSTER_IMAGE_URL, maxZoom: 19, gridSize: 60, ignoreHidden: true };
 
-    const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: GOOGLE_API_KEY });
+    const { isLoaded, loadError } = useLoadScript({ googleMapsApiKey: REACT_APP_GOOGLE_MAP_API_KEY });
     const onLoad = useCallback(map1 => {
         const bounds = new window.google.maps.LatLngBounds(center);
         map1.fitBounds(bounds);
