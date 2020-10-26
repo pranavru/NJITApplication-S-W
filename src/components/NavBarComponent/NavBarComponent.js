@@ -9,14 +9,14 @@ const NavBarComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [fillColor, setFillColor] = useState(false);
 
-  const { REACT_APP_BASE_URL, REACT_APP_DISPLAY_NAME, REACT_APP_UNTAGGED_PEOPLE_API, REACT_APP_USER_FEEDBACK_API } = process.env;
+  const { REACT_APP_BASE_URL, REACT_APP_DISPLAY_NAME, REACT_APP_UNTAGGED_PEOPLE_API } = process.env;
   useEffect(() => {
     fetch(REACT_APP_BASE_URL + REACT_APP_UNTAGGED_PEOPLE_API).then(res => res.ok ? res.json() : null).then(res => {
       if (res) {
         (res.length > 0 && !window.location.pathname.includes("feedback")) ? setFillColor(true) : setFillColor(false);
       }
     })
-  }, [fillColor]);
+  }, [fillColor, REACT_APP_BASE_URL, REACT_APP_UNTAGGED_PEOPLE_API]);
 
   return (
     <div className="navContainer">
@@ -38,7 +38,7 @@ const NavBarComponent = () => {
               </span></NavLink>
             </NavItem>
           </Nav>
-          {!window.location.pathname.includes(REACT_APP_USER_FEEDBACK_API) ?
+          {!window.location.pathname.includes('feedback') ?
             <ZoomInOUTComponent /> : <></>
           }
         </Collapse>

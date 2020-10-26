@@ -581,26 +581,24 @@ export const taggingCompleted = () => axios.post(REACT_APP_BASE_URL + REACT_APP_
     throw error;
 }).catch(error => console.log(error));
 
-// if (newFeed.selectedImages.length > 0) {
-            //     newFeed.images.filter(i => i.isSelected === true).map(i => { return i.isSelected = false });
-            //     newFeed.images[data.value].isSelected = true;
-            //     newFeed.selectedImages = newFeed.images[data.value].src;
-            // }
-            // else {
-            //     if (typeof data.value === String) {
-            //         newFeed.selectedImages = data.value;
-            //     } else {
-            //         newFeed.images[data.value].isSelected = true;
-            //         newFeed.selectedImages = newFeed.images[data.value].src;
-            //     }
-            // }
-            // newFeed.images.filter((i, index) => index === data.value).map(i => {
-            //     if (i.isSelected) {
-            //         i.isSelected = false;
-            //         newFeed.selectedImages.filter(s => s === i.src).map(i => newFeed.selectedImages.pop(i));
-            //     } else {
-            //         i.isSelected = true;
-            //         newFeed.selectedImages.push(i.src);
-            //     }
-            //     return i;
-            // })
+export const deleteUntaggedImages = (data) => dispatch => {
+    let updatedImages = data.images;
+    let imageIDs = [];
+    updatedImages.forEach((i, index) => {
+        if (i.hasOwnProperty('isSelected') && i.isSelected === true) {
+            imageIDs.push(i.id);
+            data.images.splice(index, 1);
+        }
+    })
+    return axios.post(REACT_APP_BASE_URL + REACT_APP_UNTAGGED_PEOPLE_API, { delete: imageIDs }).then(response => {
+        if (response.status === 200) {
+            alert("Response Submitted")
+        } else {
+            var error = new Error('Error ' + response.status + ': ' + response.statusText);
+            error.response = response;
+            throw error;
+        }
+    }, error => {
+        throw error;
+    }).catch(error => console.log(error))
+}

@@ -6,12 +6,13 @@ import { ButtonComponent } from '../ButtonComponent/ButtonComponent';
 import '../PersonAttributesComponent/PersonAttributesComponent.css'
 
 import { connect } from 'react-redux';
-import { editPersonAttr, personAttributes } from '../../redux/ActionCreators';
+import { deleteUntaggedImages, editPersonAttr, personAttributes } from '../../redux/ActionCreators';
 
 const mapStateToProps = (state) => { return state.feedback }
 const mapDispatchToProps = (dispatch) => ({
   personAttributes: data => dispatch(personAttributes(data)),
-  editPersonAttr: (data, props) => dispatch(editPersonAttr(data, props))
+  editPersonAttr: (data, props) => dispatch(editPersonAttr(data, props)),
+  deleteUntaggedImages: (data) => dispatch(deleteUntaggedImages(data)),
 })
 
 const PersonAttributesComponent = (props) => {
@@ -24,7 +25,7 @@ const PersonAttributesComponent = (props) => {
 
   function previewFile() {
     var files = document.querySelector('input[type=file]').files[0];
-    props.editPersonAttr({ name: "images", value: files }, props)    
+    props.editPersonAttr({ name: "images", value: files }, props)
   }
 
   return (
@@ -46,8 +47,8 @@ const PersonAttributesComponent = (props) => {
               <Input placeholder="Last name" className="col-md-6 col-5 inputBoxName" value={props.lname} name="lname" onChange={handleChange} />
             </div>
             <div className="row col-md-12 col-12 savePersonInput">
-              <div className="col-md-4 col-3">
-                <Link to="/home" >
+              <div className="col-md-2 col-3">
+                <Link to="/" >
                   <ButtonComponent type="submit" name={"Submit"} class="fontButton" callBackFunc={async () => {
                     props.personAttributes(props.feedback);
                     if (props.errMess !== null && !props.isLoading) {
@@ -56,7 +57,12 @@ const PersonAttributesComponent = (props) => {
                   }} />
                 </Link>
               </div>
-              <div className="col-md-8 col-9" style={{ display: imageSelection ? "flex" : "none" }}>
+              <div className="col-md-4 col-3">
+                <Link to="/" >
+                  <ButtonComponent type="button" name={`Delete Images`} class="fontButton" callBackFunc={() => props.deleteUntaggedImages(props.feedback)} />
+                </Link>
+              </div>
+              <div className="col-md-6 col-6" style={{ display: imageSelection ? "flex" : "none" }}>
                 <Input type="file" onChange={previewFile} name='imagesGallery' />
               </div>
             </div>

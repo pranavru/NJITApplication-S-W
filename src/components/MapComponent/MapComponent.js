@@ -145,7 +145,7 @@ const MapComponent = (props) => {
         const bounds = new window.google.maps.LatLngBounds(center);
         map1.fitBounds(bounds);
         props.loadMap(map1, props.MapMarkersData.mapMarkersData);
-    }, [center, markerData])
+    }, [center, props])
 
     if (loadError) return "Error";
     if (!isLoaded) return "Loading...";
