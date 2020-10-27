@@ -61,6 +61,7 @@ export const fetchDataVuzix = (dispatch) => {
 
             //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
+            response.vuzixMap.sort((a, b) => setDateValueinMilliSeconds(a.created) - setDateValueinMilliSeconds(b.created))
             dispatch(loadDataVuzix(response))
         })
         .catch(error => dispatch(dataVuzixFailed(error.message)));
@@ -93,6 +94,7 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         .then(response => {
             //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
+            response.vuzixMap.sort((a, b) => setDateValueinMilliSeconds(a.created) - setDateValueinMilliSeconds(b.created))
 
             dispatch(loadDataVuzix(response))
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, markerData))
@@ -185,7 +187,7 @@ export const findRecentMarker = (data, mapObject) => (dispatch) => {
     mapObject.mapMarkers.push(mostRecent);
     dispatch(loadMapMarkerData(mapObject, ActionTypes.MOST_RECENT_MARKER));
     dispatch(animateMapMarker(mapObject, mostRecent));
-    window.setTimeout(dispatch(animateMapMarker(mapObject, null), 5000));
+    // window.setTimeout(dispatch(animateMapMarker(mapObject, null), 5000));
 }
 
 //Sets Loading markers when Map Moves
@@ -498,18 +500,26 @@ export const editPersonAttr = (data, props) => (dispatch) => {
             newFeed.lname = data.value;
             break;
         case "images":
-            (data.value.length > 1) ? data.value.forEach(d => newFeed.selectedImages.push(d)) : newFeed.selectedImages = data.value;
-            newFeed.images = newFeed.images.map(i => i.isSelected = false)
+            newFeed.selectedImages = (data.value !== undefined) ? data.value : "";
+            newFeed.images.map(i => {
+                if (i.hasOwnProperty('isSelected')) {
+                    i.isSelected = false;
+                }
+                return i;
+            })
             break;
         case "gallery":
             let img = newFeed.images[data.value];
-            if (img.hasOwnProperty("isSelected")) {
-                img.isSelected = !img.isSelected;
-                newFeed.selectedImages = img.src;
-            }
-            else {
-                img.isSelected = true;
-                newFeed.selectedImages = img.src;
+            console.log(newFeed, data.value);
+            if (img) {
+                if (img.hasOwnProperty("isSelected")) {
+                    img.isSelected = !img.isSelected;
+                    newFeed.selectedImages = img.src;
+                }
+                else {
+                    img.isSelected = true;
+                    newFeed.selectedImages = img.src;
+                }
             }
             break;
         default:

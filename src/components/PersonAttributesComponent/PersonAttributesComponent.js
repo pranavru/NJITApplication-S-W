@@ -63,7 +63,7 @@ const PersonAttributesComponent = (props) => {
                 </Link>
               </div>
               <div className="col-md-6 col-6" style={{ display: imageSelection ? "flex" : "none" }}>
-                <Input type="file" onChange={previewFile} name='imagesGallery' />
+                <Input type="file" onChange={previewFile} name='imagesGallery' sytle={{ overflow: "hidden"}} />
               </div>
             </div>
           </Form>

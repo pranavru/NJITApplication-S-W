@@ -35,3 +35,7 @@
   margin-top: 3%;
   flex-direction: row-reverse;
 }
+
+button, input {
+  overflow: hidden;
+}
