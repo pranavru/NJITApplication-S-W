@@ -94,7 +94,7 @@ const customInfoWindow = (props, center) => {
             props.infoWindowMarker(null);
         }}
         options={{
-            disableAutoPan: true,
+            disableAutoPan: markerData.detail ? false : true,
             pixelOffset: calculateInfowWindowLatLng(markerData.mapObject, center, new window.google.maps.LatLng(infoWindow.lat, infoWindow.long))
         }}
     >
