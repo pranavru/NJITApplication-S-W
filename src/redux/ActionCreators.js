@@ -61,7 +61,7 @@ export const fetchDataVuzix = (dispatch) => {
 
             //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
-            response.vuzixMap.sort((a, b) => setDateValueinMilliSeconds(a.created) - setDateValueinMilliSeconds(b.created))
+            response.vuzixMap.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime())
             dispatch(loadDataVuzix(response))
         })
         .catch(error => dispatch(dataVuzixFailed(error.message)));
@@ -94,7 +94,7 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         .then(response => {
             //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
-            response.vuzixMap.sort((a, b) => setDateValueinMilliSeconds(a.created) - setDateValueinMilliSeconds(b.created))
+            response.vuzixMap.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime())
 
             dispatch(loadDataVuzix(response))
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, markerData))
@@ -340,8 +340,6 @@ export const fetchMapFilter = (data) => (dispatch) => {
 export const editMapFilter = (type, newValue, props) => (dispatch) => {
     dispatch(mapFilterLoading(true));
     dispatch(videoDataLoading(true));
-
-    console.log(type, newValue.title, props);
 
     let newFilter = props.mapFilter;
     if (type.includes("isSpeech")) {
