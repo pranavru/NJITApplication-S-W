@@ -84,6 +84,9 @@ class MainComponent extends Component {
                                 }}
                             />}
                     </LoadingOverlay>
+                    <div className="copyrightDiv">
+                        <p>Copyright © 2020 Robin</p>
+                    </div>
                 </div>
             )
         } else {

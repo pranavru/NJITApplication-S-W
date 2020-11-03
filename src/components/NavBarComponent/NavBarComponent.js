@@ -9,7 +9,7 @@ const NavBarComponent = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [fillColor, setFillColor] = useState(false);
 
-  const { REACT_APP_BASE_URL, REACT_APP_DISPLAY_NAME, REACT_APP_UNTAGGED_PEOPLE_API } = process.env;
+  const { REACT_APP_BASE_URL, REACT_APP_UNTAGGED_PEOPLE_API } = process.env;
   useEffect(() => {
     fetch(REACT_APP_BASE_URL + REACT_APP_UNTAGGED_PEOPLE_API).then(res => res.ok ? res.json() : null).then(res => {
       if (res) {
@@ -21,7 +21,7 @@ const NavBarComponent = () => {
   return (
     <div className="navContainer">
       <Navbar dark expand="md">
-        <NavbarBrand href="/">{REACT_APP_DISPLAY_NAME}</NavbarBrand>
+        <NavbarBrand href="/"><img src="/logo.png" width="60px" height="25px" style={{ paddingTop: '0px' }} /></NavbarBrand>
         <NavbarToggler onClick={() => setIsOpen(!isOpen)} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>

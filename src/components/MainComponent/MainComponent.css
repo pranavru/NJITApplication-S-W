@@ -64,3 +64,11 @@
   left: 3%;
   bottom: 1.5%;
 }
+
+.copyrightDiv {
+  font: 0.5rem monospace;
+  left: 50%;
+  bottom: -8px;
+  display: flex;
+  position: absolute;
+}

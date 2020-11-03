@@ -121,7 +121,7 @@ export const initMapDetails = () => (dispatch) => {
         mapMarkers: [],                                     // Markers to load on Map
         animatedMarkerID: {},
         mapObject: null,                                     // Stores map details - bounds, terrain, etc.
-        searchMapAsMoves: false,
+        searchAsMapMoves: false,
         initialLoad: true,
         searchEventsOnCurrentLocation: false,
     }
