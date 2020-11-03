@@ -83,10 +83,10 @@ class MainComponent extends Component {
                                     this.props.findRecentMarker(data.vuzixMap, markerData);
                                 }}
                             />}
+                        <div className="copyrightDiv">
+                            <p style={{ marginBottom: '0px' }}>Copyright © 2020 Robin</p>
+                        </div>
                     </LoadingOverlay>
-                    <div className="copyrightDiv">
-                        <p>Copyright © 2020 Robin</p>
-                    </div>
                 </div>
             )
         } else {

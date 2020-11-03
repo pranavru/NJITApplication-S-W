@@ -68,7 +68,7 @@
 .copyrightDiv {
   font: 0.5rem monospace;
   left: 50%;
-  bottom: -8px;
+  bottom: 0px;
   display: flex;
   position: absolute;
 }
