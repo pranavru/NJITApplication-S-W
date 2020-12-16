@@ -5,37 +5,25 @@ const { REACT_APP_BASE_URL,
     REACT_APP_TAGGED_PEOPLE_API, REACT_APP_UNTAGGED_PEOPLE_API, REACT_APP_USER_FEEDBACK_API,
     REACT_APP_GOOGLE_MAP_LOCATION_DETAILS_KEY, REACT_APP_GOOGLE_MAP_LOCATION_DETAILS_URL } = process.env;
 
-//Change the isLoading attribute to true when data is updating
-export const dataVuzixLoading = () => ({ type: ActionTypes.DATAVUZIX_LOADING });
-export const mapFilterLoading = () => ({ type: ActionTypes.MAPFILTER_LOADING });
-export const addressValueLoading = () => ({ type: ActionTypes.ADDRESSVALUE_LOADING });
-export const mapMarkersDataLoading = () => ({ type: ActionTypes.MAPMARKERSDATA_LOADING });
-export const infoWindowLoading = () => ({ type: ActionTypes.INFOWINDOW_LOADING });
-export const videoDataLoading = () => ({ type: ActionTypes.VIDEODATA_LOADING });
-export const speechTextLoading = () => ({ type: ActionTypes.SPEECHTEXT_LOADING });
-export const feedbackLoading = () => ({ type: ActionTypes.FEEDBACK_LOADING });
+/**
+ * Change the isLoading attribute to true when data is updating
+ * @param  {ActionTypes.type} type
+ */
+export const dataLoading = (type) => ({ type: type })
 
-//Send an error response if there is an error in updating the payload
-export const dataVuzixFailed = (errmess) => ({ type: ActionTypes.DATAVUZIX_FALIED, payload: errmess })
-export const mapFilterFailed = (errmess) => ({ type: ActionTypes.MAPFILTER_FAILED, payload: errmess })
-export const addressValueFailed = (errmess) => ({ type: ActionTypes.ADDRESSVALUE_FAILED, payload: errmess });
-export const mapMarkersDataFailed = (errmess) => ({ type: ActionTypes.MAPMARKERSDATA_FAILED, payload: errmess });
-export const infoWindowFailed = (errmess) => ({ type: ActionTypes.INFOWINDOW_FAILED, payload: errmess });
-export const videoFailed = (errmess) => ({ type: ActionTypes.VIDEODATA_FAILED, payload: errmess });
-export const speechTextFailed = (errmess) => ({ type: ActionTypes.SPEECHTEXT_FALIED, payload: errmess })
-export const feedbackFailed = (errmess) => ({ type: ActionTypes.FEEDBACK_FAILED, payload: errmess })
+/**
+ * Send an error response if there is an error in updating the payload
+ * @param  {ActionTypes.type} type
+ * @param  {String} message
+ */
+export const dataLoadingFailed = (type, message) => ({ type: type, payload: message })
 
 //Update the store with the payload to store the data 
-export const loadDataVuzix = (data) => ({ type: ActionTypes.ADD_DATAVUZIX, payload: data });
-export const loadMapFilter = (data) => ({ type: ActionTypes.ADD_INIT_MAPFILTER, payload: data });
-export const loadEditedFilter = (data) => ({ type: ActionTypes.EDIT_MAPFILTER, payload: data });
-export const loadAddressValue = (data) => ({ type: ActionTypes.ADD_ADDRESSVALUE, payload: data });
-export const loadMapMarkerData = (data, type) => ({ type: type, payload: data });
-export const loadInfoWindow = (data) => ({ type: ActionTypes.INIT_INFOWINDOW, payload: data });
-export const loadVideoData = (data) => ({ type: ActionTypes.ADD_VIDEODATA, payload: data });
-export const loadSpeechText = (data) => ({ type: ActionTypes.ADD_SPEECHTEXT, payload: data });
-export const initFeedbackForm = (data) => ({ type: ActionTypes.INIT_FEEDBACK, payload: data });
-export const addFeedbackValue = (data) => ({ type: ActionTypes.ADD_FEEDBACK, payload: data });
+/**
+ * @param  {ActionTypes.type} type
+ * @param  {Object} data
+ */
+export const loadData = (type, data) => ({ type: type, payload: data })
 
 /*
     *** Start of => Actions Performed in Data Loading Module
@@ -43,7 +31,7 @@ export const addFeedbackValue = (data) => ({ type: ActionTypes.ADD_FEEDBACK, pay
 
 // Fetches data when initial URL is hit.
 export const fetchDataVuzix = (dispatch) => {
-    dispatch(dataVuzixLoading(true));
+    dispatch(dataLoading(ActionTypes.type.DATAVUZIX_LOADING));
     return fetch(REACT_APP_BASE_URL + REACT_APP_GET_APP_DATA_API)
         .then(response => {
             if (response.ok) {
@@ -62,14 +50,13 @@ export const fetchDataVuzix = (dispatch) => {
             //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
             response.vuzixMap.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime())
-            dispatch(loadDataVuzix(response))
+            dispatch(loadData(ActionTypes.type.ADD_DATAVUZIX, response))
         })
-        .catch(error => dispatch(dataVuzixFailed(error.message)));
+        .catch(error => dispatch(dataLoadingFailed(ActionTypes.type.DATAVUZIX_FALIED, error.message)));
 };
 
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter```
 export const editDataVuzix = (parameter, props) => (dispatch) => {
-    console.log(parameter, props)
     const markerData = props.MapMarkersData.mapMarkersData
     let url = "";
     if (markerData.searchEventsOnCurrentLocation && parameter.hasOwnProperty("location")) {
@@ -92,19 +79,21 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
         })
         .then(response => response.data)
         .then(response => {
+
             //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
             response.gps_lists = new Map(Object.entries(response.gps_lists));
             response.vuzixMap.sort((a, b) => new Date(a.created).getTime() - new Date(b.created).getTime())
 
-            dispatch(loadDataVuzix(response))
+            dispatch(loadData(ActionTypes.type.ADD_DATAVUZIX, response))
             dispatch(loadMarkers(props.DataVuzix.vuzixMap, markerData))
+
             //Change Map Center and set searchAsMapMoves to true
             markerData.initialLoad = true;
             markerData.searchEventsOnCurrentLocation = false;
             dispatch(changeMapCenter(markerData))
 
         }).then(() => props.activateLoader(false))
-        .catch(err => dispatch(dataVuzixFailed(err.message)))
+        .catch(err => dispatch(dataLoadingFailed(ActionTypes.type.DATAVUZIX_FALIED, err.message)))
 }
 
 /*
@@ -115,27 +104,40 @@ export const editDataVuzix = (parameter, props) => (dispatch) => {
 
 // Fetches initial Map details when initial URL is hit
 export const initMapDetails = () => (dispatch) => {
+
     let mapReference = {
         center: { lat: 40.74918, lng: -74.156204 },         // center: Harrision, Newark, NJ
         detail: false,
         mapMarkers: [],                                     // Markers to load on Map
-        animatedMarkerID: {},
         mapObject: null,                                     // Stores map details - bounds, terrain, etc.
         searchAsMapMoves: false,
         initialLoad: true,
         searchEventsOnCurrentLocation: false,
     }
-    dispatch(loadMapMarkerData(mapReference, ActionTypes.INIT_MAP_DETAILS));
+    /**
+     * Load Initial Map Details - set to Default Values
+     * @param  {mapObjectReference} mapReference
+     */
+    dispatch(loadData(ActionTypes.type.INIT_MAP_DETAILS, mapReference));
 }
 
-// Load map details in ```mapObject``` on map Load
+/**
+ * Load map details in mapObject on map Load
+ * @param  {Object} mapObj
+ * @param  {mapObjectReference} mapReference
+ */
 export const loadMap = (mapObj, mapReference) => dispatch => {
-    dispatch(mapMarkersDataLoading(true));
+    dispatch(dataLoading(ActionTypes.type.MAPMARKERSDATA_LOADING));
     mapReference.mapObject = mapObj;
-    dispatch(loadMapMarkerData(mapReference, ActionTypes.LOAD_MAP));
+    dispatch(loadData(ActionTypes.type.LOAD_MAP, mapReference));
 }
 
-// Load markers available with in bounds of the screen after ```mapObject``` is loaded
+/**
+ * Load markers available within the NorthWest and SouthEast bounds of the map window -- if mapObject !== undefined
+ * @param  {markersEvents} data
+ * @param  {mapObjectReference} mapReference
+ * @param  {} =>(dispatch => {}
+ */
 export const loadMarkers = (data, mapReference) => (dispatch) => {
     const bounds = mapReference.mapObject.getBounds();
     if (data) {
@@ -147,17 +149,26 @@ export const loadMarkers = (data, mapReference) => (dispatch) => {
             mapReference.mapMarkers = data;
         }
         mapReference.zIndex = mapReference.zIndex === undefined ? mapReference.mapMarkers.length + 1 : mapReference.zIndex;
-        dispatch(loadMapMarkerData(mapReference, ActionTypes.ADD_MAPMARKERSDATA));
+        dispatch(loadData(ActionTypes.type.ADD_MAPMARKERSDATA, mapReference));
     }
 }
 
-// Change Center of map based on the Drag / Zoom In / Zoom Out of the map by the User
+/**
+ * Changes Map Center based on the mouse and keyboard Events - Drag / Zoom In / Zoom Out
+ * @param  {mapObjectReference} data
+ * @param  {} =>(dispatch => {}
+ */
 export const changeMapCenter = (data) => (dispatch) => {
     data.center = { lat: data.mapObject.getCenter().lat(), lng: data.mapObject.getCenter().lng() };
-    dispatch(loadMapMarkerData(data, ActionTypes.CHANGE_MAP_CENTER));
+    dispatch(loadData(ActionTypes.type.CHANGE_MAP_CENTER, data));
 }
 
-// Calculates and loads the marker which is closest to the current center of the map.
+/**
+ * Calculates and loads the marker which is closest to the current center of the map.
+ * @param  {markersEvents} data
+ * @param  {mapObjectReference} mapObject
+ * @param  {} =>(dispatch => {}
+ */
 export const findClosestMarker = (data, mapObject) => (dispatch) => {
     let latLng = mapObject.center;
     let R = 6371; // radius of earth in km
@@ -176,32 +187,43 @@ export const findClosestMarker = (data, mapObject) => (dispatch) => {
         }
     }
     mapObject.center = { lat: data[closest].lat, lng: data[closest].long };
-    dispatch(loadMapMarkerData(mapObject, ActionTypes.CLOSEST_MARKER));
+    dispatch(loadData(ActionTypes.type.CLOSEST_MARKER, mapObject));
 }
 
-// Calculates and loads the most recent created marker to the current center of the map.
+/**
+ * Calculates and loads the most recent created marker to the current center of the map.
+ * @param  {markersEvents} data
+ * @param  {mapObjectReference} mapObject
+ * @param  {} =>(dispatch => {}
+ */
 export const findRecentMarker = (data, mapObject) => (dispatch) => {
-    let mostRecent = data ? data[0] : null;;
+    let mostRecent = data ? data[0] : null;
     data.forEach(d => mostRecent = new Date(d.created).getTime() > new Date(mostRecent.created).getTime() ? d : mostRecent)
     mapObject.center = { lat: mostRecent.lat, lng: mostRecent.long };
     mapObject.mapMarkers.push(mostRecent);
-    dispatch(loadMapMarkerData(mapObject, ActionTypes.MOST_RECENT_MARKER));
+    dispatch(loadData(ActionTypes.type.MOST_RECENT_MARKER, mapObject));
     dispatch(animateMapMarker(mapObject, mostRecent));
-    // window.setTimeout(dispatch(animateMapMarker(mapObject, null), 5000));
 }
-
-//Sets Loading markers when Map Moves
-export const setMarkersAsMapMoves = (data) => dispatch => {
+/**
+ * Sets Loading markers when Map Moves
+ * @param  {mapObjectReference} data
+ * @param  {} =>(dispatch => {}
+ */
+export const setMarkersAsMapMoves = (data) => (dispatch) => {
     data.searchAsMapMoves = !data.searchAsMapMoves;
-    dispatch(loadMapMarkerData(data, ActionTypes.SEARCH_AS_MAP_MOVES))
+    dispatch(loadData(ActionTypes.type.SEARCH_AS_MAP_MOVES, data))
 }
 
 // Loads the Info window when mouse hovers over a marker
+/**
+ * @param  {markersEvents} data
+ * @param  {} =>(dispatch => {}
+ */
 export const infoWindowMarker = (data) => (dispatch) => {
     if (data === undefined) {
-        dispatch(infoWindowFailed("Data is not defined"));
+        dispatch(dataLoadingFailed(ActionTypes.type.INFOWINDOW_FAILED, "Data is not defined"));
     } else {
-        dispatch(loadInfoWindow(data));
+        dispatch(loadData(ActionTypes.type.INIT_INFOWINDOW, data));
     }
 }
 
@@ -210,16 +232,21 @@ const rad = (x) => x * Math.PI / 180;
 const sinSquare = (x) => Math.pow(Math.sin(x), 2);
 const cosSquare = (x) => Math.pow(Math.cos(x), 2);
 
+/**
+ * @param  {mapObjectReference} data
+ * @param  {} =>(dispatch => {}
+ */
 export const updateMapAddressOnExpiry = (data) => (dispatch) => {
     let address = new Map(), addressValue;
-    dispatch(addressValueLoading(true));
+    dispatch(dataLoading(ActionTypes.type.ADDRESSVALUE_LOADING));
     data.forEach(m => {
+        console.log(m)
         let temp = loadMarkerAddresses(m, address)              //Load Address Values
         if (temp !== undefined) {
             addressValue = temp;
         }
     });
-    dispatch(loadAddressValue(addressValue));
+    dispatch(loadData(ActionTypes.type.ADD_ADDRESSVALUE, addressValue));
 }
 /*
     *** End of => Actions Performed in Map Module
@@ -227,13 +254,22 @@ export const updateMapAddressOnExpiry = (data) => (dispatch) => {
     *** Start of => Actions Performed in Details Card Module
 */
 
-// Load Details Div 
+/**
+ * Load Details Div 
+ * @param  {Boolean} data
+ * @param  {mapObjectReference} mapReference
+ */
 export const displayDetails = (data, mapReference) => dispatch => {
     mapReference.detail = data;
-    dispatch(loadMapMarkerData(mapReference, ActionTypes.DISPLAY_MARKER_DETAILS));
+    dispatch(loadData(ActionTypes.type.DISPLAY_MARKER_DETAILS, mapReference));
 }
 
-//Toggle Animation of map markers
+/**
+ * Toggle Animation of Details Div
+ * @param  {mapObjectReference} data
+ * @param  {markersEvents} marker
+ * @param  {} =>(dispatch => {}
+ */
 export const animateMapMarker = (data, marker) => (dispatch) => {
     data.zIndex = data.zIndex + 1;
     if (marker === null) {
@@ -255,7 +291,10 @@ export const animateMapMarker = (data, marker) => (dispatch) => {
 */
 
 
-// This method calculates the range of slider and names of people in event
+/**
+ * This method calculates the range of slider and names of people in event
+ * @param {markersEvents} data.vuzixMap
+ */
 const initializeMapFilter = (data) => {
     let address = new Map(), addressValue, hours = 1000 * 60 * 30 * 2 * 3;
     let range = [+setDateValueinMilliSeconds(data.startDate) - (2 * hours), +setDateValueinMilliSeconds(data.endDate) + (2 * hours)], dateMap = [], persons = new Map([]), personObject = [];
@@ -281,6 +320,10 @@ const setDateValueinMilliSeconds = (dateValue) => {
 };
 
 //Loads person names in the Filter list.
+/**
+ * @param  {markerEventDetails} m
+ * @param  {String[]} persons
+ */
 const personsArray = (m, persons) => m.person_names.forEach(element => {
     if (!persons.has(element.person_name)) {
         persons.set(element.person_name);
@@ -288,6 +331,10 @@ const personsArray = (m, persons) => m.person_names.forEach(element => {
 });
 
 //Load addresses for Markers - Card Detail Div
+/**
+ * @param  {markerEventDetails} m
+ * @param  {Map<String, String>} address
+ */
 const loadMarkerAddresses = (m, address) => {
     let expiryDate = new Date().getTime() + 300000;
     let key = `${m.lat.toFixed(3)}:${m.long.toFixed(3)}`;
@@ -311,13 +358,17 @@ const loadMarkerAddresses = (m, address) => {
 
 // Fetches filter data when initial URL is hit
 export const fetchMapFilter = (data) => (dispatch) => {
-    dispatch(mapFilterLoading(true));
+    dispatch(dataLoading(ActionTypes.type.MAPFILTER_LOADING));
 
     //Fetch Date Range, Date Values in milliseconds, People Names, Address Values for a GPS Co-ordinate.
     const { range, dateMap, personObject, addressValue } = initializeMapFilter(data);
-    dispatch(addressValueLoading(true));
-    dispatch(loadAddressValue(addressValue));
-    dispatch(loadMapFilter({
+    dispatch(dataLoading(ActionTypes.type.ADDRESSVALUE_LOADING));
+    dispatch(loadData(ActionTypes.type.ADD_ADDRESSVALUE, addressValue));
+
+    /**
+     * @type mapFilterReference
+     */
+    const filter = {
         isSpeech: false,                                                    // Speech Attribute
         personNames: personObject,                                          // Person Names
         startDate: data.startDate,                                          // Start Date - To Limit User's Date Selection
@@ -330,17 +381,25 @@ export const fetchMapFilter = (data) => (dispatch) => {
             data: dateMap
         },
         keyword: '',
-    }));
+    };
+    dispatch(loadData(ActionTypes.type.ADD_INIT_MAPFILTER, filter));
 };
 
-// Edit Map Filter based on User Interaction
-// newValue is an object: 
-// ``` newValue={ type: String, value: String} ``` or 
-// ``` newValue={ type: String, value: { type: String, value: String }} ```
-export const editMapFilter = (type, newValue, props) => (dispatch) => {
-    dispatch(mapFilterLoading(true));
-    dispatch(videoDataLoading(true));
 
+/**
+ * Edit Map Filter based on User Interaction
+ * @param  {Object} type
+ * @param  {parameterUpdatedValue} newValue
+ * @param  {Object} props
+ * @param  {} =>(dispatch => {}
+ */
+export const editMapFilter = (type, newValue, props) => (dispatch) => {
+    dispatch(dataLoading(ActionTypes.type.MAPFILTER_LOADING));
+    dispatch(dataLoading(ActionTypes.type.VIDEODATA_LOADING));
+
+    /**
+     * @type mapFilterReference
+     */
     let newFilter = props.mapFilter;
     if (type.includes("isSpeech")) {
         newFilter.isSpeech = newValue;
@@ -364,18 +423,18 @@ export const editMapFilter = (type, newValue, props) => (dispatch) => {
         } else if (type.includes("barGraphData")) {
             newFilter.mapDateRange.data = newValue.value;
         } else {
-            dispatch(loadEditedFilter(newFilter));
+            dispatch(loadData(ActionTypes.type.EDIT_MAPFILTER, newFilter));
         };
     };
     if (type.includes("searchByText")) {
         newFilter.keyword = newValue.title;
     }
-    dispatch(loadEditedFilter(newFilter));
+    dispatch(loadData(ActionTypes.type.EDIT_MAPFILTER, newFilter));
 };
 
 //Fetch Speech Text Values - Autocomplete API
 export const fetchSpeechText = () => (dispatch) => {
-    dispatch(speechTextLoading());
+    dispatch(dataLoading(ActionTypes.type.SPEECHTEXT_LOADING));
     return fetch(REACT_APP_BASE_URL + REACT_APP_QUERY_DATA_API)
         .then(response => {
             if (response.ok) {
@@ -390,12 +449,19 @@ export const fetchSpeechText = () => (dispatch) => {
         })
         .then(response => response.json())
         .then(response => {
-            dispatch(loadSpeechText(response));
+            dispatch(loadData(ActionTypes.type.ADD_SPEECHTEXT, response));
         })
-        .catch(error => speechTextFailed(error));
+        .catch(error => dataLoadingFailed(ActionTypes.type.VIDEODATA_FAILED, error.message));
 }
 
 // Fetch Data based on Speech Values
+/**
+ * @param  {String} speech
+ * @param  {Object} props
+ * @param  {} =>(dispatch
+ * @param  {} =>axios.post(REACT_APP_BASE_URL+REACT_APP_QUERY_SPEECH_DATA_API
+ * @param  {speech}} {keyword
+ */
 export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.post(REACT_APP_BASE_URL + REACT_APP_QUERY_SPEECH_DATA_API, { keyword: speech })
     .then(response => {
         if (!(response.data.vuzixMap.length > 0)) {
@@ -415,12 +481,12 @@ export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.p
         //Converting gps_lists Objects to a Map of {key, value} : key => `lat,long`, value => Array of ids
         response.gps_lists = new Map(Object.entries(response.gps_lists));
 
-        dispatch(loadDataVuzix(response))
+        dispatch(loadData(ActionTypes.type.ADD_DATAVUZIX, response))
         dispatch(loadMarkers(props.DataVuzix.vuzixMap, props.MapMarkersData.mapMarkersData))
         dispatch(changeMapCenter(props.MapMarkersData.mapMarkersData))
 
     }).then(() => props.activateLoader(false))
-    .catch(err => dispatch(dataVuzixFailed(err.message)))
+    .catch(err => dispatch(dataLoadingFailed(ActionTypes.type.DATAVUZIX_FALIED, err.message)))
 
 /*
     *** End of => Actions Performed in Filter Module
@@ -430,8 +496,8 @@ export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.p
 
 // Loads the video in the Video Player when clicked from an Info window
 export const videoPlayer = (url) => (dispatch) => {
-    dispatch(videoDataLoading(true));
-    dispatch(loadVideoData(url));
+    dispatch(dataLoading(ActionTypes.type.VIDEODATA_LOADING));
+    dispatch(loadData(ActionTypes.type.ADD_VIDEODATA, url));
 };
 
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter```
@@ -448,7 +514,7 @@ export const editVideo = (parameter) => (dispatch) => {
         })
         //Update videoDetails Object with the video Data.
         .then(r => dispatch(videoPlayer(r)))
-        .catch(err => dispatch(videoFailed(err.message)))
+        .catch(err => dispatch(dataLoadingFailed(ActionTypes.type.VIDEODATA_FAILED, err.message)))
 }
 
 /*
@@ -482,13 +548,16 @@ export const initializePersonAttr = () => async (dispatch) => {
                 }
             })
             attributes.fname = ""; attributes.lname = ""; attributes.selectedImages = [];
-            dispatch(initFeedbackForm(attributes));
+            dispatch(loadData(ActionTypes.type.INIT_FEEDBACK, attributes));
         })
-        .catch(error => dispatch(feedbackFailed(error.message)));
+        .catch(error => dispatch(dataLoadingFailed(ActionTypes.type.FEEDBACK_FAILED, error.message)));
 }
 
 //Edit Person Attributes Form 
 export const editPersonAttr = (data, props) => (dispatch) => {
+    /**
+     * @type feedbackInterface
+     */
     let newFeed = props.feedback;
     switch (data.name) {
         case "fname":
@@ -524,12 +593,16 @@ export const editPersonAttr = (data, props) => (dispatch) => {
             newFeed = props
             break;
     }
-    dispatch(addFeedbackValue(newFeed));
+    dispatch(loadData(ActionTypes.type.ADD_FEEDBACK, newFeed));
 };
 
 //Loads person Information from the feedback form
+/**
+ * @param  {feedbackInterface} data
+ * @param  {} =>(dispatch
+ */
 export const personAttributes = (data) => (dispatch) => {
-    dispatch(feedbackLoading(true));
+    dispatch(dataLoading(ActionTypes.type.FEEDBACK_LOADING));
     if (data.selectedImages) {
         if ((data.fname && data.fname.length >= 3) && (data.lname && data.lname.length >= 3)) {
             let attributes;
@@ -540,7 +613,7 @@ export const personAttributes = (data) => (dispatch) => {
             } else {
                 attributes = { name: data.fname + ' ' + data.lname, file: data.selectedImages, id: data.images.filter(m => m.isSelected).map(m => m.id) };
             }
-            dispatch(addFeedbackValue(attributes));
+            dispatch(loadData(ActionTypes.type.ADD_FEEDBACK, attributes));
             return axios.post(REACT_APP_BASE_URL + REACT_APP_USER_FEEDBACK_API, attributes, {
                 headers: {
                     'Content-Type': data.localFile ? 'multipart/form-data' : 'application/json'
@@ -553,10 +626,10 @@ export const personAttributes = (data) => (dispatch) => {
                 })
                 .catch((err) => alert(err));
         } else {
-            dispatch(feedbackFailed("Person name should be at least 3 letters"));
+            dispatch(dataLoadingFailed(ActionTypes.type.FEEDBACK_FAILED, "Person name should be at least 3 letters"));
         }
     } else {
-        dispatch(feedbackFailed("No Images Found. Please enter an Image"));
+        dispatch(dataLoadingFailed(ActionTypes.type.FEEDBACK_FAILED, "No Images Found. Please enter an Image"));
     }
 }
 
@@ -588,7 +661,9 @@ export const taggingCompleted = () => axios.post(REACT_APP_BASE_URL + REACT_APP_
 }, error => {
     throw error;
 }).catch(error => console.log(error));
-
+/**
+ * @param  {feedbackInterface} data
+ */
 export const deleteUntaggedImages = (data) => dispatch => {
     let updatedImages = data.images;
     let imageIDs = [];

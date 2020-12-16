@@ -1,39 +1,58 @@
 import * as ActionTypes from './ActionTypes';
 
+/**
+ * Contains the state Object 
+ * @typedef {Object} MapState
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {Array} mapMarkersData
+ */
+
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} MapActions
+ */
+
+/**
+ * @param {MapState} state 
+ * @param {MapActions} action 
+ */
+
+
 export const MapMarkerData = (state = {
     isLoading: true,
     errMess: null,
     mapMarkersData: []
 }, action) => {
     switch (action.type) {
-        case ActionTypes.INIT_MAP_DETAILS:
+        case ActionTypes.type.INIT_MAP_DETAILS:
             return { ...state, isLoading: false, errMess: null, mapMarkersData: action.payload };
 
-        case ActionTypes.ADD_MAPMARKERSDATA:
+        case ActionTypes.type.ADD_MAPMARKERSDATA:
             return { ...state, isLoading: false, errMess: null, mapMarkersData: action.payload };
 
-        case ActionTypes.DISPLAY_MARKER_DETAILS:
+        case ActionTypes.type.DISPLAY_MARKER_DETAILS:
             return { ...state, isLoading: false, errMess: null, mapMarkersData: action.payload };
 
-        case ActionTypes.LOAD_MAP:
+        case ActionTypes.type.LOAD_MAP:
             return { ...state, isLoading: false, errMess: null, mapMarkersData: action.payload };
 
-        case ActionTypes.CHANGE_MAP_CENTER:
+        case ActionTypes.type.CHANGE_MAP_CENTER:
             return { ...state, isLoading: false, errMess: null, mapMarkersData: action.payload };
 
-        case ActionTypes.CLOSEST_MARKER:
+        case ActionTypes.type.CLOSEST_MARKER:
             return { ...state, isLoading: false, errMess: null, mapMarkersData: action.payload };
 
-        case ActionTypes.MOST_RECENT_MARKER:
+        case ActionTypes.type.MOST_RECENT_MARKER:
             return { ...state, isLoading: false, errMess: null, mapMarkersData: action.payload };
 
-        case ActionTypes.SEARCH_AS_MAP_MOVES:
+        case ActionTypes.type.SEARCH_AS_MAP_MOVES:
             return { ...state, isLoading: false, errMess: null, mapMarkersData: action.payload };
 
-        case ActionTypes.MAPMARKERSDATA_LOADING:
+        case ActionTypes.type.MAPMARKERSDATA_LOADING:
             return { ...state, isLoading: true, errMess: null };
 
-        case ActionTypes.MAPMARKERSDATA_FAILED:
+        case ActionTypes.type.MAPMARKERSDATA_FAILED:
             return { ...state, isLoading: false, errMess: action.payload };
 
         default:
