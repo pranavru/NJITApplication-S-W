@@ -1,23 +1,9 @@
 import * as ActionTypes from './ActionTypes';
 
 /**
- * Contains the state Object 
- * @typedef {Object} MapState
- * @property {Boolean} isLoading 
- * @property {String} errMessage
- * @property {Array} mapMarkersData
- */
-
-/**
- * Contains the action types to perform state updates.
- * @typedef {ActionTypes} MapActions
- */
-
-/**
  * @param {MapState} state 
  * @param {MapActions} action 
  */
-
 
 export const MapMarkerData = (state = {
     isLoading: true,

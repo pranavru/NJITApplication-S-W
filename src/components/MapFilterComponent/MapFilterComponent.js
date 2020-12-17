@@ -6,26 +6,30 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import DateRangeFilter from '../DateRangeFilter/DateRangeFilter';
 import DisplayVideoComponent from '../DisplayVideoComponent/DisplayVideoComponent';
+import { LoadingDivSpinner } from '../MainComponent/LoadingDivSpinner';
 
 import './MapFilterComponent.css'
 
 import { connect } from 'react-redux';
-import { fetchMapFilter, fetchSpeechText, editMapFilter, editDataVuzix, videoPlayer, editVideo, fetchDataUsingSpeechText } from '../../redux/ActionCreators'
-import { LoadingDivSpinner } from '../MainComponent/LoadingDivSpinner';
+import { fetchMapFilter, fetchSpeechText, editMapFilter, editDataVuzix } from '../../redux/ActionCreators'
 
 const mapStateToProps = (state) => { return { MapFilter: state.mapFilter, MapMarkersData: state.mapMarkersData, SpeechText: state.speechText } }
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchMapFilter: (data, dateMap) => dispatch(fetchMapFilter(data, dateMap)),
+    fetchMapFilter: (data) => dispatch(fetchMapFilter(data)),
     fetchSpeechText: () => dispatch(fetchSpeechText()),
     editMapFilter: (type, newValue, props) => dispatch(editMapFilter(type, newValue, props)),
     editDataVuzix: (obj, loader) => dispatch(editDataVuzix(obj, loader)),
-    videoPlayer: (data) => dispatch(videoPlayer(data)),
-    editVideo: (obj, loader) => dispatch(editVideo(obj, loader)),
-    fetchDataUsingSpeechText: (data, props) => dispatch(fetchDataUsingSpeechText(data, props))
 });
 
+/**
+ * @param  {Object} props
+ * @param  {function} handleSubmit
+ */
 function groupedPicker(props, handleSubmit) {
+    /**
+     * @type SpeechTextState
+     */
     const s = props.SpeechText;
     const speech = s.speechText.map(s => { return { title: s } })
     const options = speech.map((option) => {
@@ -88,11 +92,20 @@ class MapFilterComponent extends Component {
         this.props.fetchSpeechText();
     }
 
+    /**
+     * The function handles date change using the calendar prop
+     * @param  {Number} startDate
+     * @param  {Number} endDate
+     */
     handleDateChange = (startDate, endDate) => {
         this.props.editMapFilter("dateValues", [startDate, endDate], this.props.MapFilter)
         this.handleSubmit();
     };
 
+    /**
+     * Whenever User checks a person's name in Filter Menu. An event is fired
+     * @param  {Object} event
+     */
     handleChangeCheck(event) {
         const { name, checked } = event.target;
         this.props.editMapFilter(name, checked, this.props.MapFilter);
@@ -100,6 +113,9 @@ class MapFilterComponent extends Component {
     }
 
     changePersonAsSelected(event) {
+        /**
+         * @type PersonCheckList
+         */
         let persons = this.props.MapFilter.mapFilter.personNames;
         persons.forEach(person => person.name === event.target.name ? person.checked = event.target.checked : null)
         this.props.editMapFilter("personNames", persons, this.props.MapFilter);
@@ -110,10 +126,12 @@ class MapFilterComponent extends Component {
         const { isSpeech, personNames, mapDateRange, keyword } = this.props.MapFilter.mapFilter;
         let people = [];
         personNames.forEach(p => (p.checked === true) ? people.push(p.name) : null)
+        /**
+         * @type filterInteractionInterface
+        */
         let json_body = {
             speech: isSpeech,
             person: people,
-            // location: this.state.addressValue,
             lat: "0.0",
             long: "0.0",
             start_date: new Date(mapDateRange.updated[0]).toISOString(),
@@ -124,7 +142,10 @@ class MapFilterComponent extends Component {
         console.log(json_body)
         return json_body;
     }
-
+    
+    /**
+     * Queries Data every time the filter menu is changed
+     */
     handleSubmit() {
         this.props.activateLoader(true);
         this.props.editDataVuzix(this.submitObjectValues(), this.props)
@@ -141,6 +162,7 @@ class MapFilterComponent extends Component {
                 <Card className="filterCard">
                     <Label className="filterFont cardHeaderTitleLabel">FILTER</Label>
                     <Form onSubmit={event => event.preventDefault()} >
+                        
                         {/* * Speech Form * */}
                         <FormGroup>
                             <InputGroup className="inputGroupValue">

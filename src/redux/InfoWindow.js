@@ -1,19 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 
 /**
- * Contains the state Object 
- * @typedef {Object} InfoWindowState 
- * @property {Boolean} isLoading 
- * @property {String} errMessage
- * @property {Array} infoWindow
- */
-
-/**
- * Contains the action types to perform state updates.
- * @typedef {ActionTypes} InfoWindowAction
- */
-
-/**
  * @param {InfoWindowState} state 
  * @param {InfoWindowAction} action 
  */

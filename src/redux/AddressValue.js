@@ -1,19 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 
 /**
- * Contains the state Object 
- * @typedef {Object} VuzixAddressState 
- * @property {Boolean} isLoading 
- * @property {String} errMessage
- * @property {Array} addresses
- */
-
-/**
- * Contains the action types to perform state updates.
- * @typedef {ActionTypes} VuzixAddressAction
- */
-
-/**
  * @param {VuzixAddressState} state 
  * @param {VuzixAddressAction} action 
  */

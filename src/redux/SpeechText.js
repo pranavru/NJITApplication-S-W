@@ -1,23 +1,9 @@
 import * as ActionTypes from './ActionTypes';
 
 /**
- * Contains the state Object 
- * @typedef {Object} SpeechTextState 
- * @property {Boolean} isLoading 
- * @property {String} errMessage
- * @property {Object} speechText
- */
-
-/**
- * Contains the action types to perform state updates.
- * @typedef {ActionTypes} SpeechActions
- */
-
-/**
  * @param {SpeechTextState} state 
  * @param {SpeechActions} action 
  */
-
 
 export const SpeechText = (state = {
     isLoading: true,

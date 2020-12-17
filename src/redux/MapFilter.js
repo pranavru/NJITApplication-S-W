@@ -1,19 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 
 /**
- * Contains the state Object 
- * @typedef {Object} FilterState 
- * @property {Boolean} isLoading 
- * @property {String} errMessage
- * @property {Array} mapFilter
- */
-
-/**
- * Contains the action types to perform state updates.
- * @typedef {ActionTypes} FilterAction
- */
-
-/**
  * @param {FilterState} state 
  * @param {FilterAction} action 
  */

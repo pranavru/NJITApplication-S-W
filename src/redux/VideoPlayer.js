@@ -1,23 +1,9 @@
 import * as ActionTypes from './ActionTypes';
 
 /**
- * Contains the state Object 
- * @typedef {Object} videoURLState 
- * @property {Boolean} isLoading 
- * @property {String} errMessage
- * @property {String} videoDetails
- */
-
-/**
- * Contains the action types to perform state updates.
- * @typedef {ActionTypes} videoURLAction
- */
-
-/**
  * @param {videoURLState} state 
  * @param {videoURLAction} action 
  */
-
 
 export const VideoPlayer = (state = {
   isLoading: true,

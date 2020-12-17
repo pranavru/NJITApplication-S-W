@@ -56,6 +56,11 @@ export const fetchDataVuzix = (dispatch) => {
 };
 
 // Edit Vuzix Blade data based on the Filter parameters as ```parameter```
+/**
+ * @param  {filterInteractionInterface} parameter
+ * @param  {mapObjectReference} props
+ * @param  {} =>(dispatch
+ */
 export const editDataVuzix = (parameter, props) => (dispatch) => {
     const markerData = props.MapMarkersData.mapMarkersData
     let url = "";
@@ -134,7 +139,7 @@ export const loadMap = (mapObj, mapReference) => dispatch => {
 
 /**
  * Load markers available within the NorthWest and SouthEast bounds of the map window -- if mapObject !== undefined
- * @param  {markersEvents} data
+ * @param  {ArrayOfEvents} data
  * @param  {mapObjectReference} mapReference
  * @param  {} =>(dispatch => {}
  */
@@ -165,7 +170,7 @@ export const changeMapCenter = (data) => (dispatch) => {
 
 /**
  * Calculates and loads the marker which is closest to the current center of the map.
- * @param  {markersEvents} data
+ * @param  {ArrayOfEvents} data
  * @param  {mapObjectReference} mapObject
  * @param  {} =>(dispatch => {}
  */
@@ -192,7 +197,7 @@ export const findClosestMarker = (data, mapObject) => (dispatch) => {
 
 /**
  * Calculates and loads the most recent created marker to the current center of the map.
- * @param  {markersEvents} data
+ * @param  {ArrayOfEvents} data
  * @param  {mapObjectReference} mapObject
  * @param  {} =>(dispatch => {}
  */
@@ -216,7 +221,7 @@ export const setMarkersAsMapMoves = (data) => (dispatch) => {
 
 // Loads the Info window when mouse hovers over a marker
 /**
- * @param  {markersEvents} data
+ * @param  {ArrayOfEvents} data
  * @param  {} =>(dispatch => {}
  */
 export const infoWindowMarker = (data) => (dispatch) => {
@@ -267,7 +272,7 @@ export const displayDetails = (data, mapReference) => dispatch => {
 /**
  * Toggle Animation of Details Div
  * @param  {mapObjectReference} data
- * @param  {markersEvents} marker
+ * @param  {ArrayOfEvents} marker
  * @param  {} =>(dispatch => {}
  */
 export const animateMapMarker = (data, marker) => (dispatch) => {
@@ -293,7 +298,7 @@ export const animateMapMarker = (data, marker) => (dispatch) => {
 
 /**
  * This method calculates the range of slider and names of people in event
- * @param {markersEvents} data.vuzixMap
+ * @param {initialDataLoadInterface} data.vuzixMap
  */
 const initializeMapFilter = (data) => {
     let address = new Map(), addressValue, hours = 1000 * 60 * 30 * 2 * 3;
@@ -321,7 +326,7 @@ const setDateValueinMilliSeconds = (dateValue) => {
 
 //Loads person names in the Filter list.
 /**
- * @param  {markerEventDetails} m
+ * @param  {ArrayOfEvents} m
  * @param  {String[]} persons
  */
 const personsArray = (m, persons) => m.person_names.forEach(element => {
@@ -332,7 +337,7 @@ const personsArray = (m, persons) => m.person_names.forEach(element => {
 
 //Load addresses for Markers - Card Detail Div
 /**
- * @param  {markerEventDetails} m
+ * @param  {ArrayOfEvents} m
  * @param  {Map<String, String>} address
  */
 const loadMarkerAddresses = (m, address) => {
@@ -357,6 +362,10 @@ const loadMarkerAddresses = (m, address) => {
 };
 
 // Fetches filter data when initial URL is hit
+/**
+ * @param  {initialDataLoadInterface} data
+ * @param  {} =>(dispatch
+ */
 export const fetchMapFilter = (data) => (dispatch) => {
     dispatch(dataLoading(ActionTypes.type.MAPFILTER_LOADING));
 
@@ -388,7 +397,7 @@ export const fetchMapFilter = (data) => (dispatch) => {
 
 /**
  * Edit Map Filter based on User Interaction
- * @param  {Object} type
+ * @param  {String} type
  * @param  {parameterUpdatedValue} newValue
  * @param  {Object} props
  * @param  {} =>(dispatch => {}
@@ -458,7 +467,7 @@ export const fetchSpeechText = () => (dispatch) => {
 /**
  * @param  {String} speech
  * @param  {Object} props
- * @param  {} =>(dispatch
+ * @param  {} =>(dispatch => {}
  * @param  {} =>axios.post(REACT_APP_BASE_URL+REACT_APP_QUERY_SPEECH_DATA_API
  * @param  {speech}} {keyword
  */
@@ -495,6 +504,10 @@ export const fetchDataUsingSpeechText = (speech, props) => (dispatch) => axios.p
 */
 
 // Loads the video in the Video Player when clicked from an Info window
+/**
+ * @param  {String} url
+ * @param  {} =>(dispatch => {}
+ */
 export const videoPlayer = (url) => (dispatch) => {
     dispatch(dataLoading(ActionTypes.type.VIDEODATA_LOADING));
     dispatch(loadData(ActionTypes.type.ADD_VIDEODATA, url));

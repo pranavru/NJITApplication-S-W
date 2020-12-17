@@ -1,6 +1,9 @@
 /**
+ * @typedef {EventsDetail[]} ArrayOfEvents
+ */
+/**
  * Array of Objects containing Events Details
- * @typedef {Object[]} markerEventDetails
+ * @typedef {Object} EventsDetail
  * @property {gps_list} all_gps
  * @property {SpeechDetails} all_speech
  * @property {UnknownValues} all_uks
@@ -23,13 +26,13 @@
  * @property {mapObjectCenterReference} center
  * @property {Boolean} detail
  * @property {Boolean} initialLoad
- * @property {markerEventDetails} mapMarkers
+ * @property {ArrayOfEvents} mapMarkers
  * @property {Object} mapObject
  * @property {Boolean} searchAsMapMoves
  * @property {Boolean} searchEventsOnCurrentLocation
  */
 /**
- * Details of Filter Object 
+ * Details of Filter Object
  * @typedef {Object} mapFilterReference
  * @property {Boolean} isSpeech
  * @property {String} startDate
@@ -40,6 +43,18 @@
  * @property {PersonCheckList} personNames
  */
 /**
+ * Filters Events based on User Interaction
+ * @typedef {Object} filterInteractionInterface
+ * @property {Boolean} speech
+ * @property {String[]} person
+ * @property {String} lat
+ * @property {String} long
+ * @property {String} start_date
+ * @property {String} end_date
+ * @property {String} vid
+ * @property {String} keyword
+ */
+/**
  * Details of the Feedback object
  * @typedef {Object} feedbackInterface
  * @property {String} fname
@@ -48,7 +63,14 @@
  * @property {feedbackImages} images
  */
 /**
- * Range Slider Component 
+ * @typedef {Object[]} feedbackImages
+ * @property {Number} id
+ * @property {String} src
+ * @property {String} thumbnail
+ */
+
+/**
+ * Range Slider Component
  * @typedef {Object} DateRangeSlider
  * @property {Number[]} updated
  * @property {Number[]} values
@@ -60,28 +82,16 @@
  * @property {Boolean} checked
  * @property {String} name
  */
-/**
- * @typedef {Object[]} feedbackImages
- * @property {Number} id
- * @property {String} src
- * @property {String} thumbnail
- */
+
+
 /**
  * @typedef {Object} initialDataLoadInterface
- * @property {markerEventDetails} vuzixMap
+ * @property {ArrayOfEvents} vuzixMap
  * @property {Map<String, EventsId>} gps_lists
  * @property {String} startDate
  * @property {String} endDate
  */
-/**
- * @typedef {Object[]} EventsId
- * @property {Number} id
- */
-/**
- * @typedef {Object} mapObjectCenterReference
- * @property {Number} lat
- * @property {Number} lng
- */
+
 /**
  * @typedef {Object[]} gps_list
  * @property {Number} lat
@@ -92,32 +102,118 @@
  * @property {String} speech
  */
 /**
- * @typedef {String[]} personNameValue
- * @property {String} person_name
- */
-/**
  * @typedef {String[]} UnknownValues
  * @property {String} unknown
  */
 /**
- * @typedef {Array} markersEvents
- * @property {markerEventDetails} event
+* @typedef {String[]} personNameValue
+* @property {String} person_name
+*/
+
+/**
+ * @typedef {Object} mapObjectCenterReference
+ * @property {Number} lat
+ * @property {Number} lng
  */
 
 /**
- * @typedef {Object} DateRangeSlider
- * @property {Number[]} updated
- * @property {Number[]} values
- * @property {Number[]} domain
- * @property {Number[]} data
+ * @typedef {Object[]} EventsId
+ * @property {Number} id
  */
-/**
- * @typedef {Object[]} PersonCheckList
- * @property {Boolean} checked
- * @property {String} name
- */
+
 /**
  * @typedef {Object} parameterUpdatedValue
  * @property {String} type
  * @property {String | parameterUpdatedValue} value
+ */
+
+ /**
+ * Contains the state Object 
+ * @typedef {Object} VuzixAddressState 
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {Array} addresses
+ */
+
+ /**
+ * Contains the state Object 
+ * @typedef {Object} DataVuzixState 
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {Object} dataVuzix
+ */
+/**
+ * Contains the state Object 
+ * @typedef {Object} FeedbackFormState 
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {Object} feedback
+ */
+/**
+ * Contains the state Object 
+ * @typedef {Object} InfoWindowState 
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {Array} infoWindow
+ */
+/**
+ * Contains the state Object 
+ * @typedef {Object} FilterState 
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {Array} mapFilter
+ */
+/**
+ * Contains the state Object 
+ * @typedef {Object} MapState
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {Array} mapMarkersData
+ */
+/**
+ * Contains the state Object 
+ * @typedef {Object} SpeechTextState 
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {Object} speechText
+ */
+/**
+ * Contains the state Object 
+ * @typedef {Object} videoURLState 
+ * @property {Boolean} isLoading 
+ * @property {String} errMessage
+ * @property {String} videoDetails
+ */
+
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} videoURLAction
+ */
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} SpeechActions
+ */
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} MapActions
+ */
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} FilterAction
+ */
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} InfoWindowAction
+ */
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} FeedbackFormAction
+ */
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} DataVuzixAction
+ */
+/**
+ * Contains the action types to perform state updates.
+ * @typedef {ActionTypes} VuzixAddressAction
  */

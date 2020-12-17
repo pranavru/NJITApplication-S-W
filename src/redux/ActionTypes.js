@@ -1,5 +1,6 @@
 /**
  * @enum {Object} ActionTypes
+ * @readonly
  * @property {String} ADD_DATAVUZIX
  * @property {String} DATAVUZIX_LOADING
  * @property {String} DATAVUZIX_FALIED

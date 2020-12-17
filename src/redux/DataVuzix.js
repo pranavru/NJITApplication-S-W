@@ -1,19 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 
 /**
- * Contains the state Object 
- * @typedef {Object} DataVuzixState 
- * @property {Boolean} isLoading 
- * @property {String} errMessage
- * @property {Object} dataVuzix
- */
-
-/**
- * Contains the action types to perform state updates.
- * @typedef {ActionTypes} DataVuzixAction
- */
-
-/**
  * @param {DataVuzixState} state 
  * @param {DataVuzixAction} action 
  */
