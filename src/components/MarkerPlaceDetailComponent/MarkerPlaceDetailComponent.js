@@ -7,6 +7,10 @@ import { connect } from 'react-redux';
 import { updateMapAddressOnExpiry, animateMapMarker } from '../../redux/ActionCreators'
 import { LoadingDivSpinner } from '../MainComponent/LoadingDivSpinner';
 
+/**
+ * Converts ISODate String and returns date in the format of "MM DDD, YYYY HH:mm:ss"
+ * @param  {String} p
+ */
 const dateStringVal = (p) => {
     const dateTimeFormat = new Intl.DateTimeFormat('en-us', { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false })
     const [{ value: month }, , { value: day }, , { value: year }, , { value: hour }, , { value: minute }, , { value: second }] = dateTimeFormat.formatToParts(p)
@@ -34,11 +38,17 @@ function MarkerPLaceDetailComponent(props) {
     return (
         <>
             {mapMarkers.length <= 0 ?
+                /**
+                 * Displays an image card markup of "No Data Found" when no data is there to display.
+                 */
                 <div className="emptyDivDisplayInfo">
                     <img src="/mapImage.png" alt={""} width="85%" height="17.5%" className="emptyDivImage" />
                     <p className="emptyDivText">NO EVENTS TO DISPLAY !!!</p>
                     <p className="emptyDivText">PLEASE PAN TO DIFFERENT AREA</p>
                 </div> :
+                /**
+                 * Displays cards of different events happening in the vicinity of the user.
+                 */
                 <>
                     <div className="containerDiv">
                         {mapMarkers.map((p) =>
@@ -91,6 +101,9 @@ function MarkerPLaceDetailComponent(props) {
                             </Card>
                         )}
                     </div>
+                    {/** 
+                     * Markup to indicate End of list.
+                     */}
                     <div>
                         <p className="endOfList">End of List</p>
                         <p className="endOfList">Displaying {mapMarkers.length} of {dataVuzix.vuzixMap.length} </p>

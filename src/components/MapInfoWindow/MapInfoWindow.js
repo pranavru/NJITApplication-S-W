@@ -5,6 +5,11 @@ import Gallery from 'react-grid-gallery';
 import "./MapInfoWindow.css";
 import ImageComponent from '../ImageComponent/ImageComponent';
 
+/**
+ * @param  {Object} props
+ * @param  {Boolean} displayImagesVideo
+ * @param  {function} setToDisplay
+ */
 function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
     const p = props.point;
     return (<>
@@ -24,13 +29,22 @@ function displayWindowHeader(props, displayImagesVideo, setToDisplay) {
     </>)
 }
 
+/**
+ * @param  {Object} props
+ * @param  {Boolean} displayImagesVideo
+ * @param  {function} setSpeechValues
+ * @param  {function} setToDisplay
+ */
 function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
     const p = props.point;
     const { REACT_APP_BASE_URL } = process.env;
 
     return !p.keepAlive ?
 
-        //Display Image if Marker is not clicked and only hovered. If No Image Found then checks for Video or else "No Image Found" is displayed
+        /**
+         * Display Image if Marker is not clicked and only hovered. 
+         * If No Image Found then checks for Video or else "No Image Found" Thumbnail is displayed
+         */
         (p.image && !p.video) ?
             <div id="containerImg">
                 <ImageComponent src={REACT_APP_BASE_URL + p.image} alt={p.id} idTag="theImage" />
@@ -41,11 +55,20 @@ function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
             </div>
 
         : !displayImagesVideo ?
-            //If Info Window is kept alive, as Marker is clicked
+
+            /**
+             * If the marker is clicked and the displayImagesVideo is set to true then 
+             * It checks for the Images and Videos to load in the Gallery, If Images found, then the gallery is loaded.
+             * Else the Toggle button is hidden and the video div is loaded.
+             */
 
             !p.images ?
 
-                //If no Images found  
+                /**
+                 * If No Images are found a markup is loaded, with NO IMAGE FOUND.
+                 * Else if the images are present then the gallery of images is loaded.
+                 * Else if there are videos then a function is called and displayImagesVideo value is set to true.
+                 */
                 <div id="containerImg">
                     <ImageComponent src={REACT_APP_BASE_URL + p.image} alt={p.id} idTag="theImage" />
                 </div>
@@ -66,6 +89,9 @@ function displayBody(props, displayImagesVideo, setSpeechValues, setToDisplay) {
                     </div>
                     : setToDisplay(true)
 
+            /**
+             * Video Card div markup
+             */
             : <div className="row videoDiv" style={{ margin: '0px' }}>
                 {p.videos.map(m =>
                     <div className="cardDisplay" onClick={() => onVideoClicked(props, m, setSpeechValues)}>
@@ -102,12 +128,19 @@ function displaySpeech(props) {
         : <></>
 };
 
+/**
+ * Displays the speech text if any when the video is clicked 
+ * @param  {Object} props
+ */
 function displayFooter(props) {
     return <CardFooter className="footer" style={{ margin: '0px', minHeight: '40px' }}>
         {displaySpeech(props)}
     </CardFooter>;
 }
 
+/**
+ * It loads the markup of Info Window over the marker
+ */
 function MapInfoWindow(props) {
     const [displayImagesVideo, setToDisplay] = React.useState(false);
     const [displaySpeechValue, setSpeechValues] = React.useState(undefined);
@@ -121,22 +154,3 @@ function MapInfoWindow(props) {
 }
 
 export default MapInfoWindow;
-
-/*
-    <CardHeader>
-        <CardTitle style={{ fontWeight: 'bold', fontSize: 16 }}>Vizux ID: {props.point.id} </CardTitle>
-        <CardSubtitle style={{ fontWeight: 'bold', fontSize: 12 }}>Country Location: {props.point.country}</CardSubtitle>
-        <CardImg top src={'/images (1).jpeg'} alt={props.point.id} style={{ width: 50, height: 50, borderRadius: 30, position: 'absolute', left: 300, top: 8 }} />
-    </CardHeader>;
-    function displayPersonNames(props) {
-        const p = props.tags;
-        return p.length > 0 ?
-            <div className="row">
-                {p.map((person, key) =>
-                    key !== 0 ? <div className="col-md-4" style={{ font: "1em monospace", border: 0, marginLeft: "2%", marginTop: '2%' }} key={key}>
-                        <p style={{ margin: '1px' }}>{'\u2022'} {person.value.toUpperCase()}</p>
-                    </div> : <></>
-                )}
-            </div> : <></>
-    }
-*/

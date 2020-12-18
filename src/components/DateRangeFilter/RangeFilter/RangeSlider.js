@@ -25,7 +25,10 @@ class RangeSlider extends React.Component {
     render() {
         const { updated, values, domain, data } = this.props.mapFilter.mapDateRange;
         const { displayChart } = this.state
-
+        /**
+         * @param  {mapFilterReference.mapDateRange.domain} .domain(domain
+         * .ticks is used to display number of ticks below the range bar indicating the Day and the hours.
+         */
         const dateTicks = scaleLinear().domain(domain).ticks(4).map(d => +d);
         const formatTick = (ms) => ((domain[1] - domain[0]) < new Date("Jan 02, 1970")) ? format(new Date(ms), "HH:ss") : format(new Date(ms), "MMM dd");
 

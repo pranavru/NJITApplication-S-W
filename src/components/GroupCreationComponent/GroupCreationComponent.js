@@ -3,6 +3,10 @@ import { Card, Label } from 'reactstrap';
 
 import '../GroupCreationComponent/GroupCreationComponent.css';
 
+/**
+ * Loads the Already tagged individuals from a single group
+ * @param {} props 
+ */
 const GroupCreationComponent = (props) => {
   const { groupName, people } = props.tags;
   const { REACT_APP_BASE_URL } = process.env;

@@ -11,6 +11,10 @@ const mapDispatchToProps = (dispatch) => ({
   changeMapCenter: (data) => dispatch(changeMapCenter(data)),
 })
 
+/**
+ * Loads the country flag in to the countries array
+ * @param  {Number} isoCode
+ */
 function countryToFlag(isoCode) {
   return typeof String.fromCodePoint !== 'undefined'
     ? isoCode

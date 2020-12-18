@@ -15,14 +15,25 @@ const mapDispatchToProps = (dispatch) => ({
   deleteUntaggedImages: (data) => dispatch(deleteUntaggedImages(data)),
 })
 
+/**
+ * The component fills the details of an individual that is yet to be tagged into the system.
+ * @param  {} props
+ */
 const PersonAttributesComponent = (props) => {
   const [imageSelection, selectImage] = React.useState(false);
-
+  
+  /**
+   * Handles changes in form values based on user interaction
+   * @param  {Object} event
+   */
   function handleChange(event) {
     const { name, value } = event.target;
     if (value !== null) { props.editPersonAttr({ name, value }, props) }
   };
 
+  /**
+   * Loads the image file from the Users system 
+   */
   function previewFile() {
     var files = document.querySelector('input[type=file]').files[0];
     props.editPersonAttr({ name: "images", value: files }, props)
